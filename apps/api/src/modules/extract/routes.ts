@@ -2,11 +2,11 @@ import { Router } from "express";
 import { and, eq } from "drizzle-orm";
 import { extractionSchema } from "@mfc/shared";
 import type { AppContext } from "../../context.js";
-import { env } from "../../config/env.js";
 import { requireAuth } from "../../auth/middleware.js";
 import { encryptOptional } from "../../crypto/fieldEncryption.js";
 import { medicalRecords, extractions } from "../../db/schema.js";
-import { mockExtract } from "./providers/mock.js";
+import { getStorage } from "../../storage/index.js";
+import { runExtraction } from "./providers/index.js";
 import { buildFieldMeta, hasLowConfidenceField } from "./pipeline.js";
 
 const uid = (req: { userId?: string }) => req.userId as string;
@@ -23,22 +23,25 @@ export function extractRoutes(ctx: AppContext): Router {
         .where(and(eq(medicalRecords.id, req.params.id as string), eq(medicalRecords.userId, uid(req))));
       if (!record) { res.status(404).json({ code: "NOT_FOUND", message: "Record not found" }); return; }
 
-      const provider = env.EXTRACT_PROVIDER;
-      let extraction;
-      let model: string;
-      let source: "live" | "mock";
-      if (provider === "gemini" && env.GEMINI_API_KEY) {
-        // Wired in the next batch (Typhoon OCR + Gemini). Until then, be honest.
-        res.status(501).json({ code: "PROVIDER_NOT_WIRED", message: "Gemini provider not wired yet; set EXTRACT_PROVIDER=mock" });
+      // Every provider (mock included) reads the uploaded bytes; a missing blob is
+      // a client-order error, same as /confirm.
+      const storage = getStorage();
+      if (!record.storagePath || !(await storage.exists(record.storagePath))) {
+        res.status(409).json({ code: "NO_BLOB", message: "Upload the image first" });
         return;
-      } else {
-        ({ extraction, model } = mockExtract());
-        source = "mock";
       }
+      const image = await storage.get(record.storagePath);
+      const mime = record.mime ?? "image/jpeg";
 
-      const parsed = extractionSchema.parse(extraction);
+      const result = await runExtraction(image, mime);
+      const { model, source } = result;
+      const provider = source === "live" ? "gemini" : "mock";
+
+      const parsed = extractionSchema.parse(result.extraction);
       const fieldMeta = buildFieldMeta(parsed);
       const warnings = source === "mock" ? ["mock provider"] : [];
+      for (const w of result.warnings) if (!warnings.includes(w)) warnings.push(w);
+
       const [row] = await ctx.db
         .insert(extractions)
         .values({
@@ -60,6 +63,7 @@ export function extractRoutes(ctx: AppContext): Router {
         needsReview: hasLowConfidenceField(fieldMeta),
         warnings,
         source,
+        model,
       });
     } catch (e) { next(e); }
   });
