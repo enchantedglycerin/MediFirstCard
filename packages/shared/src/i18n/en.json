@@ -1,0 +1,207 @@
+{
+  "app": {
+    "name": "MediFirstCard",
+    "tagline": "Your emergency info, one glance away",
+    "disclaimer": "Educational prototype (course 040333215). Not a medical device. Do not use for diagnosis or treatment."
+  },
+  "common": {
+    "save": "Save", "cancel": "Cancel", "delete": "Delete", "add": "Add", "edit": "Edit", "ok": "OK", "back": "Back",
+    "confirm": "Confirm", "done": "Done", "close": "Close", "loading": "Loading…", "saved": "Saved", "deleted": "Deleted",
+    "retry": "Retry", "yes": "Yes", "no": "No", "optional": "optional", "required": "required", "none": "None",
+    "unknown": "Unknown", "copy": "Copy", "copied": "Copied", "share": "Share", "open": "Open", "call": "Call",
+    "continue": "Continue", "skip": "Skip", "seeAll": "See all", "items": "{{count}} items", "on": "On", "off": "Off"
+  },
+  "tabs": { "home": "Home", "card": "Card", "records": "Records", "more": "More" },
+  "auth": {
+    "email": "Email", "password": "Password", "passwordHint": "At least 8 characters", "confirmPassword": "Confirm password",
+    "login": "Log in", "register": "Create account", "createAccount": "Create account",
+    "haveAccount": "Already have an account? Log in", "noAccount": "New here? Create an account",
+    "showPassword": "Show password", "hidePassword": "Hide password",
+    "wrongCredentials": "Wrong email or password", "emailTaken": "This email is already registered",
+    "passwordShort": "Password must be at least 8 characters", "passwordMismatch": "Passwords do not match",
+    "invalidEmail": "Enter a valid email address", "logout": "Log out", "logoutConfirm": "Log out of MediFirstCard?"
+  },
+  "consent": {
+    "title": "Consent",
+    "intro": "Before you start, please tell us how MediFirstCard may use your information.",
+    "healthData": "I consent to MediFirstCard collecting, using and displaying my health data (blood type, chronic conditions, drug allergies, medications, medical documents) to (1) show the emergency information I choose on my lock screen and (2) store my own medical documents.",
+    "aiProvider": "I consent to sending document images to AI providers (Google Gemini and SCB 10X Typhoon) for text extraction; the providers may use the data to improve their services.",
+    "retention": "Data is kept until I delete my account and erased within 30 days. I may withdraw consent at any time under More > Privacy at no cost.",
+    "contact": "I have informed my emergency contacts that their name and phone number are stored in this app and may be shown to rescuers.",
+    "agree": "I agree"
+  },
+  "home": {
+    "greeting": "Hello", "setup": "Set up your emergency profile", "fieldsShared": "{{count}} items shown to rescuers",
+    "records": "Documents", "alerts": "Alerts", "quickActions": "Quick actions", "scan": "Scan a document",
+    "viewCard": "View card", "editProfile": "Edit profile", "completeness": "Profile completeness",
+    "complete": "Your emergency profile is complete", "missing": {
+      "name": "Add your name", "blood": "Add your blood type", "allergies": "Add allergies (or mark none known)",
+      "contact": "Add an emergency contact"
+    },
+    "recent": "Recent documents", "unread": "{{count}} unread", "lockScreenOn": "Lock-screen card is on",
+    "lockScreenOff": "Lock-screen card is off"
+  },
+  "card": {
+    "title": "Emergency Card", "blood": "Blood type", "allergies": "Allergies", "noKnownAllergy": "No known drug allergies",
+    "notEntered": "Not entered", "conditions": "Conditions", "medications": "Medications", "contacts": "Emergency contacts",
+    "call": "Call", "selfReported": "Self-reported, not hospital-verified. Last updated {{date}}.",
+    "call1669": "Call 1669 (ambulance)", "preview": "Preview as rescuer", "editProfile": "Edit profile",
+    "shareLink": "Share link", "copyLink": "Copy link", "linkCopied": "Link copied", "empty": "No emergency info yet",
+    "emptyHint": "Add your name, blood type, allergies and an emergency contact so rescuers can help you fast.",
+    "setUp": "Set up profile", "qrHint": "Rescuers can scan this QR code to open your card",
+    "identity": "Name", "bloodShort": "Blood", "allergy": "Allergy", "condition": "Condition", "medication": "Medication",
+    "ice": "Emergency contact", "rescuerNote": "This is exactly what a rescuer sees when they scan your QR code or open your link.",
+    "lockScreenCard": "Lock-screen card", "shareTitle": "My emergency card"
+  },
+  "lockScreen": {
+    "title": "Lock-screen card", "showOnLockScreen": "Show card on lock screen",
+    "exposureWarning": "Anyone holding your phone can read the fields you show here, even when locked. Show only what could save your life.",
+    "fields": {
+      "name": "Name", "bloodType": "Blood type", "allergies": "Allergies", "conditions": "Conditions",
+      "medications": "Medications", "contact": "Emergency contact"
+    },
+    "shown": "The card is pinned to your lock screen", "hidden": "The card is not on your lock screen",
+    "permissionDenied": "Notifications are turned off. Allow them in Android Settings to show the card.",
+    "noProfile": "Create your emergency profile first", "preview": "Preview", "fieldsTitle": "Fields to show",
+    "howItWorks": "The card is shown as a pinned notification that stays visible on the lock screen until you turn it off.",
+    "updated": "Lock-screen card updated", "nothingToShow": "Turn on at least one field with data"
+  },
+  "profile": {
+    "title": "Emergency profile", "identity": "Identity", "firstNameTh": "First name (Thai)", "lastNameTh": "Last name (Thai)",
+    "nameEn": "Name (English)", "dob": "Date of birth", "dobHint": "YYYY-MM-DD", "sex": "Sex",
+    "sexOptions": { "male": "Male", "female": "Female", "other": "Other", "unspecified": "Not specified" },
+    "blood": "Blood type", "rh": "Rh factor", "noKnownAllergy": "No known drug allergies", "flags": "Medical flags",
+    "flagsHint": "Shown to rescuers as critical conditions",
+    "flagOptions": {
+      "anticoagulant": "On blood thinners", "insulin": "Insulin-dependent", "pacemaker": "Pacemaker",
+      "dialysis": "On dialysis", "pregnancy": "Pregnant"
+    },
+    "insurance": "Insurance scheme",
+    "insuranceOptions": {
+      "ucs": "Universal Coverage (Gold card)", "sss": "Social Security", "csmbs": "Civil servant",
+      "private": "Private", "self_pay": "Self-pay", "unknown": "Unknown"
+    },
+    "notes": "Notes for rescuers", "notesHint": "Anything else a rescuer should know", "saved": "Profile saved",
+    "lists": "Medical lists", "manageAllergies": "Allergies", "manageConditions": "Conditions",
+    "manageMedications": "Medications", "manageContacts": "Emergency contacts", "basics": "Basics",
+    "saveFirst": "Save the basics first, then add your lists below."
+  },
+  "allergies": {
+    "title": "Allergies", "add": "Add allergy", "edit": "Edit allergy", "substanceTh": "Substance (Thai)",
+    "substanceEn": "Substance (English)", "category": "Category",
+    "categories": { "medication": "Medication", "food": "Food", "environment": "Environment" },
+    "reaction": "Reaction", "severity": "Severity",
+    "severities": { "mild": "Mild", "moderate": "Moderate", "severe": "Severe" },
+    "empty": "No allergies recorded", "emptyHint": "If you have no known drug allergies, turn on the switch in your profile instead.",
+    "needSubstance": "Enter the substance in Thai or English"
+  },
+  "conditions": {
+    "title": "Conditions", "add": "Add condition", "edit": "Edit condition", "labelTh": "Condition (Thai)",
+    "labelEn": "Condition (English)", "code": "ICD-10 code", "status": "Status",
+    "statuses": { "active": "Active", "resolved": "Resolved" }, "onsetYear": "Year diagnosed",
+    "critical": "Critical for rescuers", "empty": "No conditions recorded", "emptyHint": "Add chronic conditions such as diabetes, epilepsy or heart disease.",
+    "needLabel": "Enter the condition in Thai or English"
+  },
+  "medications": {
+    "title": "Medications", "add": "Add medication", "edit": "Edit medication", "name": "Medication name",
+    "strength": "Strength (e.g. 500mg)", "dose": "Dose", "frequency": "Frequency", "critical": "Critical (must not miss)",
+    "empty": "No medications recorded", "emptyHint": "Add regular medications, especially ones a rescuer must know about."
+  },
+  "contacts": {
+    "title": "Emergency contacts", "add": "Add contact", "edit": "Edit contact", "name": "Name", "relationship": "Relationship",
+    "relationships": { "spouse": "Spouse", "parent": "Parent", "child": "Child", "sibling": "Sibling", "friend": "Friend", "other": "Other" },
+    "phone": "Phone number", "phoneHint": "Thai number, e.g. 0812345678",
+    "informedConsent": "I have told this person their name and number are stored here",
+    "priority": "Priority (1 = call first)", "empty": "No emergency contacts",
+    "emptyHint": "Add someone rescuers can call. Their number appears on your card with a Call button.",
+    "call": "Call {{name}}", "invalidPhone": "Enter a valid Thai phone number (9–10 digits starting with 0)",
+    "invalidPriority": "Priority must be a number from 1 to 5"
+  },
+  "records": {
+    "scan": "Scan document", "extracting": "Reading the document…", "review": "Check the details",
+    "mockResult": "Example result (offline)", "confidence": {
+      "high": "Clear", "medium": "Please check", "low": "Unsure, please edit", "none": "Not found"
+    },
+    "camera": "Take a photo", "gallery": "Choose from gallery", "source": "Add a document",
+    "steps": { "preparing": "Preparing image…", "uploading": "Uploading…", "extracting": "Reading the document…", "done": "Done" },
+    "kind": "Document type",
+    "kinds": {
+      "certificate_general": "Medical certificate", "certificate_driving": "Driving licence certificate",
+      "certificate_5disease": "5-disease certificate", "sick_leave": "Sick leave certificate", "prescription": "Prescription",
+      "lab": "Lab result", "vaccine": "Vaccination record", "allergy_card": "Allergy card", "discharge": "Discharge summary",
+      "receipt": "Receipt", "other": "Other"
+    },
+    "fields": {
+      "title": "Title", "facility": "Hospital / clinic", "doctorName": "Doctor", "doctorLicenseNo": "Doctor licence no.",
+      "issuedAt": "Issue date", "validUntil": "Valid until", "notes": "Notes", "diagnosis": "Diagnosis",
+      "patientName": "Patient name", "medications": "Medications", "restDays": "Rest days"
+    },
+    "saved": "Document saved", "empty": "No documents yet",
+    "emptyHint": "Scan a medical certificate, prescription or lab result to keep it safe here.",
+    "detail": "Document", "deleteConfirm": "Delete this document? This cannot be undone.", "deleted": "Document deleted",
+    "image": "Original image", "noImage": "Image not available", "extractedBy": "Read by {{model}}",
+    "reviewHint": "Fields marked in red were hard to read. Please check and correct them before saving.",
+    "status": { "pending": "Pending", "uploaded": "Uploaded", "extracted": "Needs review", "reviewed": "Reviewed" },
+    "expiresSoon": "Expires soon", "expired": "Expired", "validUntil": "Valid until {{date}}", "issued": "Issued {{date}}",
+    "notMedical": "This does not look like a medical document. You can still save it with your own details.",
+    "dateHint": "YYYY-MM-DD", "count": "{{count}} documents", "reviewNow": "Review now", "share": "Share with a clinician"
+  },
+  "share": {
+    "title": "Share with a clinician",
+    "hint": "Create a temporary link so a doctor can view the documents you choose. The link expires automatically and you can revoke it any time.",
+    "selectRecords": "Documents to share", "passcode": "4-digit passcode (optional)",
+    "passcodeHint": "Tell the clinician the passcode separately. 5 wrong tries revoke the link.",
+    "ttl": "Link valid for", "ttlOptions": { "1": "1 hour", "24": "24 hours", "72": "3 days" },
+    "create": "Create link", "created": "Link created", "copy": "Copy link", "open": "Open link", "active": "Your links",
+    "expired": "Expired", "revoked": "Revoked", "revoke": "Revoke", "views": "{{count}} views", "empty": "No links yet",
+    "selectAtLeastOne": "Select at least one document", "newLink": "New link", "linkReady": "Send this link to the clinician",
+    "expires": "Expires {{date}}", "noRecords": "Add a document first to share it."
+  },
+  "alerts": {
+    "title": "Alerts", "empty": "No alerts yet",
+    "emptyHint": "You will be notified here when someone views your emergency card or opens a shared link.",
+    "markRead": "Mark as read", "markAllRead": "Mark all as read",
+    "kinds": {
+      "card_viewed": "Your emergency card was viewed", "share_viewed": "A shared link was opened",
+      "share_revoked": "A shared link was revoked after too many wrong passcodes",
+      "expiry": "A document is expiring soon", "follow_up": "Follow-up reminder"
+    }
+  },
+  "more": {
+    "title": "More", "account": "Account", "signedInAs": "Signed in as", "security": "Security", "language": "Language",
+    "thai": "ไทย", "english": "English", "privacy": "Privacy", "developer": "Developer", "serverUrl": "Server URL",
+    "serverUrlHint": "Where the app sends data. Change only for testing.", "serverUrlSaved": "Server URL saved",
+    "about": "About", "version": "Version {{version}}", "emergencyProfile": "Emergency profile",
+    "shareClinician": "Share with a clinician", "lockScreen": "Lock-screen card"
+  },
+  "security": {
+    "pin": "App PIN", "pinSet": "PIN is on", "pinNotSet": "No PIN set", "setPin": "Set PIN", "changePin": "Change PIN",
+    "removePin": "Remove PIN", "enterPin": "Enter your PIN", "newPin": "New 6-digit PIN", "confirmPin": "Confirm PIN",
+    "pinMismatch": "PINs do not match", "pinLength": "PIN must be 6 digits", "wrongPin": "Wrong PIN", "pinSaved": "PIN saved",
+    "pinRemoved": "PIN removed", "unlock": "Unlock", "biometric": "Unlock with fingerprint or face",
+    "biometricPrompt": "Unlock MediFirstCard", "locked": "Locked", "attemptsLeft": "{{count}} attempts left",
+    "lockedOut": "Too many wrong PINs. Log in again.", "pinHint": "Asked every time the app opens."
+  },
+  "privacy": {
+    "title": "Privacy", "consentGiven": "Consent given on {{date}}", "noConsent": "Consent not recorded",
+    "viewConsent": "Consent text", "withdraw": "Withdraw consent",
+    "withdrawHint": "Withdrawing revokes all share links. Your data stays until you delete your account.",
+    "withdrawConfirm": "Withdraw consent and revoke all share links?", "withdrawn": "Consent withdrawn",
+    "deleteAccount": "Delete my account", "deleteHint": "Permanently deletes your profile, documents and links.",
+    "deleteConfirm": "Delete your account and all data? This cannot be undone.", "deleted": "Account deleted",
+    "typeDelete": "Type DELETE to confirm", "dataProtection": "Your health data is encrypted on the server. Only you can see it, plus rescuers you show your card to."
+  },
+  "errors": {
+    "required": "This field is required", "invalid_thai_id": "Invalid Thai national ID", "invalid_phone": "Invalid phone number",
+    "invalid_date": "Invalid date", "future_date": "Date cannot be in the future",
+    "image_blurry": "The photo is not clear. Please retake it in good light.", "duplicate_record": "This document was already added.",
+    "offline": "You are offline. Changes are saved and will sync automatically.",
+    "server_unreachable": "Cannot reach the server. Check the Server URL in More.",
+    "network": "No connection. Check your internet or the Server URL under More.",
+    "generic": "Something went wrong. Please try again.", "noProfile": "Create your emergency profile first.",
+    "permissionCamera": "Camera access is needed to scan documents.", "permissionPhotos": "Photo access is needed to pick a document.",
+    "unauthorized": "Your session expired. Please log in again.", "tooLarge": "The image is too large (max 10 MB).",
+    "callFailed": "Could not open the phone dialer."
+  },
+  "status": { "normal": "Normal", "caution": "Caution", "urgent": "Urgent" }
+}
