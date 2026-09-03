@@ -24,7 +24,7 @@ const schema = z.object({
   SUPABASE_SERVICE_ROLE_KEY: z.string().optional(),
   SUPABASE_BUCKET: z.string().default("records"),
   GEMINI_API_KEY: z.string().optional(),
-  GEMINI_MODEL: z.string().default("gemini-2.5-flash-lite"),
+  GEMINI_MODEL: z.string().default("gemini-3.5-flash-lite"),
   TYPHOON_API_KEY: z.string().optional(),
   RESEND_API_KEY: z.string().optional(),
   ALERT_EMAIL_TO: z.string().optional(),
