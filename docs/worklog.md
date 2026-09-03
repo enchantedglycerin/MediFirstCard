@@ -18,3 +18,4 @@ Dated entries per member, for IPAC evidence. One line per work session.
 - 2026-09-04 — DEV: Render deployment package completed and verified offline (Blueprint, URL fallback, bundle migrations fix, deploy guide, release app default URL, env template Part C); v1.0.1 signed build started (AI-assisted, reviewed).
 - 2026-09-04 — DEV: v1.0.1 signed release published (defaults to the Render API URL; versionCode 2).
 - 2026-09-04 — DEV: Render service live (https://medifirstcard-api.onrender.com, Supabase + Gemini/Typhoon); alert e-mail implemented per owner via Resend with ALERT_EMAIL_TO as free-tier override; 70 API tests (AI-assisted, reviewed).
+- 2026-09-04 — TEST: signed v1.0.1 on the phone over Wi-Fi against https://medifirstcard-api.onrender.com (USB link to the laptop removed): Home loads the Supabase data; Server URL setting verified (screenshots 21–22) (AI-assisted, reviewed).
