@@ -22,7 +22,7 @@ Details and GitHub handles in [CONTRIBUTORS.md](CONTRIBUTORS.md). Implementation
 In an emergency the first responders cannot see blood type, allergies, chronic conditions or an emergency contact because the phone is locked; medical certificates are scattered on paper and lost when changing hospitals. MediFirstCard keeps a patient-held, encrypted copy and shows a chosen subset on the lock screen, with one-tap calling to the people who matter.
 
 ## Main features
-Everything below runs today on a real Android phone against the local API (verified 2026-09-04, screenshots below).
+Everything below runs today on a real Android phone. Verified 2026-09-04 both against the laptop API (embedded database, mock extractor) and against the full cloud stack: Supabase PostgreSQL + Storage, Google Gemini 3.5 Flash-Lite with SCB 10X Typhoon OCR (screenshots below).
 
 - **Emergency card** — name, blood group (Rh-negative flagged), allergies in red, conditions, medications and emergency contacts, in "first 60 seconds" order. **Call 1669** button and a **Call** button on every contact (opens the dialer with the number).
 - **Lock-screen card** — the same card pinned as a non-dismissable notification on a public-visibility channel, readable without unlocking. The user chooses which fields are exposed and is warned about exposure.
@@ -41,7 +41,7 @@ Everything below runs today on a real Android phone against the local API (verif
 |---|---|---|---|---|
 | A1 | Express 5 REST API with JWT auth, rotation + reuse detection (36 routes) | 2 API / Backend | Yes | `apps/api` |
 | A2 | PostgreSQL (PGlite locally / node-postgres on Render), structured schema with timestamps, field-level AES-256-GCM, SHA-256 duplicate detection, blob storage adapter | 1 Data & Storage | Yes | `apps/api/src/db`, `crypto`, `storage` |
-| A3 | AI document extraction with per-field confidence and evidence, human-in-the-loop review (`mock` provider ships; Gemini + Typhoon adapters take API keys) | 4 AI / ML | Yes | `apps/api/src/modules/extract`, `apps/mobile/src/components/RecordReviewForm.tsx` |
+| A3 | AI document extraction: Typhoon OCR → Gemini structured JSON with per-field confidence and evidence, human-in-the-loop red-field review; deterministic mock as the offline fallback (verified live on a phone: every field of the synthetic certificate read correctly) | 4 AI / ML | Yes | `apps/api/src/modules/extract`, `apps/mobile/src/components/RecordReviewForm.tsx` |
 | A4 | Card-viewed / share-viewed alert workflow (in-app; email stub) | 2 Automation | Yes | `apps/api/src/modules/alerts` |
 | A5 | PDPA consent, lock-screen exposure warning, role-based views (owner / rescuer / clinician), status colours, elderly-friendly type | 5 Medical UI/UX | — | `apps/mobile` |
 | A6 | Lock-screen pinned notification, dialer intent (tap-to-call, 1669), camera/photo picker, PIN + biometrics | 3 Device / Sensors | — | `apps/mobile/src/lib/notifications.ts`, `phone.ts`, `pin.ts` |
@@ -137,13 +137,13 @@ Env reference: [apps/api/.env.example](apps/api/.env.example). Extraction provid
 ## Screenshots
 Taken on a Samsung phone (Android 13). All 18 are in [docs/screenshots/](docs/screenshots/).
 
-| Emergency card (Call 1669, contact Call) | Tap-to-call opens the dialer | Pinned lock-screen notification | Dashboard with completeness |
+| Live Gemini + Typhoon review (cloud) | Record detail, image from Supabase Storage | Pinned lock-screen notification | Dashboard with completeness |
 |---|---|---|---|
-| <img src="docs/screenshots/05-card.png" width="180"> | <img src="docs/screenshots/06-tap-to-call.png" width="180"> | <img src="docs/screenshots/07-lock-screen-notification.png" width="180"> | <img src="docs/screenshots/15-home-complete.png" width="180"> |
+| <img src="docs/screenshots/19-live-gemini-review.png" width="180"> | <img src="docs/screenshots/20-record-detail-cloud.png" width="180"> | <img src="docs/screenshots/07-lock-screen-notification.png" width="180"> | <img src="docs/screenshots/15-home-complete.png" width="180"> |
 
-| Red-field review after extraction | Record detail with original image | Clinician share link | PIN lock on launch |
+| Emergency card (Call 1669, contact Call) | Tap-to-call opens the dialer | Clinician share link | PIN lock on launch |
 |---|---|---|---|
-| <img src="docs/screenshots/09-review-red-fields.png" width="180"> | <img src="docs/screenshots/11-record-detail.png" width="180"> | <img src="docs/screenshots/13-share-link.png" width="180"> | <img src="docs/screenshots/14-pin-lock.png" width="180"> |
+| <img src="docs/screenshots/05-card.png" width="180"> | <img src="docs/screenshots/06-tap-to-call.png" width="180"> | <img src="docs/screenshots/13-share-link.png" width="180"> | <img src="docs/screenshots/14-pin-lock.png" width="180"> |
 
 | PDPA consent | Emergency contacts | Card in Thai | Alerts and language |
 |---|---|---|---|
