@@ -1,0 +1,22 @@
+{
+  "name": "medifirstcard",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Emergency health ID card + medical records archive (course 040333215 mini project). Educational prototype.",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "shared:build": "npm run build -w @mfc/shared",
+    "shared:test": "npm run test -w @mfc/shared",
+    "api:dev": "npm run dev -w apps/api",
+    "api:test": "npm run test -w apps/api",
+    "api:lint": "npm run lint -w apps/api",
+    "mobile:typecheck": "npm run typecheck -w apps/mobile",
+    "mobile:android": "npm --prefix apps/mobile run android"
+  }
+}

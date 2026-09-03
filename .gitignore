@@ -1,0 +1,32 @@
+# dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# builds
+dist/
+build/
+*.tsbuildinfo
+
+# expo / react native
+.expo/
+apps/mobile/android/
+apps/mobile/ios/
+*.apk
+*.aab
+*.keystore
+!debug.keystore
+
+# env / secrets
+.env
+.env.*
+!.env.example
+
+# local API dev storage (STORAGE_PROVIDER=local)
+apps/api/.data/
+
+# logs / coverage / os
+*.log
+coverage/
+.DS_Store
+Thumbs.db

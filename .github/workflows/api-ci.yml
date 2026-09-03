@@ -1,0 +1,44 @@
+name: api-ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        ports:
+          - "5432:5432"
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      DATABASE_URL: postgres://postgres:postgres@localhost:5432/postgres
+      PGSSL: disable
+      JWT_SECRET: test-secret-test-secret-test-secret-xx
+      # 32-byte base64 key for AES-256-GCM field encryption (test only)
+      FIELD_ENC_KEY: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=
+      STORAGE_PROVIDER: local
+      EXTRACT_PROVIDER: mock
+      OCR_PROVIDER: none
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: package-lock.json
+      - run: npm ci
+      - run: npm run build -w @mfc/shared
+      - run: npm run test -w @mfc/shared
+      - run: npm run lint -w apps/api
+      - run: npm run db:migrate -w apps/api
+      - run: npm run test -w apps/api

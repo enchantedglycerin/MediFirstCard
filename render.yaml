@@ -1,0 +1,44 @@
+services:
+  - type: web
+    name: medifirstcard-api
+    runtime: node
+    plan: free
+    # Root Directory is left blank (repo root) so the npm workspace lockfile resolves.
+    buildCommand: npm ci --include=dev && npm run build -w apps/api && npm run db:migrate -w apps/api
+    startCommand: npm start -w apps/api
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_VERSION
+        value: "24"
+      - key: DATABASE_URL
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: FIELD_ENC_KEY
+        sync: false
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      - key: SUPABASE_BUCKET
+        value: records
+      - key: STORAGE_PROVIDER
+        value: supabase
+      - key: EXTRACT_PROVIDER
+        value: gemini
+      - key: OCR_PROVIDER
+        value: typhoon
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: GEMINI_MODEL
+        value: gemini-2.5-flash-lite
+      - key: TYPHOON_API_KEY
+        sync: false
+      - key: RESEND_API_KEY
+        sync: false
+      - key: ALERT_EMAIL_TO
+        sync: false
+      - key: PUBLIC_BASE_URL
+        value: https://medifirstcard-api.onrender.com
+      - key: TRUST_PROXY
+        value: "1"
