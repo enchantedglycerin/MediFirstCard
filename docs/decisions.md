@@ -113,3 +113,7 @@ The extraction pipeline and blob storage now have real adapters behind the exist
 - **Migrations from the bundle.** `dist/server.mjs` (what `npm start` runs on Render) resolved the Drizzle folder relative to the source tree and crashed with "Can't find meta/_journal.json". The resolver now checks `../../drizzle`, `../drizzle` and `<cwd>/drizzle`. Found by booting the bundle locally with the cloud `.env` — do that before every deploy-related change.
 - **Release app defaults to the Render URL** via `apps/mobile/.env.production` (public value, committed, loaded by Expo for release bundles). If Render gives the service a suffixed name, users set More → Developer → Server URL once.
 - Render itself still needs the account owner to click New → Blueprint and paste the seven secrets (docs/deploy-render.md); or hand over a Render API key and it can be scripted.
+
+## 2026-09-04 — Alert e-mail goes to the owner, not a fixed address
+
+`recordView()` now e-mails the card owner at their **own account address** through Resend's REST API (raw fetch, retried on 429/5xx, bilingual subject/body per alert kind, Bangkok time). `ALERT_EMAIL_TO` remains only as an override for Resend's free tier, which cannot deliver to anyone but the account owner until a domain is verified. The mail is fire-and-forget: the rescuer/clinician page never waits for or fails on the mail provider, and a 403 (free-tier restriction) is logged with a hint. Six offline tests cover the request shape, retry/no-retry, per-user recipient, override and the no-key path.

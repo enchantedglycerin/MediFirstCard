@@ -62,7 +62,7 @@ flowchart LR
 | A1 | Custom Express 5 + TypeScript REST API (36 routes) with JWT access/refresh rotation and reuse detection, hosted on Render | 2 · API / Backend | Yes |
 | A2 | PostgreSQL + object storage: structured schema with timestamps and metadata, AES-256-GCM encryption of all health-content text, SHA-256 duplicate detection, hard-delete with tombstone | 1 · Data & Storage | Yes |
 | A3 | AI document extraction: Thai OCR (Typhoon OCR by SCB 10X) plus a vision LLM (Google Gemini) read a Thai/English medical certificate into structured fields with a per-field confidence score and an evidence snippet; a deterministic mock ships for offline demos; the user reviews red fields before saving | 4 · AI / ML | Yes [live once keys are added] |
-| A4 | Automated alert workflow: viewing the public emergency card or a clinician link fires a backend event → in-app notification (email stub) | 2 · Automation | Yes |
+| A4 | Automated alert workflow: viewing the public emergency card or a clinician link fires a backend event → in-app notification + e-mail to the owner (Resend) | 2 · Automation | Yes |
 | A5 | PDPA consent screen, lock-screen exposure warning, role-based views (owner / rescuer / clinician), clinical status colours, elderly-first type sizes, Thai/English | 5 · Medical UI/UX | — |
 | A6 | Device features: pinned lock-screen notification on a public-visibility channel, dialer intent (tap-to-call + 1669), camera / photo picker, fingerprint or face unlock with a local PIN | 3 · Device / Sensors | — |
 
@@ -88,7 +88,7 @@ Additional features built: emergency contacts with informed-consent flag and cal
 - The lock-screen card is a pinned notification: how much text the lock screen shows depends on the phone's notification-privacy setting. The Android 16 lock-screen widget hub is not targeted.
 - iOS is designed (WidgetKit) but not built: no Mac, no paid Apple account.
 - AI extraction is assistive, not authoritative: Thai handwriting is unverified; every field is reviewed by the user. Document images are sent to Google's Gemini API and SCB 10X's Typhoon API (free tiers that may use inputs to improve their services); the consent screen says so, and we demo only with synthetic documents. Until the keys are configured the app uses a deterministic example result and says so on screen.
-- Alerts are in-app; the email is a stub because the free email tier requires a verified domain.
+- Alerts are in-app and by e-mail (Resend); on the free e-mail tier without a verified domain the e-mail can only reach the account owner's address, so the demo shows the in-app alert.
 - Prototype values: five wrong PINs sign the user out, single server encryption key, free-tier server that sleeps after 15 minutes.
 - Not connected to หมอพร้อม / Health Link; not PDPA-audited; no guardian flow for minors; no offline queue (the card needs the API once per session).
 

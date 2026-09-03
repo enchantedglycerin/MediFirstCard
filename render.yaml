@@ -54,7 +54,8 @@ services:
         value: typhoon
       - key: TYPHOON_API_KEY
         sync: false
-      # optional alert e-mail (leave blank to keep in-app alerts only)
+      # optional alert e-mail via Resend (leave blank = in-app alerts only). ALERT_EMAIL_TO
+      # overrides the recipient for the free tier (no verified domain); empty = each owner's own address.
       - key: RESEND_API_KEY
         sync: false
       - key: ALERT_EMAIL_TO

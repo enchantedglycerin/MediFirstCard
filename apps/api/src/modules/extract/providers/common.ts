@@ -3,7 +3,7 @@
 
 export type FetchLike = typeof fetch;
 
-export type ProviderName = "gemini" | "typhoon" | "supabase";
+export type ProviderName = "gemini" | "typhoon" | "supabase" | "resend";
 
 export class ProviderError extends Error {
   constructor(
