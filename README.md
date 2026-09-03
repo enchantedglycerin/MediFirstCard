@@ -1,6 +1,6 @@
 # MediFirstCard
 
-[![api-ci](https://github.com/OWNER/REPO/actions/workflows/api-ci.yml/badge.svg)](../../actions)
+[![api-ci](https://github.com/enchantedglycerin/MediFirstCard/actions/workflows/api-ci.yml/badge.svg)](../../actions)
 
 > **Educational prototype (course 040333215 Smart Technology 2026).** Not a medical device. It does not diagnose, treat, cure, or prevent any condition. Emergency information is self-reported and unverified.
 
