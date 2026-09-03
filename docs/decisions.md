@@ -117,3 +117,7 @@ The extraction pipeline and blob storage now have real adapters behind the exist
 ## 2026-09-04 — Alert e-mail goes to the owner, not a fixed address
 
 `recordView()` now e-mails the card owner at their **own account address** through Resend's REST API (raw fetch, retried on 429/5xx, bilingual subject/body per alert kind, Bangkok time). `ALERT_EMAIL_TO` remains only as an override for Resend's free tier, which cannot deliver to anyone but the account owner until a domain is verified. The mail is fire-and-forget: the rescuer/clinician page never waits for or fails on the mail provider, and a 403 (free-tier restriction) is logged with a hint. Six offline tests cover the request shape, retry/no-retry, per-user recipient, override and the no-key path.
+
+## 2026-09-04 — App icon
+
+The team's artwork (1254 px, opaque, rounded black corners baked in) is turned into every Android/Expo asset by `apps/mobile/scripts/make-icons.ps1` (System.Drawing, no extra tools): `icon.png` 1024 full-bleed; adaptive **foreground** at 86 % on a transparent canvas so the card and character survive the circular mask; adaptive **background** solid navy `#0A1730` sampled from the artwork; **monochrome** (Android 13 themed icons) and the **notification** small icon as a drawn white card-with-cross silhouette, because a photo-style artwork cannot be used as a silhouette; splash 512 and favicon 48. `expo-notifications` now points at the notification glyph instead of the default Expo icon.

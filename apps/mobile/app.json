@@ -2,7 +2,7 @@
   "expo": {
     "name": "MediFirstCard",
     "slug": "medifirstcard",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "medifirstcard",
@@ -16,7 +16,7 @@
         "backgroundImage": "./assets/images/android-icon-background.png",
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
-      "versionCode": 2
+      "versionCode": 3
     },
     "web": {
       "output": "static",
@@ -44,7 +44,8 @@
       [
         "expo-notifications",
         {
-          "color": "#005B96"
+          "color": "#005B96",
+          "icon": "./assets/images/notification-icon.png"
         }
       ],
       "expo-sqlite",
