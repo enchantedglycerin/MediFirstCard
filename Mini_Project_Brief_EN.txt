@@ -1,0 +1,194 @@
+040333215 | Smart Technology 2026
+
+Mini Project Brief
+
+Students are to form groups of 3–4 people to develop an application using React Native, building upon the knowledge gained in this course. The project must present a working prototype system with appropriate technical design.
+
+Objectives
+After completing this mini project, students should be able to:
+- Design and develop a React Native app that has multiple screens and is fully functional.
+- Connect the app to data, APIs, a backend, a database, sensors, workflow automation, or an AI/ML model.
+- Design a user flow and UI/UX appropriate to a medical or health context.
+- Manage data systematically, e.g. input validation, state management, history, timestamps, or structured data.
+- Explain the system architecture and technical implementation of the app.
+- Work together as a team using GitHub and verifiable documentation.
+- Be aware of the limitations, security, privacy, and responsible use of biomedical technology.
+
+Example Projects
+Students may come up with their own project topics, for example:
+- An app that records and displays vital signs.
+- An app that connects to ESP32 / a sensor / Node-RED.
+- An app that displays data from Firebase or Supabase.
+- An app that calls an AI model via an API.
+- An app that uploads medical images and displays a preliminary analysis result.
+- An app that assists the workflow of medical personnel.
+- An app that tracks medical equipment.
+- An app that displays a health data dashboard.
+- An app that helps patients record symptoms or rehabilitation activities.
+
+Grading Criteria
+Component                                                    | Score | Due Date
+App Proposal                                                 | 5     | 30 Aug 2026, 23:59
+App Introduction Video + Live Demo                           |       | 7 Oct 2026, 12:30
+  • Peer Assessment                                          | 10    | 7 Oct 2026
+  • Instructor Assessment                                    | 5     | 13:00–16:00
+GitHub Documentation / Technical Implementation              | 20    | 11 Oct 2026, 23:59
+Total                                                        | 40    |
+
+--------------------------------------------------------------------------------
+
+App Proposal
+Must be no more than 2 A4 pages, and should include the following headings:
+- App name
+- Team members and roles
+- Problem and target users
+- App features
+- System architecture
+- Data / API / sensor / AI / database plan
+- Project timeline
+- Anticipated limitations and contingency plan
+
+Every group that submits a complete Proposal by the deadline will receive the full 5 points.
+
+Core Requirements
+- A React Native app that actually runs.
+- At least 3 screens.
+- Navigation between screens.
+- At least 1 form of user input or data source.
+- A result / output / dashboard screen.
+- A clear biomedical or healthcare context.
+- A GitHub repository.
+- A README with installation and run instructions.
+- Evidence of it working, e.g. screenshots or video.
+- A statement declaring that it is a prototype for educational purposes, not a real medical diagnostic or treatment device.
+
+Advanced Features Requirement
+Each group must choose and develop at least 5 Advanced Features (groups of 4 people must have at least 6), from at least 3 categories, with at least 2 of them being genuine system integration, for example:
+API              | Backend           | Database        | Sensor
+Node-RED         | AI/ML inference   | Cloud storage   | Automation workflow
+
+Category 1: Data and Storage
+- Firebase / Supabase / cloud database
+- Local persistent storage, e.g. AsyncStorage / SQLite
+- Patient/session history
+- Export data as a CSV / JSON / PDF report
+- Structured data schema with timestamp and metadata
+- Basic data validation, e.g. missing value, invalid range, duplicate record
+
+Category 2: API, Backend, and Automation
+- REST API integration
+- Custom backend, e.g. Express / FastAPI
+- Node-RED HTTP/MQTT workflow
+- n8n webhook / automation workflow
+- Google Sheets API / Apps Script API
+- Notification or automated alert via backend/workflow
+
+Category 3: Sensor and IoT Integration
+- ESP32 sending data into the app via HTTP / MQTT / BLE
+- A mock sensor stream that reasonably simulates time-series data
+- Node-RED receiving sensor data and forwarding it to the app
+- Real-time chart from sensor/API
+- Threshold alert, e.g. HR, SpO₂, temperature, pressure
+- Sensor calibration / offset correction / smoothing filter
+
+Category 4: AI / ML / Medical AI
+- AI/ML inference API
+- A model trained in Google Colab and exported for use
+- Image classification / detection / segmentation workflow
+- Chatbot explanation for preliminary results
+- Confidence score or probability display
+- Basic explainability, e.g. Grad-CAM, highlighted region, reason summary, or visual overlay
+
+Category 5: Medical UI/UX and Clinical Workflow
+- Role-based interface, e.g. patient / clinician
+- Consent / privacy notice screen
+- Clinically meaningful status labels, e.g. normal / caution / urgent
+- Accessibility, e.g. large font, clear warning, low cognitive load
+- Triage-style workflow that does not diagnose in place of a doctor
+- Summary report that clearly states limitations and next steps
+
+App Introduction Video
+Before the Live Demo, each group must show an app introduction video no longer than 3 minutes. The video should explain:
+- The medical or healthcare problem chosen
+- The target users
+- The concept of the app
+- The main features
+- A brief system architecture
+- The advanced features chosen
+- The limitations of the prototype system
+
+The video should serve as an introduction to the project, giving the audience an understanding of the context before entering the Live Demo.
+
+Live Demo
+After the app introduction video, each group must demonstrate the app live, showing:
+- The app actually running
+- Navigation between screens
+- Receiving input or data from a source
+- Processing or calling an API/database/sensor/AI
+- Displaying the results
+- Handling some errors or limitations
+- Relevance to the biomedical use case
+
+It is recommended to prepare a backup video or screenshots in case the internet, API, sensor, or server has problems on the presentation day. However, having only a backup video without any live component may not receive full marks in the demonstration section.
+
+Peer Assessment
+Assessment Criterion                                                       | Max Score
+Completeness and stability of the app                                      | 5
+Integration and correctness of the AI/API/sensor/backend model             | 5
+UI/UX design in a medical context                                          | 5
+Data management and system structure                                       | 5
+Technical understanding                                                    | 5
+Total                                                                      | 25 (scaled down to 10)
+
+Instructor Assessment
+Assessment Criterion                                | Max Score
+Working system demonstration                        | 1.5
+Technical explanation and architecture              | 1.5
+Biomedical relevance and responsible use            | 1.0
+Q&A, limitations, and reflection                    | 1.0
+Total                                               | 5.0
+
+--------------------------------------------------------------------------------
+
+GitHub Documentation / Technical Implementation
+Students must submit a GitHub repository containing the source code, documentation, and evidence of the system working. The items required in the GitHub repository are as follows:
+- Source code
+- README.md file
+- Installation instructions
+- App features
+- System architecture diagram
+- Screenshots of the app
+- Demo video link
+- Limitations
+- Roles of the group members
+- Commit history in GitHub
+
+README
+Must make it possible for others to understand and run the project. It should contain the following elements:
+- App name
+- Group members and their roles
+- Problem and motivation
+- Main features and advanced features of the app
+- System architecture diagram
+- Installation steps
+- How to run the app
+- API / database / AI / sensor configuration
+- Screenshots
+- Demo video link
+- Limitations
+- Future development directions
+- A statement on responsible use
+
+Grading Criteria
+Criterion                                                              | Score
+Core capabilities of the app                                           | 4
+System integration and advanced features                              | 4
+Data management and app state management                               | 3
+Code quality and project structure                                     | 3
+Testing, error handling, and system stability                          | 2
+Documentation and reproducibility                                      | 3
+Responsible biomedical design                                          | 1
+Total                                                                  | 20
+
+IPAC (Individual Peer Assessed Contribution to group work)
+IPAC is used to assess each member's contribution within the group. After the group score is known, individual scores are adjusted by the IPAC multiplier. Further details can be found in the "IPAC System" file on Google Classroom.

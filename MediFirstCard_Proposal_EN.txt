@@ -1,0 +1,40 @@
+App Proposal: MediFirstCard
+
+1. App Name
+MediFirstCard (An emergency health ID card application and digital medical records archive)
+
+2. Team Members & Roles
+- นางสาวปิยนุช นุ่มน้อย – Role: Project Manager / System Analyst (oversees the overall project and designs the system)
+- นางสาวเหม่หลิ๋ง ตัน – Role: UX/UI Designer & Medical Consultant (designs the screens and advises on medical information)
+- นายณัฐพัชร์ ทัศนะเมธี – Role: Lead Developer / Full-stack Developer (develops the application and the database system)
+
+3. Problem & Target Users
+Problem identified: In emergency accidents or cases where a patient is unconscious, medical personnel or rescue workers cannot immediately access critical health information — such as blood type, chronic illnesses, or drug allergies — because the phone is locked. In addition, treatment histories and medical certificates are often scattered and easily lost when a patient changes hospitals.
+
+Target users:
+- Primary group: The general public of all genders and ages, especially those with chronic illnesses, the elderly, and those at high risk of accidents.
+- Supporting group: Doctors, nurses, and emergency rescue workers who urgently need life-saving information.
+
+4. App Features
+- Emergency Health ID Card on the Lock Screen (Emergency Health Widget): Displays critical life-saving information — such as blood type, chronic illnesses, drug allergies, and emergency contact numbers — directly on the Lock Screen without having to unlock the phone, similar to a music player's control panel.
+- Medical Records & Certificates Archive: A system for storing and scanning/photographing and uploading medical documents, treatment histories, and medical certificates all in one place, convenient for reviewing past records and transferring between healthcare facilities.
+- Security & Privacy Access: A system that protects access to in-depth personal information within the app using a password to ensure privacy.
+
+5. System Architecture
+Developed on a Client-Server Architecture. The Client side is a smartphone application (cross-platform, using Flutter/React Native) that communicates with the Server side (RESTful API via Node.js / Express) and connects to a highly secure encrypted cloud database storage system, so that widget data can be retrieved and displayed on the Lock Screen quickly and securely.
+
+6. Tech Stack & Data Plan (Data / API / Sensors / AI / Database)
+- Database: PostgreSQL / Firebase Firestore for storing user data, health history, and access permissions, in encrypted form (Encryption at Rest & in Transit).
+- API & Framework: RESTful API for sending and receiving data between the app and the server.
+- Sensors & OS APIs: Uses iOS WidgetKit and the Android App Widget API to pull emergency information for display on the Lock Screen, as well as using the camera to scan medical certificates.
+- AI (Optional/Future Feature): An Optical Character Recognition (OCR) system to help read text from medical certificates or medicine packets, in order to automatically enter the data into the system.
+
+7. Project Timeline
+- Week 1: Study the problem, gather requirements, design the UI/UX, and create screen mockups (Wireframe/Mockup).
+- Week 2: Develop the application's frontend and the widget system for displaying on the Lock Screen.
+- Week 3: Develop the database and the backend system, together with a password-based security system.
+- Week 4: Testing, bug fixing, and preparing the project presentation documents.
+
+8. Limitations & Contingency Plan
+- Privacy Concerns (data privacy and consent): Users may be worried about disclosing health information on the Lock Screen.
+  Contingency plan: Allow users to choose which pieces of information they wish to display on the Lock Screen.
