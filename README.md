@@ -1,6 +1,6 @@
 # MediFirstCard
 
-[![api-ci](https://github.com/enchantedglycerin/MediFirstCard/actions/workflows/api-ci.yml/badge.svg)](../../actions)
+[![api-ci](https://github.com/enchantedglycerin/MediFirstCard/actions/workflows/api-ci.yml/badge.svg)](../../actions) [![mobile-ci](https://github.com/enchantedglycerin/MediFirstCard/actions/workflows/mobile-ci.yml/badge.svg)](../../actions)
 
 > **Educational prototype (course 040333215 Smart Technology 2026).** Not a medical device. It does not diagnose, treat, cure, or prevent any condition. Emergency information is self-reported and unverified.
 
@@ -9,16 +9,23 @@ An Android emergency health ID card and medical-records archive: a user-chosen e
 > ภาษาไทย: แอปบัตรฉุกเฉินและคลังเอกสารทางการแพทย์บนแอนดรอยด์ แสดงข้อมูลฉุกเฉินบนหน้าจอล็อก โทรหาผู้ติดต่อฉุกเฉินและ 1669 ได้ทันที เก็บเอกสารหลังรหัส PIN พร้อมดึงข้อมูลด้วย AI และแชร์ผ่าน QR/ลิงก์ ต้นแบบเพื่อการศึกษาเท่านั้น
 
 ## Group members and their roles
-See [CONTRIBUTORS.md](CONTRIBUTORS.md). Implementation is AI-assisted (Claude), directed and reviewed by the lead developer; each member commits the files they own.
+
+| Member | Role | Owns |
+|---|---|---|
+| ปิยนุช นุ่มน้อย | Project Manager / System Analyst | Test plan, worklog, handout, README sections, seed/demo data, weekly test runs on the phone, cloud accounts, demo logistics |
+| เหม่หลิ๋ง ตัน | UX/UI Designer & Medical Consultant | Wireframes, design tokens and theme, Thai/English strings, assets, login/register/consent screens, synthetic sample documents, screenshots, videos |
+| ณัฐพัชร์ ทัศนะเมธี | Lead / main programmer | Architecture and the rest of the code: `apps/api`, `apps/mobile`, `packages/shared`, native config, CI, releases; reviews every change |
+
+Details and GitHub handles in [CONTRIBUTORS.md](CONTRIBUTORS.md). Implementation is AI-assisted (Claude) and disclosed there; every change is directed, reviewed and committed by the member who owns the files.
 
 ## Problem and motivation
-In an emergency the first responders cannot see blood type, allergies, chronic conditions or an emergency contact because the phone is locked; medical certificates are scattered on paper and lost when changing hospitals. MediFirstCard keeps a patient-held, encrypted copy and shows a chosen subset on the lock screen.
+In an emergency the first responders cannot see blood type, allergies, chronic conditions or an emergency contact because the phone is locked; medical certificates are scattered on paper and lost when changing hospitals. MediFirstCard keeps a patient-held, encrypted copy and shows a chosen subset on the lock screen, with one-tap calling to the people who matter.
 
 ## Main features
-Everything below runs today on a real Android phone against the local API (verified 2026-09-04, screenshots in `docs/screenshots/`).
+Everything below runs today on a real Android phone against the local API (verified 2026-09-04, screenshots below).
 
 - **Emergency card** — name, blood group (Rh-negative flagged), allergies in red, conditions, medications and emergency contacts, in "first 60 seconds" order. **Call 1669** button and a **Call** button on every contact (opens the dialer with the number).
-- **Lock-screen card** — the same card pinned as a non-dismissable notification on a public-visibility channel, so it is readable without unlocking. The user chooses which fields are exposed and is warned about exposure.
+- **Lock-screen card** — the same card pinned as a non-dismissable notification on a public-visibility channel, readable without unlocking. The user chooses which fields are exposed and is warned about exposure.
 - **Emergency profile** — identity, date of birth, sex, blood group, no-known-allergy flag, medical flags (blood thinners, insulin, pacemaker, dialysis, pregnancy), insurance scheme, notes; separate editors for **allergies, conditions, medications and emergency contacts** (Thai phone validation, informed-consent flag, call priority).
 - **Rescuer surfaces** — QR code and public link (`/e/:token`) rendered as a dependency-free HTML page with tap-to-call, plus an in-app "preview as rescuer".
 - **Document archive** — scan from camera or gallery → resize/JPEG → SHA-256 dedupe → upload → AI extraction → **red-field review** (every extracted field editable with a confidence chip; low-confidence fields highlighted) → record with kind, facility, doctor, licence, issue date and auto-computed validity; detail view with the original image; delete.
@@ -28,26 +35,69 @@ Everything below runs today on a real Android phone against the local API (verif
 - **Security** — JWT access/refresh with rotation and reuse detection (single-flight refresh on the client), AES-256-GCM encryption of every health-content column, optional app PIN with fingerprint/face unlock, route guard.
 - **Bilingual UI** — Thai and English, switchable in More; Buddhist-era dates in Thai.
 
-## Advanced features (rubric)
+## Advanced features (rubric: ≥5 from ≥3 categories, ≥2 genuine integrations)
+
 | # | Feature | Category | Genuine integration | Code |
 |---|---|---|---|---|
-| A1 | Express 5 REST API with JWT auth, rotation + reuse detection | 2 API/Backend | Yes | `apps/api` |
-| A2 | Postgres (PGlite locally / node-postgres on Render), field-level AES-256-GCM, SHA-256 dedupe, blob storage adapter | 1 Data & Storage | Yes | `apps/api/src/db`, `crypto`, `storage` |
-| A3 | AI document extraction with per-field confidence and evidence, human-in-the-loop review (`mock` provider ships; Gemini + Typhoon adapters take API keys) | 4 AI/ML | Yes | `apps/api/src/modules/extract`, `apps/mobile/src/components/RecordReviewForm.tsx` |
+| A1 | Express 5 REST API with JWT auth, rotation + reuse detection (36 routes) | 2 API / Backend | Yes | `apps/api` |
+| A2 | PostgreSQL (PGlite locally / node-postgres on Render), structured schema with timestamps, field-level AES-256-GCM, SHA-256 duplicate detection, blob storage adapter | 1 Data & Storage | Yes | `apps/api/src/db`, `crypto`, `storage` |
+| A3 | AI document extraction with per-field confidence and evidence, human-in-the-loop review (`mock` provider ships; Gemini + Typhoon adapters take API keys) | 4 AI / ML | Yes | `apps/api/src/modules/extract`, `apps/mobile/src/components/RecordReviewForm.tsx` |
 | A4 | Card-viewed / share-viewed alert workflow (in-app; email stub) | 2 Automation | Yes | `apps/api/src/modules/alerts` |
 | A5 | PDPA consent, lock-screen exposure warning, role-based views (owner / rescuer / clinician), status colours, elderly-friendly type | 5 Medical UI/UX | — | `apps/mobile` |
-| A6 | Lock-screen pinned notification, tap-to-call, QR, PIN + biometrics | 3 Device / Sensors | — | `apps/mobile/src/lib/notifications.ts`, `phone.ts`, `pin.ts` |
+| A6 | Lock-screen pinned notification, dialer intent (tap-to-call, 1669), camera/photo picker, PIN + biometrics | 3 Device / Sensors | — | `apps/mobile/src/lib/notifications.ts`, `phone.ts`, `pin.ts` |
 
 ## System architecture diagram
-See [PLAN.md](PLAN.md) §4 (Mermaid). PNG to be added at `docs/architecture.png`.
+
+```mermaid
+flowchart LR
+  subgraph Phone["Android app — Expo SDK 57 / React Native / TypeScript"]
+    UI["Screens: Home · Card · Records · More<br/>profile & medical lists · share · PIN lock"]
+    NT["Lock-screen card<br/>pinned notification · QR · tap-to-call"]
+    UI --> NT
+  end
+  subgraph API["Express 5 REST API — Node 24 / TypeScript / Drizzle ORM"]
+    R["JWT auth · zod validation<br/>(schemas shared with the app)"]
+    EX["AI extraction pipeline<br/>Typhoon OCR + Gemini → JSON + confidence"]
+    AL["Alert workflow<br/>card viewed / link viewed → notification"]
+    PUB["Public pages<br/>/e/:token rescuer · /s/:token clinician"]
+  end
+  subgraph Data["Data"]
+    PG[("PostgreSQL<br/>PGlite locally · Supabase in the cloud<br/>field-level AES-256-GCM")]
+    ST[("Blob storage<br/>local disk · Supabase Storage")]
+  end
+  UI -- "HTTPS / JSON" --> R
+  R --> PG
+  R --> ST
+  R --> EX
+  EX --> LLM[("Gemini API · Typhoon API")]
+  R --> AL
+  R --> PUB
+  Rescuer["Rescuer or clinician<br/>phone / laptop"] -- "scan QR / open link" --> PUB
+```
+
+Request flow for one scanned certificate: photo → resized to 1600 px JPEG on the phone → SHA-256 (duplicates rejected with 409) → `POST /records` → `PUT /records/:id/blob` → `POST /records/:id/confirm` → `POST /records/:id/extract` → JSON with a confidence and evidence snippet per field → user edits red fields → `PUT /records/:id` stores encrypted columns.
+
+## Project structure
+
+```
+apps/
+  api/        Express 5 API: src/auth, src/modules/{profile,records,extract,share,alerts,notifications,consent,public,health},
+              src/db (Drizzle schema + migrations), src/crypto, src/storage, test/ (vitest on in-memory PGlite)
+  mobile/     Expo app: src/app (Expo Router screens), src/components, src/lib (api, notifications, phone, pin, format),
+              src/store (session), src/theme (tokens, Paper themes)
+packages/
+  shared/     Contract used by both apps: zod schemas, buildCardPayload(), Buddhist-era dates, TH/EN strings
+docs/         PLAN-full, research notes, decisions log, worklog, test plan, handout, screenshots
+.github/      CI: api-ci (shared + API tests), mobile-ci (strict typecheck)
+```
 
 ## Installation steps
 Prerequisites: Node 24 (`.nvmrc`), JDK 17 or 21, Android Studio with SDK Platform 36, `ANDROID_HOME` set. Windows first; macOS/Linux equivalents in each step.
 
 ```bash
-git clone <repo> C:/mfc && cd C:/mfc   # short path avoids the Windows 260-char build failure
+git clone https://github.com/enchantedglycerin/MediFirstCard C:/mfc && cd C:/mfc   # short path avoids the Windows 260-char build failure
 npm install
-cp apps/api/.env.example apps/api/.env  # set FIELD_ENC_KEY and JWT_SECRET (see the file)
+cp apps/api/.env.example apps/api/.env   # set FIELD_ENC_KEY and JWT_SECRET (instructions in the file)
 ```
 
 ## How to run the app
@@ -69,19 +119,40 @@ npm run mobile:typecheck # strict TypeScript over the whole app
 ```
 
 ## API / database / AI / sensor configuration
-Env reference: [apps/api/.env.example](apps/api/.env.example). Extraction providers: `EXTRACT_PROVIDER=gemini|mock`, `OCR_PROVIDER=typhoon|none` (Gemini/Typhoon return 501 until keys are configured). **Sensors / device:** camera and photo picker (document capture), dialer intent (tap-to-call), notification channel with lock-screen visibility, fingerprint/face via `expo-local-authentication`; no IoT sensor. **What is encrypted:** every health-content text column (names, allergy substances/reactions, conditions, medications, contact names and phones, record titles/facility/doctor/licence, notes); enums, dates, blood group and IDs stay plain for filtering.
+Env reference: [apps/api/.env.example](apps/api/.env.example). Extraction providers: `EXTRACT_PROVIDER=gemini|mock`, `OCR_PROVIDER=typhoon|none` (Gemini/Typhoon return 501 until keys are configured). Storage: `STORAGE_PROVIDER=local|supabase`. Database: `DATABASE_URL` unset → PGlite on disk. **Device / sensors:** camera and photo picker (document capture), dialer intent (tap-to-call), notification channel with lock-screen visibility, fingerprint/face via `expo-local-authentication`; no IoT sensor. **What is encrypted:** every health-content text column (names, allergy substances/reactions, conditions, medications, contact names and phones, record titles/facility/doctor/licence, notes); enums, dates, blood group and IDs stay plain for filtering.
+
+## Data management, state and error handling
+- **Structured schema with timestamps and metadata** — every table has `created_at`/`updated_at`; records carry kind, status (`pending → uploaded → extracted → reviewed`), MIME, size, SHA-256 and validity; share links keep expiry, view count, revocation and an access log.
+- **Validation in one place** — zod schemas in `packages/shared` are used by the API (request bodies) and the app (forms): Thai phone `0XXXXXXXXX`, Thai national ID checksum, ISO dates, enums, size limits; duplicate documents are rejected by hash.
+- **App state** — TanStack Query caches server data and invalidates after every mutation; a zustand store holds the session (tokens in SecureStore); the PIN never leaves the device (salted, iterated SHA-256).
+- **History** — records list with dates and status, notification feed, per-link access log, consent versions.
+- **Testing** — 13 shared unit tests and 21 API integration tests run on an in-memory PGlite database in CI; the app is typechecked in strict mode in CI; every flow was exercised on a physical phone (see worklog).
+- **Error handling** — the API returns coded JSON errors (`DUPLICATE_RECORD`, `NO_PROFILE`, `UNAUTHENTICATED`, …) through one error middleware; the app maps them to Thai/English messages, retries expired tokens once with a single-flight refresh, and shows "cannot reach the server" instead of crashing when the API is down.
 
 ## Screenshots
-`docs/screenshots/` (taken on a Samsung phone, Android 13): login, register, consent, contacts, emergency card with Call 1669 + contact call button, dialer opened by tap-to-call, the pinned lock-screen notification (cropped to the app's row), lock-screen settings, red-field review, records list, record detail, More.
+Taken on a Samsung phone (Android 13). All 18 are in [docs/screenshots/](docs/screenshots/).
+
+| Emergency card (Call 1669, contact Call) | Tap-to-call opens the dialer | Pinned lock-screen notification | Dashboard with completeness |
+|---|---|---|---|
+| <img src="docs/screenshots/05-card.png" width="180"> | <img src="docs/screenshots/06-tap-to-call.png" width="180"> | <img src="docs/screenshots/07-lock-screen-notification.png" width="180"> | <img src="docs/screenshots/15-home-complete.png" width="180"> |
+
+| Red-field review after extraction | Record detail with original image | Clinician share link | PIN lock on launch |
+|---|---|---|---|
+| <img src="docs/screenshots/09-review-red-fields.png" width="180"> | <img src="docs/screenshots/11-record-detail.png" width="180"> | <img src="docs/screenshots/13-share-link.png" width="180"> | <img src="docs/screenshots/14-pin-lock.png" width="180"> |
+
+| PDPA consent | Emergency contacts | Card in Thai | Alerts and language |
+|---|---|---|---|
+| <img src="docs/screenshots/03-consent.png" width="180"> | <img src="docs/screenshots/04-contacts.png" width="180"> | <img src="docs/screenshots/17-card-thai.png" width="180"> | <img src="docs/screenshots/16-alerts-language.png" width="180"> |
 
 ## Demo video links
-Intro video and full demo recording — to be added.
+- App introduction video (≤ 3 min): _to be added before 7 Oct 2026_
+- Live demo recording: _to be added after the demo on 7 Oct 2026_
 
 ## Limitations
-Lock-screen card is a pinned notification; how much of it shows on the lock screen depends on the phone's notification privacy setting. The Android 16 lock-screen widget hub is not targeted. iOS designed but not built. AI is assistive; the shipped provider is a deterministic mock until Gemini/Typhoon keys are added, and Thai handwriting is unverified; document images would go to Google Gemini and SCB 10X Typhoon (free tiers that may use inputs), so the demo uses synthetic documents only. Alert email is a stub. Single server encryption key; PIN lock-out signs the user out after 5 failures; not PDPA-audited; no guardian consent for minors; not connected to Mor Prom / Health Link; free-tier server sleeps. Cloud deployment (Supabase + Render) is scripted but not yet provisioned.
+Lock-screen card is a pinned notification; how much of it shows on the lock screen depends on the phone's notification privacy setting. The Android 16 lock-screen widget hub is not targeted. iOS designed but not built. AI is assistive; the shipped provider is a deterministic mock until Gemini/Typhoon keys are added, and Thai handwriting is unverified; document images would go to Google Gemini and SCB 10X Typhoon (free tiers that may use inputs), so the demo uses synthetic documents only. Alert email is a stub. Single server encryption key; PIN lock-out signs the user out after 5 failures; not PDPA-audited; no guardian consent for minors; not connected to Mor Prom / Health Link; no offline cache; free-tier server sleeps. Cloud deployment (Supabase + Render) is scripted but not yet provisioned.
 
 ## Future development directions
-Real Gemini + Typhoon extraction on the free tiers, Supabase Storage, Render deploy, iOS WidgetKit, edge-detecting scanner, vaccination module, push notifications, FHIR export to hospitals, NFC card.
+Live Gemini + Typhoon extraction on the free tiers, Supabase Storage, Render deploy, iOS WidgetKit, edge-detecting scanner, vaccination module, offline cache, push notifications, FHIR export to hospitals, NFC card.
 
 ## A statement on responsible use
-MediFirstCard is a student educational prototype, not a medical device, and must not be used for diagnosis or treatment. Health data is sensitive personal data under the Thai PDPA: the app asks for explicit consent, states purposes and retention, names the AI providers, and lets the user withdraw consent and delete all data. Anything shown on the lock screen is readable by anyone holding the phone, so the user chooses each field and is warned before enabling it.
+MediFirstCard is a student educational prototype, not a medical device, and must not be used for diagnosis or treatment. Health data is sensitive personal data under the Thai PDPA: the app asks for explicit consent, states purposes and retention, names the AI providers, and lets the user withdraw consent and delete all data. Anything shown on the lock screen is readable by anyone holding the phone, so the user chooses each field and is warned before enabling it. Medical staff must confirm blood group, allergies and medications by standard procedures.
