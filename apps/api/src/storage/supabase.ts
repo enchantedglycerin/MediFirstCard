@@ -75,7 +75,9 @@ export class SupabaseStorage implements StorageAdapter {
     const url = this.objectUrl(path, "authenticated");
     return withRetry(async () => {
       const res = await this.request("exists", "HEAD", url);
-      if (res.status === 200 || res.status === 404) {
+      // Supabase answers 400 (body statusCode "404", error "not_found") for a missing
+      // object on HEAD, not a plain 404 (verified against the live API, 2026-09-04).
+      if (res.status === 200 || res.status === 404 || res.status === 400) {
         await discard(res);
         return res.status === 200;
       }
