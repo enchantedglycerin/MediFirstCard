@@ -114,7 +114,7 @@ cd apps/mobile && npx expo run:android   # ALWAYS from apps/mobile (see docs/dec
 ```
 The debug app loads JavaScript from Metro. If it stays on the splash screen, Metro is not reachable: run `npx expo start` in `apps/mobile` from a normal terminal (not a CI shell) and, for a USB phone, `adb reverse tcp:8081 tcp:8081 && adb reverse tcp:8082 tcp:8081 && adb reverse tcp:3000 tcp:3000`. Set the API address under **More → Developer → Server URL** if the phone cannot use `localhost`.
 
-Optional: `docker compose up -d db` and set `DATABASE_URL` for real Postgres 17. **Full cloud:** set Supabase, Render, Gemini and Typhoon values in `apps/api/.env`, deploy with `render.yaml`, and point the app's Server URL at it.
+**Cloud (Supabase + Gemini/Typhoon + Render):** fill Part B of `apps/api/.env` (Supabase database URL, service-role key, Gemini and Typhoon keys), then deploy the API with the Render Blueprint in `render.yaml` — step-by-step in [docs/deploy-render.md](docs/deploy-render.md). Release builds default to `https://medifirstcard-api.onrender.com`; any other server can be set under More → Developer → Server URL. Optional: `docker compose up -d db` for a local real Postgres.
 
 Verify the backend (no Docker, no accounts needed):
 ```bash

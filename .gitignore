@@ -33,3 +33,6 @@ Thumbs.db
 
 # release signing keystore + passwords (share privately, never commit)
 apps/mobile/credentials/
+
+# public build-time app config (no secrets)
+!apps/mobile/.env.production

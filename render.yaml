@@ -1,44 +1,63 @@
+# Render Blueprint for the MediFirstCard API (free tier).
+# Deploy: Render dashboard -> New -> Blueprint -> connect this GitHub repo -> Render reads this
+# file, creates the service and asks for the values marked `sync: false` (copy them from
+# apps/api/.env - FIELD_ENC_KEY MUST be the same key that already encrypted the data).
+# Full steps: docs/deploy-render.md
 services:
   - type: web
-    name: medifirstcard-api
+    name: medifirstcard-api           # public URL: https://medifirstcard-api.onrender.com
     runtime: node
-    plan: free
-    # Root Directory is left blank (repo root) so the npm workspace lockfile resolves.
+    region: singapore                 # closest Render region to Thailand
+    plan: free                        # sleeps after 15 min idle; first request takes ~30-60 s
+    autoDeploy: true                  # every push to main redeploys
+    # Root Directory stays blank (repo root) so the npm-workspaces lockfile resolves.
+    # Same install the GitHub Actions CI runs on Ubuntu, then the esbuild bundle, then the
+    # Drizzle migrations against DATABASE_URL (build-time env vars are available on Render).
     buildCommand: npm ci --include=dev && npm run build -w apps/api && npm run db:migrate -w apps/api
     startCommand: npm start -w apps/api
     healthCheckPath: /health
     envVars:
       - key: NODE_VERSION
         value: "24"
-      - key: DATABASE_URL
+      - key: NODE_ENV
+        value: production
+      - key: TRUST_PROXY
+        value: "1"                    # Render terminates TLS in front of the app
+      - key: CORS_ORIGINS
+        value: "*"
+      # PUBLIC_BASE_URL is intentionally NOT set: the API falls back to RENDER_EXTERNAL_URL,
+      # which Render injects with the real https URL of this service.
+      # --- secrets: prompted once when the Blueprint is created (never committed) ---
+      - key: DATABASE_URL             # Supabase Session-pooler URI (port 5432) with the DB password
         sync: false
-      - key: JWT_SECRET
+      - key: PGSSL
+        value: require
+      - key: JWT_SECRET               # any 32+ char random string (same as .env or a new one)
         sync: false
-      - key: FIELD_ENC_KEY
+      - key: FIELD_ENC_KEY            # 32 bytes base64 - MUST equal the key already used locally
         sync: false
-      - key: SUPABASE_URL
+      - key: STORAGE_PROVIDER
+        value: supabase
+      - key: SUPABASE_URL             # https://<project-ref>.supabase.co
         sync: false
       - key: SUPABASE_SERVICE_ROLE_KEY
         sync: false
       - key: SUPABASE_BUCKET
         value: records
-      - key: STORAGE_PROVIDER
-        value: supabase
       - key: EXTRACT_PROVIDER
         value: gemini
-      - key: OCR_PROVIDER
-        value: typhoon
       - key: GEMINI_API_KEY
         sync: false
       - key: GEMINI_MODEL
-        value: gemini-2.5-flash-lite
+        value: gemini-3.5-flash-lite
+      - key: OCR_PROVIDER
+        value: typhoon
       - key: TYPHOON_API_KEY
         sync: false
+      # optional alert e-mail (leave blank to keep in-app alerts only)
       - key: RESEND_API_KEY
         sync: false
       - key: ALERT_EMAIL_TO
         sync: false
-      - key: PUBLIC_BASE_URL
-        value: https://medifirstcard-api.onrender.com
-      - key: TRUST_PROXY
-        value: "1"
+      - key: RESEND_FROM
+        value: onboarding@resend.dev

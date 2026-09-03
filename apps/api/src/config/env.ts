@@ -29,7 +29,13 @@ const schema = z.object({
   RESEND_API_KEY: z.string().optional(),
   ALERT_EMAIL_TO: z.string().optional(),
   RESEND_FROM: z.string().default("onboarding@resend.dev"),
-  PUBLIC_BASE_URL: z.string().default("http://localhost:3000"),
+  // Render injects RENDER_EXTERNAL_URL (https://<service>.onrender.com); use it when
+  // PUBLIC_BASE_URL is not set so QR codes and share links carry the real public URL.
+  PUBLIC_BASE_URL: z
+    .string()
+    .optional()
+    .transform((v) => (v && v.trim()) || process.env.RENDER_EXTERNAL_URL || "http://localhost:3000")
+    .transform((v) => v.replace(/\/+$/, "")),
 });
 
 function loadEnv() {

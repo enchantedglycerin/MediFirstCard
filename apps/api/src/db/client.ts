@@ -6,10 +6,17 @@ import { PGlite } from "@electric-sql/pglite";
 import pg from "pg";
 import { fileURLToPath } from "node:url";
 import { dirname, join, resolve } from "node:path";
-import { mkdirSync } from "node:fs";
+import { mkdirSync, existsSync } from "node:fs";
 import * as schema from "./schema.js";
 
-const MIGRATIONS_DIR = join(dirname(fileURLToPath(import.meta.url)), "..", "..", "drizzle");
+// Works from the TypeScript source (src/db -> ../../drizzle) and from the esbuild bundle
+// that Render/Docker start (dist/server.mjs -> ../drizzle), with the workspace cwd as a
+// final fallback.
+const MIGRATIONS_DIR = (() => {
+  const here = dirname(fileURLToPath(import.meta.url));
+  const candidates = [join(here, "..", "..", "drizzle"), join(here, "..", "drizzle"), join(process.cwd(), "drizzle")];
+  return candidates.find((d) => existsSync(join(d, "meta", "_journal.json"))) ?? candidates[0]!;
+})();
 
 // The query API is identical across drivers at runtime; type against the PGlite
 // shape (used by tests, CI and local dev) and cast the node-postgres one to it.

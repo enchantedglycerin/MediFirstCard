@@ -4,6 +4,9 @@ Everything the team does before, during and after the live demo. Written so that
 
 ## The day before
 
+- [ ] Cloud path (preferred): the API is on Render (see `docs/deploy-render.md`); open `https://medifirstcard-api.onrender.com/health` to wake it and confirm `"ok":true`. The laptop steps below are the fallback if Render or the venue Wi-Fi misbehaves.
+
+
 - [ ] Laptop: `git pull`, `npm install`, `npm run shared:test && npm run api:test` (all green), `npm run mobile:typecheck`.
 - [ ] Laptop: `apps/api/.env` has `FIELD_ENC_KEY`, `JWT_SECRET`, and — if the keys exist — `EXTRACT_PROVIDER=gemini`, `GEMINI_API_KEY`, `OCR_PROVIDER=typhoon`, `TYPHOON_API_KEY`. Without keys the app uses the deterministic mock and says so on screen ("Example result").
 - [ ] Laptop: find its Wi-Fi IPv4 (`ipconfig`), e.g. `192.168.1.20`. Set `PUBLIC_BASE_URL=http://192.168.1.20:3000` in `.env` so QR codes and share links open from the second phone.
