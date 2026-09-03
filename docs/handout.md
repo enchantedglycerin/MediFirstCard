@@ -3,7 +3,7 @@
 040333215 Smart Technology 2026 · Mini Project · Live demo Wed 7 Oct 2026 · Prototype for educational purposes only
 Team: ปิยนุช นุ่มน้อย (Project Manager / System Analyst) · เหม่หลิ๋ง ตัน (UX/UI Designer & Medical Consultant) · ณัฐพัชร์ ทัศนะเมธี (Lead Developer / Full-stack)
 
-> Square-bracket items like [Gemini live] depend on cloud keys/accounts being added before the demo. Everything else is built and was verified on a real phone on 4 Sep 2026.
+> Everything below is built and was verified on a real phone on 4 Sep 2026, including the cloud stack (Supabase PostgreSQL + Storage, Gemini 3.5 Flash-Lite + Typhoon OCR, API on Render).
 
 ## Page 1 — Problem, users, concept
 
@@ -61,7 +61,7 @@ flowchart LR
 |---|---|---|---|
 | A1 | Custom Express 5 + TypeScript REST API (36 routes) with JWT access/refresh rotation and reuse detection, hosted on Render | 2 · API / Backend | Yes |
 | A2 | PostgreSQL + object storage: structured schema with timestamps and metadata, AES-256-GCM encryption of all health-content text, SHA-256 duplicate detection, hard-delete with tombstone | 1 · Data & Storage | Yes |
-| A3 | AI document extraction: Thai OCR (Typhoon OCR by SCB 10X) plus a vision LLM (Google Gemini) read a Thai/English medical certificate into structured fields with a per-field confidence score and an evidence snippet; a deterministic mock ships for offline demos; the user reviews red fields before saving | 4 · AI / ML | Yes [live once keys are added] |
+| A3 | AI document extraction: Thai OCR (Typhoon OCR by SCB 10X) plus a vision LLM (Google Gemini) read a Thai/English medical certificate into structured fields with a per-field confidence score and an evidence snippet; verified live on the synthetic certificate; a deterministic mock is the offline fallback; the user reviews red fields before saving | 4 · AI / ML | Yes |
 | A4 | Automated alert workflow: viewing the public emergency card or a clinician link fires a backend event → in-app notification + e-mail to the owner (Resend) | 2 · Automation | Yes |
 | A5 | PDPA consent screen, lock-screen exposure warning, role-based views (owner / rescuer / clinician), clinical status colours, elderly-first type sizes, Thai/English | 5 · Medical UI/UX | — |
 | A6 | Device features: pinned lock-screen notification on a public-visibility channel, dialer intent (tap-to-call + 1669), camera / photo picker, fingerprint or face unlock with a local PIN | 3 · Device / Sensors | — |
@@ -78,7 +78,7 @@ Additional features built: emergency contacts with informed-consent flag and cal
 |---|---|---|
 | 1. App running (PM) | Launch → PIN / fingerprint gate → dashboard with the profile-completeness checklist; tab navigation | The app runs; navigation; local security |
 | 2. Input (UX) | Add an emergency contact: an invalid phone is rejected, then the contact appears with a Call button; add a "severe" drug allergy → red line on the card | Input + validation |
-| 3. Integration (DEV) | Photograph a synthetic certificate → API log shows create / upload / extract → review screen with one red low-confidence field, corrected → record saved (encrypted row) [Gemini live if keys added; otherwise the mock result] | REST API, database, AI with confidence |
+| 3. Integration (DEV) | Photograph a synthetic certificate → API log shows create / upload / extract → review screen with one red low-confidence field, corrected → record saved (encrypted row in Supabase); the review screen shows "Read by gemini-3.5-flash-lite+typhoon-ocr" | REST API, database, AI with confidence |
 | 4. Result (DEV) | Card tab: Call 1669 + contact Call button opens the dialer; turn on "Show card on lock screen" → pull down the shade / lock the phone → the pinned card is readable without unlocking | The lock-screen promise, tap-to-call |
 | 5. Sharing + alert (UX/PM) | Second phone scans the QR → rescuer page with tel: links; Alerts show "your card was viewed"; clinician link with passcode opened on the laptop, wrong passcode rejected, then revoke → "expired" | Role-based views, automation |
 | 6. Errors (UX) | Wrong PIN → attempts counter; duplicate scan → "already added"; API stopped → "cannot reach the server" instead of a crash | Error handling |
