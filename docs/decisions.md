@@ -105,3 +105,11 @@ The extraction pipeline and blob storage now have real adapters behind the exist
 - **Supabase Storage.** The `records` bucket was created through the Storage API (private). `HEAD` on a missing object returns 400 with `statusCode: "404"` in the body, not a plain 404; `exists()` treats both as "not found".
 - **Supabase database.** Session-pooler URI on port 5432 (IPv4). The project is in `ap-northeast-2` (Seoul); `ap-southeast-1` (Singapore) would have been closer to Thailand, but latency is acceptable for a demo.
 - **Gradle daemon lock.** `expo prebuild --clean` fails with EBUSY on Windows while a Gradle daemon still holds `app/build/…/classes.dex`; stop the daemons (`taskkill /F /IM java.exe` when nothing else uses Java) before cleaning.
+
+## 2026-09-04 — Render deployment package
+
+- `render.yaml` is a complete Blueprint: `medifirstcard-api`, Node runtime, Singapore, free plan, `/health` check, auto-deploy on push, migrations run in the build step, every variable declared (secrets `sync: false` so Render prompts for them once). Nothing is hard-coded that Render provides itself.
+- **Public URL comes from Render.** `PUBLIC_BASE_URL` falls back to `RENDER_EXTERNAL_URL`, and an empty value counts as unset (an empty `PUBLIC_BASE_URL=` used to produce links like `/e/<token>` with no host).
+- **Migrations from the bundle.** `dist/server.mjs` (what `npm start` runs on Render) resolved the Drizzle folder relative to the source tree and crashed with "Can't find meta/_journal.json". The resolver now checks `../../drizzle`, `../drizzle` and `<cwd>/drizzle`. Found by booting the bundle locally with the cloud `.env` — do that before every deploy-related change.
+- **Release app defaults to the Render URL** via `apps/mobile/.env.production` (public value, committed, loaded by Expo for release bundles). If Render gives the service a suffixed name, users set More → Developer → Server URL once.
+- Render itself still needs the account owner to click New → Blueprint and paste the seven secrets (docs/deploy-render.md); or hand over a Render API key and it can be scripted.
