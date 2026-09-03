@@ -1,6 +1,7 @@
 Add-Type -AssemblyName System.Drawing
-$src = "C:\Users\Lolicon_Cafe\Downloads\icon.png"
-$out = "C:\workspace\MediFirstCard\apps\mobile\assets\images"
+# Usage: .\make-icons.ps1 [path-to-square-png-1024px-or-larger]   (default: ../assets/icon-source.png)
+$src = if ($args.Count -ge 1) { $args[0] } else { Join-Path $PSScriptRoot "..\assets\icon-source.png" }
+$out = Join-Path $PSScriptRoot "..\assets\images"
 $img = [System.Drawing.Image]::FromFile($src)
 
 function New-Canvas([int]$size, [System.Drawing.Color]$bg) {
