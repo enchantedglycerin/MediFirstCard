@@ -23,3 +23,4 @@ Dated entries per member, for IPAC evidence. One line per work session.
 - 2026-09-04 — DEV: v1.0.2 signed release published with the new app icon (versionCode 3).
 - 2026-09-04 — DEV: re-pin lock-screen card on launch/resume, Render keep-alive + wake-up notice, Save-time validation feedback with scroll-to-field; v1.0.3 (AI-assisted, reviewed).
 - 2026-09-04 — UX: app icon switched to the sign-in page mark (card-account-details glyph on the light-blue tile), all Android variants regenerated from the icon font.
+- 2026-09-04 — TEST: v1.0.3 on the phone: card re-pinned automatically after the update (dumpsys shows the record again), Save with an invalid date scrolls to the field + snackbar (screenshot 23); phone-side slowness traced to the phone's Wi-Fi, not Render (0.2–1.4 s per endpoint from the laptop).
