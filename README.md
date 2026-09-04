@@ -135,11 +135,11 @@ Env reference: [apps/api/.env.example](apps/api/.env.example). Extraction provid
 - **Error handling** — the API returns coded JSON errors (`DUPLICATE_RECORD`, `NO_PROFILE`, `UNAUTHENTICATED`, …) through one error middleware; the app maps them to Thai/English messages, retries expired tokens once with a single-flight refresh, and shows "cannot reach the server" instead of crashing when the API is down.
 
 ## Screenshots
-Taken on a Samsung phone (Android 13). All 18 are in [docs/screenshots/](docs/screenshots/).
+Taken on a Samsung phone (Android 13) and a Redmi (Android 14). All are in [docs/screenshots/](docs/screenshots/).
 
-| Live Gemini + Typhoon review (cloud) | Record detail, image from Supabase Storage | Pinned lock-screen notification | Dashboard with completeness |
+| Live Gemini + Typhoon review (cloud) | Record detail, image from Supabase Storage | The card on a real lock screen (Redmi, Android 14) | Dashboard with completeness |
 |---|---|---|---|
-| <img src="docs/screenshots/19-live-gemini-review.png" width="180"> | <img src="docs/screenshots/20-record-detail-cloud.png" width="180"> | <img src="docs/screenshots/07-lock-screen-notification.png" width="180"> | <img src="docs/screenshots/15-home-complete.png" width="180"> |
+| <img src="docs/screenshots/19-live-gemini-review.png" width="180"> | <img src="docs/screenshots/20-record-detail-cloud.png" width="180"> | <img src="docs/screenshots/24-lock-screen-redmi.png" width="180"> | <img src="docs/screenshots/15-home-complete.png" width="180"> |
 
 | Emergency card (Call 1669, contact Call) | Tap-to-call opens the dialer | Clinician share link | PIN lock on launch |
 |---|---|---|---|
