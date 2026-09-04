@@ -50,6 +50,8 @@ interface Props<T extends { id: string }> {
   onDelete: (id: string) => Promise<unknown>;
   /** Extra per-row action (e.g. a Call button). */
   rowAction?: (item: T) => React.ReactNode;
+  /** Replace the default empty state; `openAdd` opens the add dialog. */
+  renderEmpty?: (openAdd: () => void) => React.ReactNode;
 }
 
 function initialValues(fields: FieldSpec[]): Values {
@@ -127,7 +129,9 @@ export function CollectionEditor<T extends { id: string }>(props: Props<T>) {
       {props.loading ? <ActivityIndicator style={styles.loading} /> : null}
 
       {!props.loading && items.length === 0 ? (
-        <EmptyState icon={props.icon} title={props.emptyTitle} hint={props.emptyHint} actionLabel={props.addLabel} onAction={() => open()} />
+        props.renderEmpty ? props.renderEmpty(() => open()) : (
+          <EmptyState icon={props.icon} title={props.emptyTitle} hint={props.emptyHint} actionLabel={props.addLabel} onAction={() => open()} />
+        )
       ) : (
         <View style={[styles.list, { backgroundColor: theme.colors.surface, borderColor: theme.colors.outlineVariant }]}>
           {items.map((item, i) => {

@@ -9,10 +9,14 @@ interface Props {
   hint?: string;
   actionLabel?: string;
   onAction?: () => void;
+  /** A second, quieter answer to the same question (outlined, under the primary button). */
+  secondaryLabel?: string;
+  onSecondary?: () => void;
 }
 
-export function EmptyState({ icon, title, hint, actionLabel, onAction }: Props) {
+export function EmptyState({ icon, title, hint, actionLabel, onAction, secondaryLabel, onSecondary }: Props) {
   const theme = useTheme();
+  const two = !!(actionLabel && onAction && secondaryLabel && onSecondary);
   return (
     <View style={styles.wrap}>
       <View style={[styles.iconWrap, { backgroundColor: theme.colors.primaryContainer }]}>
@@ -20,7 +24,12 @@ export function EmptyState({ icon, title, hint, actionLabel, onAction }: Props) 
       </View>
       <Text variant="titleMedium" style={styles.title}>{title}</Text>
       {hint ? <Text variant="bodyMedium" style={[styles.hint, { color: theme.colors.onSurfaceVariant }]}>{hint}</Text> : null}
-      {actionLabel && onAction ? <Button mode="contained" onPress={onAction} style={styles.btn}>{actionLabel}</Button> : null}
+      {actionLabel && onAction ? (
+        <Button mode="contained" onPress={onAction} style={[styles.btn, two && styles.stretch]} contentStyle={styles.btnContent}>{actionLabel}</Button>
+      ) : null}
+      {two ? (
+        <Button mode="outlined" onPress={onSecondary} style={styles.stretch} contentStyle={styles.btnContent}>{secondaryLabel}</Button>
+      ) : null}
     </View>
   );
 }
@@ -31,4 +40,6 @@ const styles = StyleSheet.create({
   title: { textAlign: "center", fontWeight: "700" },
   hint: { textAlign: "center", maxWidth: 320 },
   btn: { marginTop: space.sm },
+  btnContent: { minHeight: 44 },
+  stretch: { alignSelf: "stretch" },
 });

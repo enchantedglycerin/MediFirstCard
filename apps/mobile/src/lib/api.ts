@@ -19,6 +19,7 @@ export function errorKey(e: unknown): string {
     if (e.status === 401) return "errors.unauthorized";
     if (e.code === "DUPLICATE_RECORD") return "errors.duplicate_record";
     if (e.code === "NO_PROFILE") return "errors.noProfile";
+    if (e.code === "ALLERGIES_EXIST") return "errors.allergiesExist";
     if (e.code === "PAYLOAD_TOO_LARGE" || e.status === 413) return "errors.tooLarge";
   }
   if (e instanceof TypeError) return "errors.network";
@@ -257,4 +258,8 @@ export const api = {
     json<{ ok: true }>(`${V1}/me/consent`, { method: "POST", body: JSON.stringify({ version, purposes, granted }) }),
   getConsent: () => json<ConsentDto | null>(`${V1}/me/consent`),
   deleteAccount: () => json<{ ok: true }>(`${V1}/me`, { method: "DELETE" }),
+
+  /** "No known drug allergies"; only meaningful while the allergy list is empty (server clears it on add). */
+  setNoKnownDrugAllergy: (value: boolean) =>
+    json<{ noKnownDrugAllergy: boolean }>(`${V1}/me/no-known-drug-allergy`, { method: "PUT", body: JSON.stringify({ value }) }),
 };

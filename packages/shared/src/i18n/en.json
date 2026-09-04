@@ -5,6 +5,7 @@
     "disclaimer": "Educational prototype (course 040333215). Not a medical device. Do not use for diagnosis or treatment."
   },
   "common": {
+    "undo": "Undo",
     "clear": "Clear",
     "selectDate": "Select date",
     "save": "Save", "cancel": "Cancel", "delete": "Delete", "add": "Add", "edit": "Edit", "ok": "OK", "back": "Back",
@@ -91,7 +92,10 @@
     "saveFirst": "Save the basics first, then add your lists below."
   },
   "allergies": {
-    "emptyHint": "Add the medicines, foods or other things you react to. Rescuers see this list first.",
+    "noneKnownShown": "Shown on your emergency card and lock screen.",
+    "noneKnownTitle": "No known drug allergies",
+    "noneKnownAction": "I have no known allergies",
+    "emptyHint": "Medicines, foods or other things you react to. Rescuers see this list first.",
     "title": "Allergies", "add": "Add allergy", "edit": "Edit allergy", "substanceTh": "Substance (Thai)",
     "substanceEn": "Substance (English)", "category": "Category",
     "categories": { "medication": "Medication", "food": "Food", "environment": "Environment" },
@@ -195,6 +199,7 @@
     "typeDelete": "Type DELETE to confirm", "dataProtection": "Your health data is encrypted on the server. Only you can see it, plus rescuers you show your card to."
   },
   "errors": {
+    "allergiesExist": "Delete the listed allergies first.",
     "serverWaking": "Waking up the server (free hosting) — this can take up to a minute…",
     "required": "This field is required", "invalid_thai_id": "Invalid Thai national ID", "invalid_phone": "Invalid phone number",
     "invalid_date": "Invalid date", "future_date": "Date cannot be in the future",

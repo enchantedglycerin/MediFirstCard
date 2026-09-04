@@ -1,11 +1,16 @@
-import { Banner } from "react-native-paper";
-import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
+import { StyleSheet, View } from "react-native";
+import { Banner, Button, Portal, Snackbar, Text, useTheme } from "react-native-paper";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import type { AllergyInput } from "@mfc/shared";
 import { Screen } from "../components/Screen";
+import { EmptyState } from "../components/EmptyState";
 import { CollectionEditor, type FieldSpec, type Values } from "../components/CollectionEditor";
 import { api, errorKey, type AllergyDto } from "../lib/api";
 import { invalidateAfterEdit } from "../lib/refresh";
+import { palette, radius, space } from "../theme/tokens";
 
 const CATEGORIES = ["medication", "food", "environment"] as const;
 const SEVERITIES = ["mild", "moderate", "severe"] as const;
@@ -28,11 +33,25 @@ function toInput(v: Values): Partial<AllergyInput> {
   };
 }
 
+/**
+ * Allergies list. While it is empty the empty state asks one question with two answers:
+ * add an allergy, or say there is none known. "None known" becomes a calm confirmation
+ * that disappears by itself as soon as an allergy is listed (the server clears the flag).
+ */
 export default function Allergies() {
   const { t } = useTranslation();
+  const theme = useTheme();
   const allergies = useQuery({ queryKey: ["allergies"], queryFn: api.listAllergies });
+  const profile = useQuery({ queryKey: ["profile"], queryFn: api.getProfile });
+  const [msg, setMsg] = useState<string | null>(null);
 
   const refresh = () => invalidateAfterEdit("allergies");
+  const noneKnown = !!profile.data?.noKnownDrugAllergy;
+  const setNoneKnown = useMutation({
+    mutationFn: (value: boolean) => api.setNoKnownDrugAllergy(value),
+    onSuccess: () => refresh(),
+    onError: (e) => setMsg(t(errorKey(e))),
+  });
 
   const fields: FieldSpec[] = [
     { key: "substanceTh", label: t("allergies.substanceTh"), type: "text" },
@@ -53,6 +72,35 @@ export default function Allergies() {
     },
   ];
 
+  const renderEmpty = (openAdd: () => void) =>
+    noneKnown ? (
+      <View style={[styles.card, { backgroundColor: theme.colors.surface, borderColor: theme.colors.outlineVariant }]}>
+        <View style={[styles.status, { backgroundColor: palette.normalContainer }]}>
+          <View style={[styles.tick, { backgroundColor: palette.normal }]}>
+            <MaterialCommunityIcons name="check" size={22} color={palette.onEmergencyHeader} />
+          </View>
+          <View style={styles.statusText}>
+            <Text variant="titleMedium" style={styles.statusTitle}>{t("allergies.noneKnownTitle")}</Text>
+            <Text variant="bodyMedium" style={{ color: theme.colors.onSurfaceVariant }}>{t("allergies.noneKnownShown")}</Text>
+          </View>
+        </View>
+        <View style={[styles.actions, { borderTopColor: theme.colors.outlineVariant }]}>
+          <Button mode="text" onPress={() => setNoneKnown.mutate(false)} disabled={setNoneKnown.isPending}>{t("common.undo")}</Button>
+          <Button mode="contained-tonal" icon="plus" onPress={openAdd}>{t("allergies.add")}</Button>
+        </View>
+      </View>
+    ) : (
+      <EmptyState
+        icon="alert-octagon-outline"
+        title={t("allergies.empty")}
+        hint={t("allergies.emptyHint")}
+        actionLabel={t("allergies.add")}
+        onAction={openAdd}
+        secondaryLabel={t("allergies.noneKnownAction")}
+        onSecondary={() => setNoneKnown.mutate(true)}
+      />
+    );
+
   return (
     <Screen>
       {allergies.isError ? (
@@ -68,7 +116,7 @@ export default function Allergies() {
       {allergies.isError && !allergies.data ? null : (
         <CollectionEditor<AllergyDto>
           items={allergies.data}
-          loading={allergies.isPending}
+          loading={allergies.isPending || profile.isPending}
           fields={fields}
           toValues={(a) => ({
             substanceTh: a.substanceTh ?? "",
@@ -86,6 +134,7 @@ export default function Allergies() {
           emptyHint={t("allergies.emptyHint")}
           addLabel={t("allergies.add")}
           editLabel={t("allergies.edit")}
+          renderEmpty={renderEmpty}
           validate={(v) => (text(v.substanceTh) || text(v.substanceEn) ? null : { substanceTh: t("allergies.needSubstance") })}
           onCreate={async (v) => {
             await api.addAllergy(toInput(v));
@@ -101,6 +150,19 @@ export default function Allergies() {
           }}
         />
       )}
+
+      <Portal>
+        <Snackbar visible={!!msg} onDismiss={() => setMsg(null)} duration={4000}>{msg ?? ""}</Snackbar>
+      </Portal>
     </Screen>
   );
 }
+
+const styles = StyleSheet.create({
+  card: { borderRadius: radius.lg, borderWidth: StyleSheet.hairlineWidth, overflow: "hidden" },
+  status: { flexDirection: "row", alignItems: "flex-start", gap: space.md, padding: space.lg },
+  tick: { width: 40, height: 40, borderRadius: 20, alignItems: "center", justifyContent: "center" },
+  statusText: { flex: 1, gap: 2 },
+  statusTitle: { fontWeight: "700" },
+  actions: { flexDirection: "row", justifyContent: "flex-end", alignItems: "center", gap: space.xs, padding: space.md, borderTopWidth: StyleSheet.hairlineWidth },
+});
