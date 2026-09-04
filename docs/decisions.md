@@ -120,7 +120,7 @@ The extraction pipeline and blob storage now have real adapters behind the exist
 
 ## 2026-09-04 — App icon
 
-The team's artwork (1254 px, opaque, rounded black corners baked in) is turned into every Android/Expo asset by `apps/mobile/scripts/make-icons.ps1` (System.Drawing, no extra tools): `icon.png` 1024 full-bleed; adaptive **foreground** at 86 % on a transparent canvas so the card and character survive the circular mask; adaptive **background** solid navy `#0A1730` sampled from the artwork; **monochrome** (Android 13 themed icons) and the **notification** small icon as a drawn white card-with-cross silhouette, because a photo-style artwork cannot be used as a silhouette; splash 512 and favicon 48. `expo-notifications` now points at the notification glyph instead of the default Expo icon.
+The app icon is the same mark the sign-in page shows: the Material Community Icons `card-account-details` glyph in the theme's `onPrimaryContainer` navy on a `primaryContainer` light-blue tile. `apps/mobile/scripts/make-icons.ps1` renders it straight from the icon font in `node_modules` (System.Drawing, no extra tools) into `icon.png`, the adaptive foreground/background, the monochrome themed icon and the notification small icon (white glyph), the splash mark (the sign-in circle) and the favicon. Earlier artwork with a third-party game character was dropped. `expo-notifications` uses the glyph as its small icon.
 
 ## 2026-09-04 — Field fixes from the first real-phone use of the release
 
