@@ -1,3 +1,5 @@
+<p align="center"><img src="docs/app-icon.png" width="112" alt="MediFirstCard icon"></p>
+
 # MediFirstCard
 
 [![api-ci](https://github.com/enchantedglycerin/MediFirstCard/actions/workflows/api-ci.yml/badge.svg)](../../actions) [![mobile-ci](https://github.com/enchantedglycerin/MediFirstCard/actions/workflows/mobile-ci.yml/badge.svg)](../../actions)
