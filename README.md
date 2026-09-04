@@ -28,7 +28,7 @@ Everything below runs today on a real Android phone. Verified 2026-09-04 both ag
 
 - **Emergency card** — name, blood group (Rh-negative flagged), allergies in red, conditions, medications and emergency contacts, in "first 60 seconds" order. **Call 1669** button and a **Call** button on every contact (opens the dialer with the number).
 - **Lock-screen card** — the same card pinned as a permanent notification on a public-visibility channel, readable without unlocking, with a **Call 1669** action. It is re-posted the moment it is swiped away and again after a reboot or app update (a small native Android module, `apps/mobile/modules/lock-card`), and refreshed whenever the profile changes. The user chooses which fields are exposed and is warned about exposure.
-- **Emergency profile** — identity, date of birth (system date picker), sex, blood group, medical flags (blood thinners, insulin, pacemaker, dialysis, pregnancy), insurance scheme, notes; separate editors for **allergies, conditions, medications and emergency contacts** (Thai phone validation, informed-consent flag, call priority). The *no known drug allergies* switch lives on the Allergies screen and is cleared by the server as soon as an allergy is listed, so the card can never hide a real allergy.
+- **Emergency profile** — identity, date of birth (system date picker), sex, blood group, medical flags (blood thinners, insulin, pacemaker, dialysis, pregnancy), insurance scheme, notes; separate editors for **allergies, conditions, medications and emergency contacts** (Thai phone validation, informed-consent flag, call priority). A stale "no known drug allergies" flag is cleared by the server as soon as an allergy is listed, so the card can never hide a real allergy.
 - **Rescuer surfaces** — QR code and public link (`/e/:token`) rendered as a dependency-free HTML page with tap-to-call, plus an in-app "preview as rescuer".
 - **Document archive** — scan from camera or gallery → resize/JPEG → SHA-256 dedupe → upload → AI extraction → **red-field review** (every extracted field editable with a confidence chip; low-confidence fields highlighted) → record with kind, facility, doctor, licence, issue date and auto-computed validity; detail view with the original image; delete.
 - **Share with a clinician** — temporary links (1 h / 24 h / 3 days) over selected documents, optional 4-digit passcode (5 failures revoke the link), view counts, revoke, access log; the public clinician page (`/s/:token`).
@@ -103,7 +103,7 @@ cp apps/api/.env.example apps/api/.env   # set FIELD_ENC_KEY and JWT_SECRET (ins
 ```
 
 ## Install the app on a phone (no build tools needed)
-Download the signed APK from the latest [GitHub release](https://github.com/enchantedglycerin/MediFirstCard/releases) and install it (`adb install -r MediFirstCard-v1.0.6.apk`, or open the file on the phone and allow the install). Then open **More → Developer → Server URL** and enter the address of the API (the laptop's Wi-Fi IPv4 for a classroom demo, e.g. `http://192.168.1.20:3000`, or the Render URL once deployed).
+Download the signed APK from the latest [GitHub release](https://github.com/enchantedglycerin/MediFirstCard/releases) and install it (`adb install -r MediFirstCard-v1.0.7.apk`, or open the file on the phone and allow the install). Then open **More → Developer → Server URL** and enter the address of the API (the laptop's Wi-Fi IPv4 for a classroom demo, e.g. `http://192.168.1.20:3000`, or the Render URL once deployed).
 
 Release builds are signed with the team's own keystore (certificate `CN=MediFirstCard, OU=Course 040333215`, SHA-256 `07:41:48:86:B0:D6:CE:50:F7:79:51:D6:4B:C4:93:DF:1D:53:BD:A4:9E:D8:E9:50:F9:35:21:93:FF:22:2C:9D`). The keystore and its passwords live in `apps/mobile/credentials/` on the lead developer's machine and are **never committed**; the Expo config plugin `apps/mobile/plugins/withReleaseSigning.js` wires them into Gradle at prebuild and falls back to debug signing when the folder is absent (CI, other machines). Verify a downloaded APK with `apksigner verify --print-certs`.
 
@@ -153,9 +153,9 @@ Taken on a Samsung phone (Android 13) and a Redmi (Android 14). All are in [docs
 |---|---|---|---|
 | <img src="docs/screenshots/03-consent.png" width="180"> | <img src="docs/screenshots/04-contacts.png" width="180"> | <img src="docs/screenshots/17-card-thai.png" width="180"> | <img src="docs/screenshots/16-alerts-language.png" width="180"> |
 
-| No-known-allergies switch (locks while allergies are listed) | Date of birth picked, never typed |
-|---|---|
-| <img src="docs/screenshots/25-allergies-switch.png" width="180"> | <img src="docs/screenshots/26-date-picker.png" width="180"> |
+| Date of birth picked, never typed |
+|---|
+| <img src="docs/screenshots/26-date-picker.png" width="180"> |
 
 ## Demo video links
 - App introduction video (≤ 3 min): _to be added before 7 Oct 2026_

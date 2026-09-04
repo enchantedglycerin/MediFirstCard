@@ -1,5 +1,5 @@
 import * as Notifications from "expo-notifications";
-import { EMERGENCY_NUMBER, NO_KNOWN_DRUG_ALLERGY, notificationTitle, type CardLine, type CardPayload } from "@mfc/shared";
+import { EMERGENCY_NUMBER, NO_KNOWN_DRUG_ALLERGY, type CardLine, type CardPayload } from "@mfc/shared";
 import i18n from "../i18n";
 import { secure, KEYS } from "./secure";
 import { hideLockCard, isLockCardShown, showLockCard } from "../../modules/lock-card";
@@ -55,20 +55,17 @@ async function ensureChannel(name: string): Promise<void> {
 }
 
 /**
- * What the notification says, in the user's language. Android already prints the app name in
- * the header, so the bold title carries data instead: "Emergency · O− · Somchai Jaidee". The
- * body lists everything else once (allergies, conditions, medications, ICE contacts).
+ * What the notification says, in the user's language: a title that says what this is
+ * ("Emergency medical card"; Android already prints the app name in the header) and one
+ * "Label: value" line per card field, in card order.
  */
 export function lockCardText(payload: Payload): { title: string; lines: string[] } {
   const t = (key: string) => i18n.t(key);
-  const title = notificationTitle(payload, t("lockScreen.notificationTitle"));
-  const lines = payload.lines
-    .filter((l) => l.kind !== "identity" && l.kind !== "blood")
-    .map((l) => {
-      if (l.kind === "allergy" && l.value === NO_KNOWN_DRUG_ALLERGY) return `${t("card.allergies")}: ${t("card.noKnownAllergy")}`;
-      return `${t(LABEL_KEY[l.kind])}: ${l.value}`;
-    });
-  return { title, lines: lines.length > 0 ? lines : [t("lockScreen.title")] };
+  const lines = payload.lines.map((l) => {
+    if (l.kind === "allergy" && l.value === NO_KNOWN_DRUG_ALLERGY) return `${t("card.allergies")}: ${t("card.noKnownAllergy")}`;
+    return `${t(LABEL_KEY[l.kind])}: ${l.value}`;
+  });
+  return { title: t("lockScreen.notificationTitle"), lines: lines.length > 0 ? lines : [t("lockScreen.title")] };
 }
 
 /** Post (or refresh) the pinned card. Returns false when permission is missing. */

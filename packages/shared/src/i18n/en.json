@@ -36,7 +36,7 @@
     "records": "Documents", "alerts": "Alerts", "quickActions": "Quick actions", "scan": "Scan a document",
     "viewCard": "View card", "editProfile": "Edit profile", "completeness": "Profile completeness",
     "complete": "Your emergency profile is complete", "missing": {
-      "name": "Add your name", "blood": "Add your blood type", "allergies": "Add your allergies, or mark none known",
+      "name": "Add your name", "blood": "Add your blood type", "allergies": "Add your allergies",
       "contact": "Add an emergency contact"
     },
     "recent": "Recent documents", "unread": "{{count}} unread", "lockScreenOn": "Lock-screen card is on",
@@ -55,7 +55,7 @@
     "lockScreenCard": "Lock-screen card", "shareTitle": "My emergency card"
   },
   "lockScreen": {
-    "notificationTitle": "Emergency",
+    "notificationTitle": "Emergency medical card",
     "deviceHint": "If your lock screen shows only an icon, change the phone setting: Settings → Lock screen → Notifications → show content / Details (on Samsung phones). The app cannot change this for you.",
     "title": "Lock-screen card", "showOnLockScreen": "Show card on lock screen",
     "exposureWarning": "Anyone holding your phone can read the fields you show here, even when locked. Show only what could save your life.",
@@ -91,10 +91,7 @@
     "saveFirst": "Save the basics first, then add your lists below."
   },
   "allergies": {
-    "emptyHint": "No allergies listed. Add one, or turn on the switch above if you have none known.",
-    "hasItemsHint": "Rescuers see the allergies listed here. To mark “no known drug allergies”, delete them all first.",
-    "noKnownHint": "Rescuers will see “No known drug allergies”. If that changes, turn it off and add the allergy.",
-    "noKnownAllergy": "I have no known drug allergies",
+    "emptyHint": "Add the medicines, foods or other things you react to. Rescuers see this list first.",
     "title": "Allergies", "add": "Add allergy", "edit": "Edit allergy", "substanceTh": "Substance (Thai)",
     "substanceEn": "Substance (English)", "category": "Category",
     "categories": { "medication": "Medication", "food": "Food", "environment": "Environment" },
@@ -198,7 +195,6 @@
     "typeDelete": "Type DELETE to confirm", "dataProtection": "Your health data is encrypted on the server. Only you can see it, plus rescuers you show your card to."
   },
   "errors": {
-    "allergiesExist": "Delete the allergies in your list before marking none known.",
     "serverWaking": "Waking up the server (free hosting) — this can take up to a minute…",
     "required": "This field is required", "invalid_thai_id": "Invalid Thai national ID", "invalid_phone": "Invalid phone number",
     "invalid_date": "Invalid date", "future_date": "Date cannot be in the future",

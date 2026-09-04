@@ -132,13 +132,3 @@ export function buildCardPayload(profile: CardProfile, fields: LockScreenFields)
   return { lines, lastReviewedAt: profile.lastReviewedAt ?? null };
 }
 
-/**
- * Bold title of the pinned notification: "<label> · <blood> · <name>". Android already shows the
- * app name in the header, so the title carries data instead; blood sits before the name so it
- * survives a truncated line. Everything else goes in the body, without repeating these two.
- */
-export function notificationTitle(payload: CardPayload, label: string): string {
-  const name = payload.lines.find((l) => l.kind === "identity")?.value;
-  const blood = payload.lines.find((l) => l.kind === "blood")?.value;
-  return [label, blood, name].filter(Boolean).join(" · ");
-}

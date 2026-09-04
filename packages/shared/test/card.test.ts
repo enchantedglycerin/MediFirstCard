@@ -1,7 +1,6 @@
 import { describe, it, expect } from "vitest";
 import {
   buildCardPayload,
-  notificationTitle,
   NO_KNOWN_DRUG_ALLERGY,
   dialable,
   EMERGENCY_NUMBER,
@@ -72,14 +71,6 @@ describe("buildCardPayload", () => {
     expect(lines.some((l) => l.kind === "allergy")).toBe(false);
   });
 
-  it("titles the notification with label, blood group and name, in that order", () => {
-    const payload = buildCardPayload(profile, DEFAULT_LOCK_SCREEN_FIELDS);
-    expect(notificationTitle(payload, "Emergency")).toBe("Emergency · O− · สมชาย ใจดี");
-    const nameless = buildCardPayload({ ...profile, nameTh: null, nameEn: null }, DEFAULT_LOCK_SCREEN_FIELDS);
-    expect(notificationTitle(nameless, "Emergency")).toBe("Emergency · O−");
-    const bare = buildCardPayload({}, DEFAULT_LOCK_SCREEN_FIELDS);
-    expect(notificationTitle(bare, "Emergency")).toBe("Emergency");
-  });
 
   it("gives contact lines a dialable phone so every surface can tap-to-call", () => {
     const { lines } = buildCardPayload(
