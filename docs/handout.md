@@ -14,7 +14,7 @@ Team: ปิยนุช นุ่มน้อย (Project Manager / System Anal
 **The concept in one line.** *Your emergency card on the lock screen; your medical records behind your PIN; a QR code that lets a rescuer or doctor see exactly what you chose to share.*
 
 **Three pillars (from our proposal).**
-1. **Emergency Health Card on the lock screen.** The user chooses which fields are visible. The card is pinned to the lock screen as a non-dismissable notification on every Android phone, with a **Call 1669** button and a **Call** button next to each emergency contact. A QR code on the card opens a read-only web page for rescuers with the same tap-to-call links.
+1. **Emergency Health Card on the lock screen.** The user chooses which fields are visible. The card is pinned to the lock screen as a permanent notification on every Android phone — it comes back the moment it is swiped away and survives a reboot — with a **Call 1669** action on the notification itself, plus **Call** buttons next to each emergency contact in the app. A QR code on the card opens a read-only web page for rescuers with the same tap-to-call links.
 2. **Medical records & certificates archive.** Photograph a medical certificate (camera or gallery); the app hashes it (duplicates rejected), uploads it to encrypted storage and an AI model reads the fields (hospital, doctor, licence number, date, diagnosis, rest days, medications) with a confidence score for each field. The user checks and corrects the red fields before saving; certificates get an automatic one-month validity; a clinician can be given an expiring, passcode-protected link.
 3. **Security & privacy.** Account password, an app PIN with fingerprint/face unlock, AES-256-GCM encryption of every health-content field in the database, token rotation with reuse detection, PDPA consent with withdrawal and a one-tap account deletion that erases everything.
 
@@ -64,7 +64,7 @@ flowchart LR
 | A3 | AI document extraction: Thai OCR (Typhoon OCR by SCB 10X) plus a vision LLM (Google Gemini) read a Thai/English medical certificate into structured fields with a per-field confidence score and an evidence snippet; verified live on the synthetic certificate; a deterministic mock is the offline fallback; the user reviews red fields before saving | 4 · AI / ML | Yes |
 | A4 | Automated alert workflow: viewing the public emergency card or a clinician link fires a backend event → in-app notification + e-mail to the owner (Resend) | 2 · Automation | Yes |
 | A5 | PDPA consent screen, lock-screen exposure warning, role-based views (owner / rescuer / clinician), clinical status colours, elderly-first type sizes, Thai/English | 5 · Medical UI/UX | — |
-| A6 | Device features: pinned lock-screen notification on a public-visibility channel, dialer intent (tap-to-call + 1669), camera / photo picker, fingerprint or face unlock with a local PIN | 3 · Device / Sensors | — |
+| A6 | Device features: permanent lock-screen notification on a public-visibility channel (native module, re-posted on swipe and reboot), dialer intent (tap-to-call + 1669), camera / photo picker, system date picker, fingerprint or face unlock with a local PIN | 3 · Device / Sensors | — |
 
 Additional features built: emergency contacts with informed-consent flag and call priority · clinician share link with passcode, expiry, view count, revoke and access log · profile-completeness checklist · withdraw consent / delete account · Server URL switch for demos.
 
@@ -85,7 +85,7 @@ Additional features built: emergency contacts with informed-consent flag and cal
 | 7. Close (PM) | Privacy: withdraw consent revokes links; delete account; disclaimer, architecture and limitations for Q&A | Responsible use |
 
 **Limitations we state openly.**
-- The lock-screen card is a pinned notification: how much text the lock screen shows depends on the phone's notification-privacy setting. The Android 16 lock-screen widget hub is not targeted.
+- The lock-screen card is a permanent notification: how much text the lock screen shows depends on the phone's notification-privacy setting, and Android 14+ lets the user swipe it away while unlocked (it is re-posted immediately). The Android 16 lock-screen widget hub is not targeted.
 - iOS is designed (WidgetKit) but not built: no Mac, no paid Apple account.
 - AI extraction is assistive, not authoritative: Thai handwriting is unverified; every field is reviewed by the user. Document images are sent to Google's Gemini API and SCB 10X's Typhoon API (free tiers that may use inputs to improve their services); the consent screen says so, and we demo only with synthetic documents. Until the keys are configured the app uses a deterministic example result and says so on screen.
 - Alerts are in-app and by e-mail (Resend); on the free e-mail tier without a verified domain the e-mail can only reach the account owner's address, so the demo shows the in-app alert.

@@ -27,8 +27,8 @@ In an emergency the first responders cannot see blood type, allergies, chronic c
 Everything below runs today on a real Android phone. Verified 2026-09-04 both against the laptop API (embedded database, mock extractor) and against the full cloud stack: Supabase PostgreSQL + Storage, Google Gemini 3.5 Flash-Lite with SCB 10X Typhoon OCR (screenshots below).
 
 - **Emergency card** — name, blood group (Rh-negative flagged), allergies in red, conditions, medications and emergency contacts, in "first 60 seconds" order. **Call 1669** button and a **Call** button on every contact (opens the dialer with the number).
-- **Lock-screen card** — the same card pinned as a non-dismissable notification on a public-visibility channel, readable without unlocking. The user chooses which fields are exposed and is warned about exposure.
-- **Emergency profile** — identity, date of birth, sex, blood group, no-known-allergy flag, medical flags (blood thinners, insulin, pacemaker, dialysis, pregnancy), insurance scheme, notes; separate editors for **allergies, conditions, medications and emergency contacts** (Thai phone validation, informed-consent flag, call priority).
+- **Lock-screen card** — the same card pinned as a permanent notification on a public-visibility channel, readable without unlocking, with a **Call 1669** action. It is re-posted the moment it is swiped away and again after a reboot or app update (a small native Android module, `apps/mobile/modules/lock-card`), and refreshed whenever the profile changes. The user chooses which fields are exposed and is warned about exposure.
+- **Emergency profile** — identity, date of birth (system date picker), sex, blood group, medical flags (blood thinners, insulin, pacemaker, dialysis, pregnancy), insurance scheme, notes; separate editors for **allergies, conditions, medications and emergency contacts** (Thai phone validation, informed-consent flag, call priority). The *no known drug allergies* switch lives on the Allergies screen and is cleared by the server as soon as an allergy is listed, so the card can never hide a real allergy.
 - **Rescuer surfaces** — QR code and public link (`/e/:token`) rendered as a dependency-free HTML page with tap-to-call, plus an in-app "preview as rescuer".
 - **Document archive** — scan from camera or gallery → resize/JPEG → SHA-256 dedupe → upload → AI extraction → **red-field review** (every extracted field editable with a confidence chip; low-confidence fields highlighted) → record with kind, facility, doctor, licence, issue date and auto-computed validity; detail view with the original image; delete.
 - **Share with a clinician** — temporary links (1 h / 24 h / 3 days) over selected documents, optional 4-digit passcode (5 failures revoke the link), view counts, revoke, access log; the public clinician page (`/s/:token`).
@@ -46,7 +46,7 @@ Everything below runs today on a real Android phone. Verified 2026-09-04 both ag
 | A3 | AI document extraction: Typhoon OCR → Gemini structured JSON with per-field confidence and evidence, human-in-the-loop red-field review; deterministic mock as the offline fallback (verified live on a phone: every field of the synthetic certificate read correctly) | 4 AI / ML | Yes | `apps/api/src/modules/extract`, `apps/mobile/src/components/RecordReviewForm.tsx` |
 | A4 | Card-viewed / share-viewed / link-revoked alert workflow: in-app notification for the owner plus a bilingual e-mail to the owner's account address through Resend | 2 Automation | Yes | `apps/api/src/modules/alerts` |
 | A5 | PDPA consent, lock-screen exposure warning, role-based views (owner / rescuer / clinician), status colours, elderly-friendly type | 5 Medical UI/UX | — | `apps/mobile` |
-| A6 | Lock-screen pinned notification, dialer intent (tap-to-call, 1669), camera/photo picker, PIN + biometrics | 3 Device / Sensors | — | `apps/mobile/src/lib/notifications.ts`, `phone.ts`, `pin.ts` |
+| A6 | Permanent lock-screen notification (native module, re-posted on swipe/reboot), dialer intent (tap-to-call, 1669), camera/photo picker, system date picker, PIN + biometrics | 3 Device / Sensors | — | `apps/mobile/modules/lock-card`, `apps/mobile/src/lib/notifications.ts`, `phone.ts`, `pin.ts` |
 
 ## System architecture diagram
 
@@ -103,7 +103,7 @@ cp apps/api/.env.example apps/api/.env   # set FIELD_ENC_KEY and JWT_SECRET (ins
 ```
 
 ## Install the app on a phone (no build tools needed)
-Download the signed APK from the latest [GitHub release](https://github.com/enchantedglycerin/MediFirstCard/releases) and install it (`adb install -r MediFirstCard-v1.0.5.apk`, or open the file on the phone and allow the install). Then open **More → Developer → Server URL** and enter the address of the API (the laptop's Wi-Fi IPv4 for a classroom demo, e.g. `http://192.168.1.20:3000`, or the Render URL once deployed).
+Download the signed APK from the latest [GitHub release](https://github.com/enchantedglycerin/MediFirstCard/releases) and install it (`adb install -r MediFirstCard-v1.0.6.apk`, or open the file on the phone and allow the install). Then open **More → Developer → Server URL** and enter the address of the API (the laptop's Wi-Fi IPv4 for a classroom demo, e.g. `http://192.168.1.20:3000`, or the Render URL once deployed).
 
 Release builds are signed with the team's own keystore (certificate `CN=MediFirstCard, OU=Course 040333215`, SHA-256 `07:41:48:86:B0:D6:CE:50:F7:79:51:D6:4B:C4:93:DF:1D:53:BD:A4:9E:D8:E9:50:F9:35:21:93:FF:22:2C:9D`). The keystore and its passwords live in `apps/mobile/credentials/` on the lead developer's machine and are **never committed**; the Expo config plugin `apps/mobile/plugins/withReleaseSigning.js` wires them into Gradle at prebuild and falls back to debug signing when the folder is absent (CI, other machines). Verify a downloaded APK with `apksigner verify --print-certs`.
 
@@ -153,12 +153,16 @@ Taken on a Samsung phone (Android 13) and a Redmi (Android 14). All are in [docs
 |---|---|---|---|
 | <img src="docs/screenshots/03-consent.png" width="180"> | <img src="docs/screenshots/04-contacts.png" width="180"> | <img src="docs/screenshots/17-card-thai.png" width="180"> | <img src="docs/screenshots/16-alerts-language.png" width="180"> |
 
+| No-known-allergies switch (locks while allergies are listed) | Date of birth picked, never typed |
+|---|---|
+| <img src="docs/screenshots/25-allergies-switch.png" width="180"> | <img src="docs/screenshots/26-date-picker.png" width="180"> |
+
 ## Demo video links
 - App introduction video (≤ 3 min): _to be added before 7 Oct 2026_
 - Live demo recording: _to be added after the demo on 7 Oct 2026_
 
 ## Limitations
-Lock-screen card is a pinned notification; how much of it shows on the lock screen depends on the phone's notification privacy setting. The Android 16 lock-screen widget hub is not targeted. iOS designed but not built. AI is assistive; the shipped provider is a deterministic mock until Gemini/Typhoon keys are added, and Thai handwriting is unverified; document images would go to Google Gemini and SCB 10X Typhoon (free tiers that may use inputs), so the demo uses synthetic documents only. Alert e-mail needs a Resend key; on Resend's free tier without a verified domain it can only reach the account owner's own address (`ALERT_EMAIL_TO`), so per-user delivery needs a domain. Single server encryption key; PIN lock-out signs the user out after 5 failures; not PDPA-audited; no guardian consent for minors; not connected to Mor Prom / Health Link; no offline cache; free-tier server sleeps. Cloud deployment (Supabase + Render) is scripted but not yet provisioned.
+Lock-screen card is a permanent notification; how much of it shows on the lock screen depends on the phone's notification privacy setting, and Android 14+ lets the user swipe it away while unlocked (it comes straight back). The Android 16 lock-screen widget hub is not targeted. iOS designed but not built. AI is assistive; the shipped provider is a deterministic mock until Gemini/Typhoon keys are added, and Thai handwriting is unverified; document images would go to Google Gemini and SCB 10X Typhoon (free tiers that may use inputs), so the demo uses synthetic documents only. Alert e-mail needs a Resend key; on Resend's free tier without a verified domain it can only reach the account owner's own address (`ALERT_EMAIL_TO`), so per-user delivery needs a domain. Single server encryption key; PIN lock-out signs the user out after 5 failures; not PDPA-audited; no guardian consent for minors; not connected to Mor Prom / Health Link; no offline cache; free-tier server sleeps. Cloud deployment (Supabase + Render) is scripted but not yet provisioned.
 
 ## Future development directions
 Verifying the Gemini + Typhoon extraction and Supabase Storage adapters against the real free tiers (wired and tested offline; no keys provisioned yet), Render deploy, iOS WidgetKit, edge-detecting scanner, vaccination module, offline cache, push notifications, FHIR export to hospitals, NFC card.
