@@ -153,7 +153,7 @@ Taken on a Samsung phone (Android 13) and a Redmi (Android 14). All are in [docs
 |---|---|---|---|
 | <img src="docs/screenshots/03-consent.png" width="180"> | <img src="docs/screenshots/04-contacts.png" width="180"> | <img src="docs/screenshots/17-card-thai.png" width="180"> | <img src="docs/screenshots/16-alerts-language.png" width="180"> |
 
-| "None known" chosen on the Allergies page | Date of birth picked, never typed |
+| Allergies: none known | Date picker |
 |---|---|
 | <img src="docs/screenshots/25-allergies-none-known.png" width="180"> | <img src="docs/screenshots/26-date-picker.png" width="180"> |
 
