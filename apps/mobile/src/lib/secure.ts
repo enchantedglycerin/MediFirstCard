@@ -17,4 +17,6 @@ export const KEYS = {
   lang: "mfc.lang",
   lockCard: "mfc.lockCard",
   permsAsked: "mfc.permsAsked",
+  keepAliveAsked: "mfc.keepAliveAsked",
+  autostartDone: "mfc.autostartDone",
 } as const;

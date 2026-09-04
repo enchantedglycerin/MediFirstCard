@@ -182,6 +182,7 @@
     "shareClinician": "Share with a clinician", "lockScreen": "Lock-screen card"
   },
   "security": {
+    "currentPin": "Current PIN",
     "pin": "App PIN", "pinSet": "PIN is on", "pinNotSet": "No PIN set", "setPin": "Set PIN", "changePin": "Change PIN",
     "removePin": "Remove PIN", "enterPin": "Enter your PIN", "newPin": "New 6-digit PIN", "confirmPin": "Confirm PIN",
     "pinMismatch": "PINs do not match", "pinLength": "PIN must be 6 digits", "wrongPin": "Wrong PIN", "pinSaved": "PIN saved",
@@ -212,5 +213,22 @@
     "unauthorized": "Your session expired. Please log in again.", "tooLarge": "The image is too large (max 10 MB).",
     "callFailed": "Could not open the phone dialer."
   },
-  "status": { "normal": "Normal", "caution": "Caution", "urgent": "Urgent" }
+  "status": { "normal": "Normal", "caution": "Caution", "urgent": "Urgent" },
+  "keepAlive": {
+    "title": "Keep the card on this phone",
+    "intro": "{{brand}} can stop MediFirstCard after a restart, which removes the card. These settings prevent that:",
+    "brandOther": "Your phone",
+    "autostart": "Autostart",
+    "autostartHint": "Turn on for MediFirstCard",
+    "batteryXiaomi": "Battery saver",
+    "battery": "Battery",
+    "batteryHintOptimized": "Now: Optimized · set No restrictions",
+    "batteryHintOk": "Unrestricted",
+    "statusBatteryOk": "Battery: Unrestricted",
+    "statusBatteryWarn": "Battery: Optimized — the card may not return after a restart",
+    "statusAutostartOk": "Autostart: on",
+    "statusAutostartWarn": "Autostart: not confirmed yet",
+    "open": "Open",
+    "later": "Later"
+  }
 }

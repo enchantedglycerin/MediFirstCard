@@ -182,6 +182,7 @@
     "shareClinician": "แชร์ให้แพทย์", "lockScreen": "บัตรบนหน้าจอล็อก"
   },
   "security": {
+    "currentPin": "PIN ปัจจุบัน",
     "pin": "PIN ของแอป", "pinSet": "เปิดใช้ PIN แล้ว", "pinNotSet": "ยังไม่ได้ตั้ง PIN", "setPin": "ตั้ง PIN", "changePin": "เปลี่ยน PIN",
     "removePin": "ลบ PIN", "enterPin": "กรอก PIN ของคุณ", "newPin": "PIN ใหม่ 6 หลัก", "confirmPin": "ยืนยัน PIN",
     "pinMismatch": "PIN ไม่ตรงกัน", "pinLength": "PIN ต้องมี 6 หลัก", "wrongPin": "PIN ไม่ถูกต้อง", "pinSaved": "บันทึก PIN แล้ว",
@@ -212,5 +213,22 @@
     "unauthorized": "เซสชันหมดอายุ กรุณาเข้าสู่ระบบใหม่", "tooLarge": "ภาพใหญ่เกินไป (สูงสุด 10 MB)",
     "callFailed": "ไม่สามารถเปิดแอปโทรศัพท์ได้"
   },
-  "status": { "normal": "ปกติ", "caution": "ควรระวัง", "urgent": "ฉุกเฉิน" }
+  "status": { "normal": "ปกติ", "caution": "ควรระวัง", "urgent": "ฉุกเฉิน" },
+  "keepAlive": {
+    "title": "ให้บัตรอยู่บนเครื่องนี้ต่อไป",
+    "intro": "{{brand}} อาจหยุดแอป MediFirstCard หลังรีสตาร์ต ทำให้บัตรหายไป การตั้งค่าเหล่านี้ช่วยป้องกัน:",
+    "brandOther": "โทรศัพท์ของคุณ",
+    "autostart": "Autostart (เริ่มอัตโนมัติ)",
+    "autostartHint": "เปิดให้ MediFirstCard",
+    "batteryXiaomi": "ประหยัดแบตเตอรี่",
+    "battery": "แบตเตอรี่",
+    "batteryHintOptimized": "ตอนนี้: จำกัด · ตั้งเป็น ไม่จำกัด",
+    "batteryHintOk": "ไม่จำกัด",
+    "statusBatteryOk": "แบตเตอรี่: ไม่จำกัด",
+    "statusBatteryWarn": "แบตเตอรี่: จำกัด — บัตรอาจไม่กลับมาหลังรีสตาร์ต",
+    "statusAutostartOk": "Autostart: เปิดแล้ว",
+    "statusAutostartWarn": "Autostart: ยังไม่ได้ยืนยัน",
+    "open": "เปิด",
+    "later": "ไว้ทีหลัง"
+  }
 }

@@ -1,17 +1,21 @@
-import { useEffect, useState } from "react";
-import { StyleSheet, View } from "react-native";
-import { router } from "expo-router";
-import { ActivityIndicator, Banner, Button, Divider, List, Snackbar, Switch, Text, useTheme, Portal } from "react-native-paper";
+import { useCallback, useEffect, useState } from "react";
+import { AppState, StyleSheet, View } from "react-native";
+import { router, useFocusEffect } from "expo-router";
+import { ActivityIndicator, Banner, Button, Dialog, Divider, List, Snackbar, Switch, Text, useTheme, Portal } from "react-native-paper";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { DEFAULT_LOCK_SCREEN_FIELDS, type LockScreenFields } from "@mfc/shared";
 import { api, ApiError, errorKey, profileExists, type EmergencyCard } from "../lib/api";
 import { hideLockScreenCard, isLockScreenCardOn, showLockScreenCard } from "../lib/notifications";
+import {
+  isAutostartConfirmed, isBatteryUnrestricted, keepAliveSteps, markAutostartConfirmed, markKeepAliveAsked,
+  openAutostartSettings, openBatterySettings, vendor, wasKeepAliveAsked, type KeepAliveStep,
+} from "../lib/keepAlive";
 import { Screen } from "../components/Screen";
 import { Section } from "../components/Section";
 import { EmergencyCardView } from "../components/EmergencyCardView";
-import { radius, space } from "../theme/tokens";
+import { palette, radius, space } from "../theme/tokens";
 
 const FIELD_KEYS: (keyof LockScreenFields)[] = ["name", "bloodType", "allergies", "conditions", "medications", "contact"];
 
@@ -34,6 +38,34 @@ export default function LockScreen() {
   const [busy, setBusy] = useState(false);
   const [fields, setFields] = useState<LockScreenFields>(DEFAULT_LOCK_SCREEN_FIELDS);
   const [snack, setSnack] = useState<Snack | null>(null);
+
+  // Phone settings that keep the card alive across restarts; re-read whenever the screen is
+  // in front again (the person comes back from the settings page).
+  const steps = keepAliveSteps();
+  const brand = vendor() === "xiaomi" ? "Xiaomi" : vendor() === "samsung" ? "Samsung" : t("keepAlive.brandOther");
+  const [batteryOk, setBatteryOk] = useState<boolean | null>(null);
+  const [autostartOk, setAutostartOk] = useState<boolean | null>(null);
+  const [keepOpen, setKeepOpen] = useState(false);
+  const readKeepAlive = useCallback(async () => {
+    const [b, a] = await Promise.all([isBatteryUnrestricted(), isAutostartConfirmed()]);
+    setBatteryOk(b);
+    setAutostartOk(a);
+    return steps.every((s) => (s === "battery" ? b : a));
+  }, [steps]);
+  useFocusEffect(useCallback(() => { void readKeepAlive(); }, [readKeepAlive]));
+  useEffect(() => {
+    const sub = AppState.addEventListener("change", (s) => { if (s === "active") void readKeepAlive(); });
+    return () => sub.remove();
+  }, [readKeepAlive]);
+  const stepOk = (s: KeepAliveStep) => (s === "battery" ? batteryOk : autostartOk);
+  const openStep = (s: KeepAliveStep) => void (s === "battery" ? openBatterySettings() : openAutostartSettings()).then(readKeepAlive);
+  const stepTitle = (s: KeepAliveStep) => (s === "battery" ? (vendor() === "xiaomi" ? t("keepAlive.batteryXiaomi") : t("keepAlive.battery")) : t("keepAlive.autostart"));
+  const stepHint = (s: KeepAliveStep) =>
+    s === "battery" ? (batteryOk ? t("keepAlive.batteryHintOk") : t("keepAlive.batteryHintOptimized")) : t("keepAlive.autostartHint");
+  const stepStatus = (s: KeepAliveStep) =>
+    s === "battery"
+      ? (batteryOk ? t("keepAlive.statusBatteryOk") : t("keepAlive.statusBatteryWarn"))
+      : (autostartOk ? t("keepAlive.statusAutostartOk") : t("keepAlive.statusAutostartWarn"));
 
   useEffect(() => {
     let alive = true;
@@ -78,8 +110,14 @@ export default function LockScreen() {
     setBusy(true);
     try {
       const ok = await pin(data);
-      if (ok) setOn(true);
-      else {
+      if (ok) {
+        setOn(true);
+        // Ask once, right when it matters, and only while something still needs doing.
+        if (!(await readKeepAlive()) && !(await wasKeepAliveAsked())) {
+          await markKeepAliveAsked();
+          setKeepOpen(true);
+        }
+      } else {
         setOn(false);
         setSnack({ text: t("lockScreen.permissionDenied") });
       }
@@ -157,6 +195,19 @@ export default function LockScreen() {
               {t("lockScreen.deviceHint")}
             </Text>
           ) : null}
+          {on
+            ? steps.map((s) => {
+                const ok = stepOk(s);
+                if (ok === null) return null;
+                return (
+                  <View key={s} style={[styles.keepRow, !ok && { backgroundColor: palette.cautionContainer }]}>
+                    <MaterialCommunityIcons name={ok ? "check-circle" : "alert"} size={20} color={ok ? palette.normal : palette.caution} />
+                    <Text variant="bodyMedium" style={[styles.keepText, { color: ok ? palette.normal : palette.caution }]}>{stepStatus(s)}</Text>
+                    {!ok ? <Button compact onPress={() => openStep(s)}>{t("keepAlive.open")}</Button> : null}
+                  </View>
+                );
+              })
+            : null}
         </Section>
 
         <Section title={t("lockScreen.fieldsTitle")}>
@@ -207,6 +258,38 @@ export default function LockScreen() {
         </Section>
       </Screen>
 
+      <Portal>
+        <Dialog visible={keepOpen} onDismiss={() => setKeepOpen(false)}>
+          <Dialog.Title>{t("keepAlive.title")}</Dialog.Title>
+          <Dialog.Content style={styles.keepContent}>
+            <Text variant="bodyMedium" style={{ color: theme.colors.onSurfaceVariant }}>{t("keepAlive.intro", { brand })}</Text>
+            <View style={[styles.stepRows, { borderColor: theme.colors.outlineVariant }]}>
+              {steps.map((s, i) => (
+                <View key={s} style={[styles.stepRow, i > 0 && { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: theme.colors.outlineVariant }]}>
+                  <View style={[styles.stepNo, { backgroundColor: theme.colors.primaryContainer }]}>
+                    <Text variant="labelMedium" style={{ color: theme.colors.onPrimaryContainer }}>{i + 1}</Text>
+                  </View>
+                  <View style={styles.stepText}>
+                    <Text variant="bodyLarge" style={styles.stepTitle}>{stepTitle(s)}</Text>
+                    <Text variant="bodySmall" style={{ color: stepOk(s) ? palette.normal : palette.caution }}>{stepHint(s)}</Text>
+                  </View>
+                  <Button mode="contained-tonal" compact onPress={() => openStep(s)}>{t("keepAlive.open")}</Button>
+                </View>
+              ))}
+            </View>
+          </Dialog.Content>
+          <Dialog.Actions>
+            <Button onPress={() => setKeepOpen(false)}>{t("keepAlive.later")}</Button>
+            <Button
+              mode="contained"
+              onPress={() => { setKeepOpen(false); if (steps.includes("autostart")) void markAutostartConfirmed().then(readKeepAlive); }}
+            >
+              {t("common.done")}
+            </Button>
+          </Dialog.Actions>
+        </Dialog>
+      </Portal>
+
       <Portal><Snackbar
         visible={snack !== null}
         onDismiss={() => setSnack(null)}
@@ -229,4 +312,12 @@ const styles = StyleSheet.create({
   btnContent: { minHeight: 48 },
   previewLoading: { marginVertical: space.lg },
   previewText: { textAlign: "center", paddingVertical: space.lg },
+  keepRow: { flexDirection: "row", alignItems: "center", gap: space.sm, paddingLeft: space.lg, paddingRight: space.sm, paddingVertical: space.sm, borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: "rgba(0,0,0,0.08)" },
+  keepText: { flex: 1 },
+  keepContent: { gap: space.md },
+  stepRows: { borderWidth: StyleSheet.hairlineWidth, borderRadius: radius.md, overflow: "hidden" },
+  stepRow: { flexDirection: "row", alignItems: "center", gap: space.sm, paddingHorizontal: space.md, paddingVertical: space.sm },
+  stepNo: { width: 24, height: 24, borderRadius: 12, alignItems: "center", justifyContent: "center" },
+  stepText: { flex: 1, minWidth: 0 },
+  stepTitle: { fontWeight: "600" },
 });
