@@ -49,10 +49,7 @@ export default function LockScreen() {
 
   /** Post the pinned notification for a payload; false when notifications are not allowed. */
   function pin(payload: Pick<EmergencyCard, "lines" | "lastReviewedAt">): Promise<boolean> {
-    return showLockScreenCard(
-      { lines: payload.lines, lastReviewedAt: payload.lastReviewedAt },
-      { channelName: t("lockScreen.title"), footer: t("app.name") },
-    );
+    return showLockScreenCard({ lines: payload.lines, lastReviewedAt: payload.lastReviewedAt });
   }
 
   async function toggle(next: boolean) {

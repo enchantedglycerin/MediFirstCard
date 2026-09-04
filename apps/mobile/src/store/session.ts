@@ -1,6 +1,8 @@
 import { create } from "zustand";
 import { secure, KEYS } from "../lib/secure";
 import { hasPin, clearPin } from "../lib/pin";
+import { queryClient } from "../lib/query";
+import { hideLockScreenCard } from "../lib/notifications";
 
 const DEFAULT_BASE = process.env.EXPO_PUBLIC_API_URL ?? "http://localhost:3000";
 
@@ -52,6 +54,7 @@ export const useSession = create<SessionState>((set) => ({
   },
 
   signIn: async (t) => {
+    queryClient.clear(); // never show a previous account's cached screens to the next one
     await Promise.all([
       secure.set(KEYS.accessToken, t.accessToken),
       secure.set(KEYS.refreshToken, t.refreshToken),
@@ -67,7 +70,11 @@ export const useSession = create<SessionState>((set) => ({
 
   signOut: async () => {
     // A PIN protects a signed-in session; drop it with the session so the next user is not locked out.
-    await Promise.all([secure.del(KEYS.accessToken), secure.del(KEYS.refreshToken), secure.del(KEYS.email), clearPin()]);
+    await Promise.all([
+      secure.del(KEYS.accessToken), secure.del(KEYS.refreshToken), secure.del(KEYS.email), clearPin(),
+      hideLockScreenCard().catch(() => undefined), // the pinned card belongs to this account
+    ]);
+    queryClient.clear();
     set({ accessToken: null, refreshToken: null, email: null, status: "signedOut", pinEnabled: false, unlocked: true });
   },
 

@@ -1,0 +1,25 @@
+plugins {
+  id 'com.android.library'
+  id 'expo-module-gradle-plugin'
+}
+
+group = 'com.medifirstcard.lockcard'
+version = '1.0.0'
+
+android {
+  namespace "expo.modules.lockcard"
+  defaultConfig {
+    versionCode 1
+    versionName "1.0.0"
+  }
+}
+
+dependencies {
+  // NotificationCompat / NotificationManagerCompat live in androidx.core. expo-modules-core
+  // exposes androidx.core:core-ktx with `api`, but the expo-module-gradle-plugin only adds
+  // expo-modules-core to local modules as a `compileOnly` dependency (see
+  // ProjectConfiguration.applyDefaultDependencies), so we declare androidx.core explicitly to
+  // guarantee it is on both the compile and runtime classpath. Same artifact + version that
+  // expo-notifications pins (androidx.core:core:1.17.0), avoiding any version skew.
+  implementation 'androidx.core:core:1.17.0'
+}

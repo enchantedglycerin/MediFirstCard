@@ -77,16 +77,21 @@ function StartupServices() {
     if (status !== "signedIn" || !unlocked) return;
     const repin = () => {
       console.log("[lockcard] checking pinned card (launch/resume)");
-      void ensureLockScreenCardPinned(
-        async () => { const c = await api.emergencyCard(); return { lines: c.lines, lastReviewedAt: c.lastReviewedAt }; },
-        { channelName: t("lockScreen.title"), footer: t("app.name") },
-      );
+      void ensureLockScreenCardPinned(async () => {
+        const c = await api.emergencyCard();
+        return { lines: c.lines, lastReviewedAt: c.lastReviewedAt };
+      });
     };
     // First signed-in launch: ask for notifications, camera and photos up front, then re-pin.
-    void requestAllPermissionsOnce().finally(repin);
+    // Wait for the first frame: a system permission dialog raised while the splash is still up
+    // can leave the app behind the splash window (seen on One UI 5 / Android 13), so ask a
+    // moment later and hide the splash once more afterwards, which is harmless if already hidden.
+    const ask = setTimeout(() => {
+      void requestAllPermissionsOnce().finally(() => { void SplashScreen.hideAsync(); repin(); });
+    }, 600);
     const sub = AppState.addEventListener("change", (s) => { if (s === "active") repin(); });
-    return () => sub.remove();
-  }, [status, unlocked, t]);
+    return () => { clearTimeout(ask); sub.remove(); };
+  }, [status, unlocked]);
 
   return (
     <Portal>
