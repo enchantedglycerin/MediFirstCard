@@ -10,7 +10,7 @@ import { api, ApiError, errorKey, profileExists, type EmergencyCard } from "../l
 import { hideLockScreenCard, isLockScreenCardOn, showLockScreenCard } from "../lib/notifications";
 import {
   isAutostartConfirmed, isBatteryUnrestricted, keepAliveSteps, markAutostartConfirmed, markKeepAliveAsked,
-  openAutostartSettings, openBatterySettings, vendor, wasKeepAliveAsked, type KeepAliveStep,
+  openAutostartSettings, openBatterySettings, vendorName, wasKeepAliveAsked, type KeepAliveStep,
 } from "../lib/keepAlive";
 import { Screen } from "../components/Screen";
 import { Section } from "../components/Section";
@@ -42,7 +42,7 @@ export default function LockScreen() {
   // Phone settings that keep the card alive across restarts; re-read whenever the screen is
   // in front again (the person comes back from the settings page).
   const steps = keepAliveSteps();
-  const brand = vendor() === "xiaomi" ? "Xiaomi" : vendor() === "samsung" ? "Samsung" : t("keepAlive.brandOther");
+  const brand = vendorName() || t("keepAlive.brandOther");
   const [batteryOk, setBatteryOk] = useState<boolean | null>(null);
   const [autostartOk, setAutostartOk] = useState<boolean | null>(null);
   const [keepOpen, setKeepOpen] = useState(false);
@@ -59,7 +59,7 @@ export default function LockScreen() {
   }, [readKeepAlive]);
   const stepOk = (s: KeepAliveStep) => (s === "battery" ? batteryOk : autostartOk);
   const openStep = (s: KeepAliveStep) => void (s === "battery" ? openBatterySettings() : openAutostartSettings()).then(readKeepAlive);
-  const stepTitle = (s: KeepAliveStep) => (s === "battery" ? (vendor() === "xiaomi" ? t("keepAlive.batteryXiaomi") : t("keepAlive.battery")) : t("keepAlive.autostart"));
+  const stepTitle = (s: KeepAliveStep) => (s === "battery" ? t("keepAlive.battery") : t("keepAlive.autostart"));
   const stepHint = (s: KeepAliveStep) =>
     s === "battery" ? (batteryOk ? t("keepAlive.batteryHintOk") : t("keepAlive.batteryHintOptimized")) : t("keepAlive.autostartHint");
   const stepStatus = (s: KeepAliveStep) =>
