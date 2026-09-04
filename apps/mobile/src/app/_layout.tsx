@@ -151,6 +151,7 @@ export default function RootLayout() {
             <Stack.Screen name="lock-screen" options={{ title: t("lockScreen.title") }} />
             <Stack.Screen name="rescuer" options={{ title: t("card.preview") }} />
             <Stack.Screen name="share" options={{ title: t("share.title") }} />
+            <Stack.Screen name="alerts" options={{ title: t("alerts.title") }} />
             <Stack.Screen name="record/[id]" options={{ title: t("records.detail") }} />
           </Stack>
           <StartupServices />

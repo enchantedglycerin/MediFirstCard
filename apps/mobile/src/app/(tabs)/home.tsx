@@ -155,7 +155,7 @@ export default function Home() {
               <Text variant="bodyLarge">{t("home.records")}</Text>
             </Card.Content>
           </Card>
-          <Card mode="contained" style={styles.tile} onPress={() => router.push("/more")}>
+          <Card mode="contained" style={styles.tile} onPress={() => router.push("/alerts")}>
             <Card.Content style={styles.tileContent}>
               <View style={styles.tileRow}>
                 <Text variant="displaySmall" style={styles.bold}>{notes.data ? String(notes.data.length) : "—"}</Text>
