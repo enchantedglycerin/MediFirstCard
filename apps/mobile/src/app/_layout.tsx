@@ -75,21 +75,23 @@ function StartupServices() {
 
   useEffect(() => {
     if (status !== "signedIn" || !unlocked) return;
-    const repin = () => {
-      console.log("[lockcard] checking pinned card (launch/resume)");
+    // On a cold launch always re-post from the server: after an app update the native receiver
+    // brings back the last stored text, which may predate the update or an edit made elsewhere.
+    const repin = (force: boolean) => {
+      console.log(`[lockcard] checking pinned card (${force ? "launch" : "resume"})`);
       void ensureLockScreenCardPinned(async () => {
         const c = await api.emergencyCard();
         return { lines: c.lines, lastReviewedAt: c.lastReviewedAt };
-      });
+      }, { force });
     };
     // First signed-in launch: ask for notifications, camera and photos up front, then re-pin.
     // Wait for the first frame: a system permission dialog raised while the splash is still up
     // can leave the app behind the splash window (seen on One UI 5 / Android 13), so ask a
     // moment later and hide the splash once more afterwards, which is harmless if already hidden.
     const ask = setTimeout(() => {
-      void requestAllPermissionsOnce().finally(() => { void SplashScreen.hideAsync(); repin(); });
+      void requestAllPermissionsOnce().finally(() => { void SplashScreen.hideAsync(); repin(true); });
     }, 600);
-    const sub = AppState.addEventListener("change", (s) => { if (s === "active") repin(); });
+    const sub = AppState.addEventListener("change", (s) => { if (s === "active") repin(false); });
     return () => { clearTimeout(ask); sub.remove(); };
   }, [status, unlocked]);
 
