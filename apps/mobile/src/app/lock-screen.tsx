@@ -190,11 +190,6 @@ export default function LockScreen() {
               {on ? t("lockScreen.shown") : t("lockScreen.hidden")}
             </Text>
           </View>
-          {on ? (
-            <Text variant="bodySmall" style={{ color: theme.colors.onSurfaceVariant, paddingHorizontal: 16, paddingBottom: 12 }}>
-              {t("lockScreen.deviceHint")}
-            </Text>
-          ) : null}
           {on
             ? steps.map((s) => {
                 const ok = stepOk(s);

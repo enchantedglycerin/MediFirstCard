@@ -57,7 +57,6 @@
   },
   "lockScreen": {
     "notificationTitle": "Emergency medical card",
-    "deviceHint": "If your lock screen shows only an icon, change the phone setting: Settings → Lock screen → Notifications → show content / Details (on Samsung phones). The app cannot change this for you.",
     "title": "Lock-screen card", "showOnLockScreen": "Show card on lock screen",
     "exposureWarning": "Anyone holding your phone can read the fields you show here, even when locked. Show only what could save your life.",
     "fields": {

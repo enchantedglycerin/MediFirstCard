@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { router, useFocusEffect } from "expo-router";
 import {
-  ActivityIndicator, Badge, Button, Card, Chip, Divider, List, ProgressBar, Snackbar, Text, useTheme, Portal,
+  ActivityIndicator, Button, Card, Chip, Divider, List, ProgressBar, Snackbar, Text, useTheme, Portal,
 } from "react-native-paper";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
@@ -157,12 +157,7 @@ export default function Home() {
           </Card>
           <Card mode="contained" style={styles.tile} onPress={() => router.push("/alerts")}>
             <Card.Content style={styles.tileContent}>
-              <View style={styles.tileRow}>
-                <Text variant="displaySmall" style={styles.bold}>{notes.data ? String(notes.data.length) : "—"}</Text>
-                {unread > 0 ? (
-                  <Badge size={24} style={{ backgroundColor: theme.colors.primary, color: theme.colors.onPrimary }}>{unread}</Badge>
-                ) : null}
-              </View>
+              <Text variant="displaySmall" style={styles.bold}>{notes.data ? String(notes.data.length) : "—"}</Text>
               <Text variant="bodyLarge">{t("home.alerts")}</Text>
               {unread > 0 ? (
                 <Text variant="bodySmall" style={{ color: theme.colors.onSurfaceVariant }}>{t("home.unread", { count: unread })}</Text>
@@ -239,7 +234,6 @@ const styles = StyleSheet.create({
   tiles: { flexDirection: "row", gap: space.md },
   tile: { flex: 1, borderRadius: radius.lg },
   tileContent: { gap: space.xs, paddingVertical: space.lg },
-  tileRow: { flexDirection: "row", alignItems: "center", gap: space.sm },
   actions: { gap: space.sm },
   loading: { marginVertical: space.xl },
   disc: { textAlign: "center", marginTop: space.md },
