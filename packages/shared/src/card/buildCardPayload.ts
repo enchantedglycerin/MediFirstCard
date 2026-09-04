@@ -46,6 +46,9 @@ export interface CardLine {
   phone?: string;
 }
 
+/** Sentinel value of the allergy line when the user marked "none known"; renderers translate it. */
+export const NO_KNOWN_DRUG_ALLERGY = "No known drug allergies";
+
 /** Thai national emergency medical service number (สถาบันการแพทย์ฉุกเฉินแห่งชาติ). */
 export const EMERGENCY_NUMBER = "1669";
 
@@ -92,14 +95,15 @@ export function buildCardPayload(profile: CardProfile, fields: LockScreenFields)
   }
 
   if (fields.allergies) {
-    if (profile.noKnownDrugAllergy) {
-      lines.push({ kind: "allergy", label: "Allergies", value: "No known drug allergies", urgent: false });
-    } else {
-      const allergies = (profile.allergies ?? []).filter((a) => a.substance.trim().length > 0);
+    // Listed allergies always win: a stale "none known" flag must never hide a real allergy.
+    const allergies = (profile.allergies ?? []).filter((a) => a.substance.trim().length > 0);
+    if (allergies.length > 0) {
       for (const a of allergies) {
         const sev = a.severity && a.severity !== "mild" ? ` (${a.severity})` : "";
         lines.push({ kind: "allergy", label: "Allergy", value: `${a.substance}${sev}`, urgent: true });
       }
+    } else if (profile.noKnownDrugAllergy) {
+      lines.push({ kind: "allergy", label: "Allergies", value: NO_KNOWN_DRUG_ALLERGY, urgent: false });
     }
   }
 
@@ -128,10 +132,13 @@ export function buildCardPayload(profile: CardProfile, fields: LockScreenFields)
   return { lines, lastReviewedAt: profile.lastReviewedAt ?? null };
 }
 
-/** One-line body for the sticky notification: blood group + top allergy. */
-export function notificationTitle(payload: CardPayload): string {
-  const blood = payload.lines.find((l) => l.kind === "blood");
-  const allergy = payload.lines.find((l) => l.kind === "allergy" && l.urgent);
-  const parts = [blood?.value, allergy?.value].filter(Boolean);
-  return parts.length ? parts.join(" · ") : "MediFirstCard – Emergency";
+/**
+ * Bold title of the pinned notification: "<label> · <blood> · <name>". Android already shows the
+ * app name in the header, so the title carries data instead; blood sits before the name so it
+ * survives a truncated line. Everything else goes in the body, without repeating these two.
+ */
+export function notificationTitle(payload: CardPayload, label: string): string {
+  const name = payload.lines.find((l) => l.kind === "identity")?.value;
+  const blood = payload.lines.find((l) => l.kind === "blood")?.value;
+  return [label, blood, name].filter(Boolean).join(" · ");
 }

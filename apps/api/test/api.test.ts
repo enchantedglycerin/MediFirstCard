@@ -128,3 +128,52 @@ describe("records + extraction", () => {
     expect(list2.body.length).toBe(0);
   });
 });
+
+describe("no known drug allergies vs the allergy list", () => {
+  it("adding an allergy clears the flag, and the flag is refused while allergies exist", async () => {
+    const u = await registerUser(t, "nkda@t.com");
+    const h = bearer(u.accessToken);
+
+    const put = await t.agent.put("/api/v1/me/profile").set(h).send({ nameEn: "Somchai", noKnownDrugAllergy: true });
+    expect(put.status).toBe(200);
+    expect(put.body.noKnownDrugAllergy).toBe(true);
+
+    // a profile save that omits the flag leaves it untouched
+    const again = await t.agent.put("/api/v1/me/profile").set(h).send({ nameEn: "Somchai J." });
+    expect(again.status).toBe(200);
+    expect(again.body.noKnownDrugAllergy).toBe(true);
+
+    const allergy = await t.agent.post("/api/v1/me/allergies").set(h).send({ substanceEn: "Penicillin", severity: "severe" });
+    expect(allergy.status).toBe(201);
+    const profile = await t.agent.get("/api/v1/me/profile").set(h);
+    expect(profile.body.noKnownDrugAllergy).toBe(false);
+
+    const refused = await t.agent.put("/api/v1/me/no-known-drug-allergy").set(h).send({ value: true });
+    expect(refused.status).toBe(400);
+    expect(refused.body.code).toBe("ALLERGIES_EXIST");
+    const refusedViaProfile = await t.agent.put("/api/v1/me/profile").set(h).send({ nameEn: "Somchai", noKnownDrugAllergy: true });
+    expect(refusedViaProfile.status).toBe(400);
+    expect(refusedViaProfile.body.code).toBe("ALLERGIES_EXIST");
+
+    // the card shows the real allergy, never the "none known" line
+    const card = await t.agent.get("/api/v1/me/emergency-card").set(h);
+    const allergyLines = (card.body.lines as { kind: string; value: string; urgent: boolean }[]).filter((l) => l.kind === "allergy");
+    expect(allergyLines).toHaveLength(1);
+    expect(allergyLines[0]!.urgent).toBe(true);
+    expect(allergyLines[0]!.value).toContain("Penicillin");
+
+    // once the list is empty again the flag can be set through its own endpoint
+    const del = await t.agent.delete(`/api/v1/me/allergies/${allergy.body.id}`).set(h);
+    expect(del.status).toBe(200);
+    const set = await t.agent.put("/api/v1/me/no-known-drug-allergy").set(h).send({ value: true });
+    expect(set.status).toBe(200);
+    expect(set.body.noKnownDrugAllergy).toBe(true);
+  });
+
+  it("needs a profile before the flag can be set", async () => {
+    const u = await registerUser(t, "nkda-noprofile@t.com");
+    const res = await t.agent.put("/api/v1/me/no-known-drug-allergy").set(bearer(u.accessToken)).send({ value: true });
+    expect(res.status).toBe(404);
+    expect(res.body.code).toBe("NO_PROFILE");
+  });
+});

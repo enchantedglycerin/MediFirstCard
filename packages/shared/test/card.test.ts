@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import {
   buildCardPayload,
   notificationTitle,
+  NO_KNOWN_DRUG_ALLERGY,
   dialable,
   EMERGENCY_NUMBER,
   DEFAULT_LOCK_SCREEN_FIELDS,
@@ -57,9 +58,27 @@ describe("buildCardPayload", () => {
     expect(allergy?.urgent).toBe(false);
   });
 
-  it("builds a notification title from blood group and top allergy", () => {
+  it("lets listed allergies win over a stale 'none known' flag", () => {
+    const { lines } = buildCardPayload({ ...profile, noKnownDrugAllergy: true }, DEFAULT_LOCK_SCREEN_FIELDS);
+    const allergies = lines.filter((l) => l.kind === "allergy");
+    expect(allergies).toHaveLength(1);
+    expect(allergies[0]?.value).toBe("Penicillin (severe)");
+    expect(allergies[0]?.urgent).toBe(true);
+    expect(lines.some((l) => l.value === NO_KNOWN_DRUG_ALLERGY)).toBe(false);
+  });
+
+  it("omits the allergy line when nothing is known either way", () => {
+    const { lines } = buildCardPayload({ ...profile, noKnownDrugAllergy: false, allergies: [] }, DEFAULT_LOCK_SCREEN_FIELDS);
+    expect(lines.some((l) => l.kind === "allergy")).toBe(false);
+  });
+
+  it("titles the notification with label, blood group and name, in that order", () => {
     const payload = buildCardPayload(profile, DEFAULT_LOCK_SCREEN_FIELDS);
-    expect(notificationTitle(payload)).toBe("O− · Penicillin (severe)");
+    expect(notificationTitle(payload, "Emergency")).toBe("Emergency · O− · สมชาย ใจดี");
+    const nameless = buildCardPayload({ ...profile, nameTh: null, nameEn: null }, DEFAULT_LOCK_SCREEN_FIELDS);
+    expect(notificationTitle(nameless, "Emergency")).toBe("Emergency · O−");
+    const bare = buildCardPayload({}, DEFAULT_LOCK_SCREEN_FIELDS);
+    expect(notificationTitle(bare, "Emergency")).toBe("Emergency");
   });
 
   it("gives contact lines a dialable phone so every surface can tap-to-call", () => {

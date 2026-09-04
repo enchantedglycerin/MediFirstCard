@@ -3,7 +3,7 @@ import { and, eq } from "drizzle-orm";
 import QRCode from "qrcode";
 import {
   emergencyProfileInput, allergyInput, conditionInput, medicationInput, contactInput,
-  lockScreenFieldsSchema, DEFAULT_LOCK_SCREEN_FIELDS, type LockScreenFields,
+  lockScreenFieldsSchema, noKnownDrugAllergyInput, DEFAULT_LOCK_SCREEN_FIELDS, type LockScreenFields,
 } from "@mfc/shared";
 import type { AppContext } from "../../context.js";
 import { env } from "../../config/env.js";
@@ -13,6 +13,17 @@ import { users, emergencyProfiles, allergies, conditions, medications, emergency
 import { buildCardForUser, getOrCreateEmergencyLink } from "./service.js";
 
 const uid = (req: { userId?: string }) => req.userId as string;
+
+async function hasAllergies(ctx: AppContext, userId: string): Promise<boolean> {
+  const [row] = await ctx.db.select({ id: allergies.id }).from(allergies).where(eq(allergies.userId, userId)).limit(1);
+  return row !== undefined;
+}
+
+/** "No known drug allergies" and a listed allergy contradict each other; the list wins. */
+async function clearNoKnownDrugAllergy(ctx: AppContext, userId: string): Promise<void> {
+  await ctx.db.update(emergencyProfiles).set({ noKnownDrugAllergy: false, updatedAt: new Date() })
+    .where(eq(emergencyProfiles.userId, userId));
+}
 
 function profileDto(row: typeof emergencyProfiles.$inferSelect) {
   return {
@@ -40,6 +51,8 @@ interface CrudCfg {
   parse: (body: unknown) => Record<string, unknown>;
   toRow: (input: Record<string, unknown>) => Record<string, unknown>;
   toDto: (row: Record<string, unknown>) => Record<string, unknown>;
+  /** Runs after a successful insert (e.g. an allergy clears the "none known" flag). */
+  afterInsert?: (userId: string) => Promise<void>;
 }
 
 function crud(ctx: AppContext, cfg: CrudCfg): Router {
@@ -55,6 +68,7 @@ function crud(ctx: AppContext, cfg: CrudCfg): Router {
     try {
       const input = cfg.parse(req.body);
       const [row] = await ctx.db.insert(table).values({ userId: uid(req), ...cfg.toRow(input) } as never).returning();
+      await cfg.afterInsert?.(uid(req));
       res.status(201).json(cfg.toDto(row as Record<string, unknown>));
     } catch (e) { next(e); }
   });
@@ -99,6 +113,10 @@ export function profileRoutes(ctx: AppContext): Router {
   r.put("/me/profile", async (req, res, next) => {
     try {
       const input = emergencyProfileInput.parse(req.body);
+      if (input.noKnownDrugAllergy && (await hasAllergies(ctx, uid(req)))) {
+        res.status(400).json({ code: "ALLERGIES_EXIST", message: "Delete the listed allergies before marking none known" });
+        return;
+      }
       const enc = {
         firstNameThEnc: encryptOptional(input.firstNameTh),
         lastNameThEnc: encryptOptional(input.lastNameTh),
@@ -110,7 +128,8 @@ export function profileRoutes(ctx: AppContext): Router {
         sex: input.sex,
         bloodAbo: input.bloodAbo,
         bloodRh: input.bloodRh,
-        noKnownDrugAllergy: input.noKnownDrugAllergy,
+        // Optional: a save that omits the flag leaves the user's earlier choice untouched.
+        ...(input.noKnownDrugAllergy === undefined ? {} : { noKnownDrugAllergy: input.noKnownDrugAllergy }),
         flags: input.flags,
         insuranceScheme: input.insuranceScheme,
         preferredLanguage: input.preferredLanguage,
@@ -123,6 +142,21 @@ export function profileRoutes(ctx: AppContext): Router {
         .onConflictDoUpdate({ target: emergencyProfiles.userId, set: { ...enc, ...common } })
         .returning();
       res.json(profileDto(row!));
+    } catch (e) { next(e); }
+  });
+
+  r.put("/me/no-known-drug-allergy", async (req, res, next) => {
+    try {
+      const { value } = noKnownDrugAllergyInput.parse(req.body);
+      if (value && (await hasAllergies(ctx, uid(req)))) {
+        res.status(400).json({ code: "ALLERGIES_EXIST", message: "Delete the listed allergies before marking none known" });
+        return;
+      }
+      const [row] = await ctx.db
+        .update(emergencyProfiles).set({ noKnownDrugAllergy: value, lastReviewedAt: new Date(), updatedAt: new Date() })
+        .where(eq(emergencyProfiles.userId, uid(req))).returning();
+      if (!row) { res.status(404).json({ code: "NO_PROFILE", message: "Create a profile first" }); return; }
+      res.json({ noKnownDrugAllergy: row.noKnownDrugAllergy });
     } catch (e) { next(e); }
   });
 
@@ -150,6 +184,7 @@ export function profileRoutes(ctx: AppContext): Router {
   r.use(crud(ctx, {
     path: "/me/allergies", table: allergies,
     parse: (b) => allergyInput.parse(b),
+    afterInsert: (userId) => clearNoKnownDrugAllergy(ctx, userId),
     toRow: (i) => ({
       substanceEnEnc: encryptOptional(i.substanceEn as string | undefined),
       substanceThEnc: encryptOptional(i.substanceTh as string | undefined),

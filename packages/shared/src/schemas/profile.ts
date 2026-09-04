@@ -99,12 +99,15 @@ export const emergencyProfileInput = z.object({
   sex: sex.default("unspecified"),
   bloodAbo: bloodAbo.default("unknown"),
   bloodRh: bloodRh.default("unknown"),
-  noKnownDrugAllergy: z.boolean().default(false),
+  noKnownDrugAllergy: z.boolean().optional(),
   flags: profileFlags.default(DEFAULT_FLAGS),
   insuranceScheme: insuranceScheme.default("unknown"),
   preferredLanguage: z.enum(["th", "en"]).default("th"),
   notes: z.string().max(2000).optional(),
 });
+
+/** PUT /me/no-known-drug-allergy — only meaningful while the allergy list is empty. */
+export const noKnownDrugAllergyInput = z.object({ value: z.boolean() });
 
 export type EmergencyProfileInput = z.infer<typeof emergencyProfileInput>;
 export type AllergyInput = z.infer<typeof allergyInput>;
