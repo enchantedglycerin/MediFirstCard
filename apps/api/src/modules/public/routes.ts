@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { createHmac, timingSafeEqual } from "node:crypto";
 import { and, eq, inArray } from "drizzle-orm";
 import QRCode from "qrcode";
 import type { AppContext } from "../../context.js";
@@ -9,11 +10,24 @@ import { shareLinks, shareAccessLog, medicalRecords } from "../../db/schema.js";
 import { decryptOptional } from "../../crypto/fieldEncryption.js";
 import { buildCardForUser } from "../profile/service.js";
 import { recordView } from "../alerts/service.js";
+import { getStorage } from "../../storage/index.js";
 import { renderEmergencyPage, renderClinicianPage, renderPasscodeForm } from "./html.js";
 
 const lang = (req: { query: Record<string, unknown> }): "th" | "en" => (req.query.lang === "en" ? "en" : "th");
 
 type ShareRow = typeof shareLinks.$inferSelect;
+
+/** Images on a clinician page are fetched by the browser without the passcode, so each URL carries a short-lived signature bound to the link. */
+const IMAGE_TTL_MS = 6 * 60 * 60 * 1000;
+const imageKey = () => env.JWT_SECRET ?? env.FIELD_ENC_KEY ?? "medifirstcard-dev";
+function imageSig(linkId: string, recordId: string, exp: number): string {
+  return createHmac("sha256", imageKey()).update(`${linkId}:${recordId}:${exp}`).digest("base64url");
+}
+function imageSigOk(linkId: string, recordId: string, exp: number, sig: string): boolean {
+  const want = Buffer.from(imageSig(linkId, recordId, exp));
+  const got = Buffer.from(sig);
+  return want.length === got.length && timingSafeEqual(want, got);
+}
 
 function usable(row: ShareRow): boolean {
   if (row.revokedAt) return false;
@@ -77,16 +91,55 @@ export function publicRoutes(ctx: AppContext): Router {
     return row ?? null;
   }
 
-  async function renderRecords(ctx2: AppContext, row: ShareRow, l: "th" | "en"): Promise<string> {
+  async function renderRecords(ctx2: AppContext, row: ShareRow, token: string, l: "th" | "en"): Promise<string> {
     const ids = row.recordIds ?? [];
     const rows = ids.length
       ? await ctx2.db.select().from(medicalRecords).where(and(eq(medicalRecords.userId, row.userId), inArray(medicalRecords.id, ids)))
       : [];
+    rows.sort((a, b) => (b.issuedAt ?? "").localeCompare(a.issuedAt ?? "") || b.createdAt.getTime() - a.createdAt.getTime());
+    const card = await buildCardForUser(ctx2, row.userId).catch(() => null);
+    const ownerName = card?.lines.find((line) => line.kind === "identity")?.value ?? null;
+    const exp = Date.now() + IMAGE_TTL_MS;
     return renderClinicianPage({
       lang: l,
-      records: rows.map((rec) => ({ kind: rec.kind, facility: decryptOptional(rec.facilityEnc), issuedAt: rec.issuedAt, validUntil: rec.validUntil })),
+      ownerName,
+      expiresAt: row.expiresAt ? row.expiresAt.toISOString() : null,
+      records: rows.map((rec) => ({
+        kind: rec.kind,
+        title: decryptOptional(rec.titleEnc),
+        facility: decryptOptional(rec.facilityEnc),
+        doctorName: decryptOptional(rec.doctorNameEnc),
+        doctorLicenseNo: decryptOptional(rec.doctorLicenseNoEnc),
+        issuedAt: rec.issuedAt,
+        validUntil: rec.validUntil,
+        notes: decryptOptional(rec.notesEnc),
+        status: rec.status,
+        createdAt: rec.createdAt.toISOString(),
+        imageUrl: rec.storagePath ? `/s/${token}/records/${rec.id}/image?exp=${exp}&sig=${imageSig(row.id, rec.id, exp)}` : null,
+      })),
     });
   }
+
+  // The scanned document itself, for <img> tags on the clinician page. Needs a live link and a valid signature.
+  r.get("/s/:token/records/:recordId/image", async (req, res, next) => {
+    try {
+      const row = await records(req.params.token as string);
+      if (!row || !usable(row)) { res.status(410).type("text").send("This link has expired."); return; }
+      const recordId = req.params.recordId as string;
+      const exp = Number(req.query.exp);
+      const sig = String(req.query.sig ?? "");
+      if (!(row.recordIds ?? []).includes(recordId) || !Number.isFinite(exp) || exp < Date.now() || !imageSigOk(row.id, recordId, exp, sig)) {
+        res.status(403).type("text").send("Image link is not valid.");
+        return;
+      }
+      const [rec] = await ctx.db.select().from(medicalRecords).where(and(eq(medicalRecords.id, recordId), eq(medicalRecords.userId, row.userId)));
+      if (!rec || !rec.storagePath) { res.status(404).type("text").send("No image."); return; }
+      const buf = await getStorage().get(rec.storagePath);
+      res.setHeader("Content-Type", rec.mime ?? "image/jpeg");
+      res.setHeader("Cache-Control", "private, max-age=300");
+      res.send(buf);
+    } catch (e) { next(e); }
+  });
 
   r.get("/s/:token", async (req, res, next) => {
     try {
@@ -97,7 +150,7 @@ export function publicRoutes(ctx: AppContext): Router {
       await ctx.db.update(shareLinks).set({ viewCount: row.viewCount + 1 }).where(eq(shareLinks.id, row.id));
       await log(ctx, req, row.id, "ok");
       await recordView(ctx, { userId: row.userId, kind: "share_viewed", meta: { via: "web" } });
-      res.type("html").send(await renderRecords(ctx, row, lang(req)));
+      res.type("html").send(await renderRecords(ctx, row, req.params.token as string, lang(req)));
     } catch (e) { next(e); }
   });
 
@@ -124,7 +177,7 @@ export function publicRoutes(ctx: AppContext): Router {
       await ctx.db.update(shareLinks).set({ viewCount: row.viewCount + 1, failedPasscodes: 0 }).where(eq(shareLinks.id, row.id));
       await log(ctx, req, row.id, "ok");
       await recordView(ctx, { userId: row.userId, kind: "share_viewed", meta: { via: "web" } });
-      res.type("html").send(await renderRecords(ctx, row, lang(req)));
+      res.type("html").send(await renderRecords(ctx, row, req.params.token as string, lang(req)));
     } catch (e) { next(e); }
   });
 

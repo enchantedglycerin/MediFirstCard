@@ -76,12 +76,28 @@ describe("clinician share link", () => {
     const view = await t.agent.get(`/s/${token}`);
     expect(view.status).toBe(200);
     expect(view.text).toContain("รพ. ตัวอย่าง");
+    expect(view.text).toContain("ใบรับรองแพทย์ลาป่วย"); // localized kind, not the enum key
+    expect(view.text).not.toContain(">sick_leave<");
+    const imgSrc = view.text.match(/src="([^"]+\/records\/[^"]+\/image[^"]*)"/)?.[1]?.replace(/&amp;/g, "&");
+    expect(imgSrc).toBeTruthy();
+
+    // the browser fetches the image without any auth: the signature in the URL is what admits it
+    const imgRes = await t.agent.get(imgSrc as string).buffer(true).parse((res, cb) => { const chunks: Buffer[] = []; res.on("data", (c: Buffer) => chunks.push(c)); res.on("end", () => cb(null, Buffer.concat(chunks))); });
+    expect(imgRes.status).toBe(200);
+    expect(imgRes.headers["content-type"]).toContain("image/jpeg");
+    expect(Buffer.compare(imgRes.body as Buffer, img)).toBe(0); // the bytes that were uploaded
+    const tampered = await t.agent.get((imgSrc as string).replace(/sig=[^&]+/, "sig=AAAA"));
+    expect(tampered.status).toBe(403);
+    const otherRecord = await t.agent.get((imgSrc as string).replace(cr.body.recordId as string, "00000000-0000-0000-0000-000000000000"));
+    expect(otherRecord.status).toBe(403);
 
     const revoke = await t.agent.post(`/api/v1/share-links/${link.body.id}/revoke`).set(h);
     expect(revoke.status).toBe(200);
 
     const after = await t.agent.get(`/s/${token}`);
     expect(after.status).toBe(410); // expired/revoked
+    const imgAfter = await t.agent.get(imgSrc as string);
+    expect(imgAfter.status).toBe(410); // the image dies with the link
 
     const log = await t.agent.get(`/api/v1/share-links/${link.body.id}/log`).set(h);
     expect(log.body.length).toBeGreaterThanOrEqual(2); // ok view + revoked view

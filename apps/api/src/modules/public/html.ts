@@ -1,4 +1,4 @@
-import { EMERGENCY_NUMBER, dialable, type CardLine } from "@mfc/shared";
+import { EMERGENCY_NUMBER, dialable, i18nMessages, type CardLine } from "@mfc/shared";
 
 function esc(s: unknown): string {
   return String(s ?? "").replace(/[&<>"']/g, (c) => (
@@ -31,6 +31,18 @@ a.ems{display:block;margin:12px 0;padding:14px;border-radius:12px;background:#C6
 .foot{padding:14px 18px;font-size:13px;color:#5b6370;background:#fbfbfd}
 .toggle{display:block;text-align:right;margin:0 0 10px;font-size:14px}
 .disc{margin-top:8px}
+.doc{margin-top:14px}
+.doc .head{background:#005B96}
+.doc .head h1{font-size:18px}
+.doc .head .sub{margin-top:2px;font-size:14px;opacity:.9}
+.kv{display:grid;grid-template-columns:1fr 1fr;gap:6px 12px;padding:12px 18px;border-bottom:1px solid #eef1f4}
+.kv .label{grid-column:1/-1}
+.kv .value{font-size:17px}
+.img{display:block;width:100%;height:auto;background:#eef1f4}
+.imgwrap{padding:12px 18px 4px}
+.imgwrap a{display:block;margin:8px 0 6px;font-size:14px;color:#005B96;text-decoration:none}
+.meta{padding:10px 18px 14px;font-size:13px;color:#5b6370}
+@media(prefers-color-scheme:dark){.kv{border-color:#2a333d}.img{background:#1c242c}}
 @media(prefers-color-scheme:dark){body{background:#0f1418;color:#e6e9ed}.card{background:#171d23}.row{border-color:#2a333d}.foot{background:#131a20;color:#a5aeb8}.label{color:#a5aeb8}}
 </style></head><body><div class="wrap">
 <a class="toggle" href="?lang=${otherLang}">${otherLang === "en" ? "English" : "ภาษาไทย"}</a>
@@ -66,21 +78,63 @@ export function renderEmergencyPage(opts: {
   return shell(t.title, lang, body, lang === "th" ? "en" : "th");
 }
 
+export interface ClinicianRecord {
+  kind: string;
+  title: string | null;
+  facility: string | null;
+  doctorName: string | null;
+  doctorLicenseNo: string | null;
+  issuedAt: string | null;
+  validUntil: string | null;
+  notes: string | null;
+  status: string;
+  /** Signed, short-lived URL of the document image; null when no image was uploaded. */
+  imageUrl: string | null;
+  createdAt: string;
+}
+
+function kindLabel(kind: string, lang: "th" | "en"): string {
+  const kinds = (i18nMessages[lang] as { records: { kinds: Record<string, string> } }).records.kinds;
+  return kinds[kind] ?? kind;
+}
+
+function fmtDate(iso: string | null, lang: "th" | "en"): string {
+  if (!iso) return "—";
+  const d = new Date(`${iso.slice(0, 10)}T00:00:00Z`);
+  if (Number.isNaN(d.getTime())) return iso;
+  return new Intl.DateTimeFormat(lang === "th" ? "th-TH-u-ca-buddhist" : "en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" }).format(d);
+}
+
+/** One card per shared document: type, title, facility, doctor, dates, notes and the scanned image. */
 export function renderClinicianPage(opts: {
-  records: Array<{ kind: string; facility: string | null; issuedAt: string | null; validUntil: string | null }>;
+  ownerName: string | null;
+  records: ClinicianRecord[];
+  expiresAt: string | null;
   lang: "th" | "en";
 }): string {
   const { lang } = opts;
-  const title = lang === "th" ? "เอกสารทางการแพทย์ (สำหรับแพทย์)" : "Medical records (clinician view)";
-  const rows = opts.records.map((r) => `<div class="row">
-    <div class="label">${esc(r.kind)}</div>
-    <div class="value">${esc(r.facility ?? "—")}</div>
-    <div class="label">${esc(r.issuedAt ?? "")}${r.validUntil ? ` → ${esc(r.validUntil)}` : ""}</div>
+  const t = lang === "th"
+    ? { title: "เอกสารทางการแพทย์ (สำหรับแพทย์)", of: "ของ", facility: "สถานพยาบาล", doctor: "แพทย์", licence: "เลขใบอนุญาต", issued: "วันที่ออก", valid: "ใช้ได้ถึง", notes: "หมายเหตุ", open: "เปิดภาพขนาดเต็ม", noImage: "ไม่มีภาพเอกสาร", added: "เพิ่มเมื่อ", reviewed: "ตรวจทานแล้ว", pending: "ยังไม่ตรวจทาน", expires: "ลิงก์นี้หมดอายุ", none: "ไม่มีเอกสารในลิงก์นี้" }
+    : { title: "Medical records (clinician view)", of: "for", facility: "Facility", doctor: "Doctor", licence: "Licence no.", issued: "Issued", valid: "Valid until", notes: "Notes", open: "Open full-size image", noImage: "No image for this document", added: "Added", reviewed: "Reviewed by the owner", pending: "Not yet reviewed by the owner", expires: "This link expires", none: "No documents in this link" };
+  const cards = opts.records.map((r) => `<div class="card doc">
+    <div class="head"><h1>${esc(kindLabel(r.kind, lang))}</h1>${r.title ? `<div class="sub">${esc(r.title)}</div>` : ""}</div>
+    <div class="kv">
+      <div><div class="label">${t.facility}</div><div class="value">${esc(r.facility ?? "—")}</div></div>
+      <div><div class="label">${t.doctor}</div><div class="value">${esc(r.doctorName ?? "—")}${r.doctorLicenseNo ? ` <span style="font-size:13px;color:#5b6370">(${t.licence} ${esc(r.doctorLicenseNo)})</span>` : ""}</div></div>
+      <div><div class="label">${t.issued}</div><div class="value">${esc(fmtDate(r.issuedAt, lang))}</div></div>
+      <div><div class="label">${t.valid}</div><div class="value">${esc(fmtDate(r.validUntil, lang))}</div></div>
+      ${r.notes ? `<div style="grid-column:1/-1"><div class="label">${t.notes}</div><div class="value" style="font-size:16px;white-space:pre-wrap">${esc(r.notes)}</div></div>` : ""}
+    </div>
+    ${r.imageUrl
+      ? `<div class="imgwrap"><a href="${esc(r.imageUrl)}" target="_blank" rel="noopener"><img class="img" src="${esc(r.imageUrl)}" alt="${esc(kindLabel(r.kind, lang))}" loading="lazy"></a><a href="${esc(r.imageUrl)}" target="_blank" rel="noopener">${t.open} ↗</a></div>`
+      : `<div class="meta">${t.noImage}</div>`}
+    <div class="meta">${r.status === "reviewed" ? t.reviewed : t.pending} · ${t.added} ${esc(fmtDate(r.createdAt, lang))}</div>
   </div>`).join("");
-  const body = `<div class="card"><div class="head"><h1>${esc(title)}</h1></div>
-    ${rows || `<div class="row"><div class="value">—</div></div>`}
-    <div class="foot">${lang === "th" ? DISCLAIMER_TH : DISCLAIMER_EN}</div></div>`;
-  return shell(title, lang, body, lang === "th" ? "en" : "th");
+  const heading = opts.ownerName ? `${t.title} ${t.of} ${esc(opts.ownerName)}` : t.title;
+  const body = `<div class="card"><div class="head"><h1>${heading}</h1>${opts.expiresAt ? `<div class="sub">${t.expires} ${esc(fmtDate(opts.expiresAt, lang))}</div>` : ""}</div>
+    <div class="foot">${lang === "th" ? DISCLAIMER_TH : DISCLAIMER_EN}</div></div>
+    ${cards || `<div class="card doc"><div class="row"><div class="value">${t.none}</div></div></div>`}`;
+  return shell(t.title, lang, body, lang === "th" ? "en" : "th");
 }
 
 export function renderPasscodeForm(opts: { token: string; lang: "th" | "en"; error?: boolean }): string {
