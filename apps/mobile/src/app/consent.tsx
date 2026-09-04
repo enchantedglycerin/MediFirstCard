@@ -69,9 +69,6 @@ export default function Consent() {
         />
       </Section>
 
-      <Text variant="bodyMedium" style={[styles.note, { color: theme.colors.onSurfaceVariant }]}>
-        {t("consent.retention")}
-      </Text>
       <Text variant="bodySmall" style={[styles.note, { color: theme.colors.onSurfaceVariant }]}>
         {t("app.disclaimer")}
       </Text>

@@ -24,9 +24,8 @@
   "consent": {
     "title": "Consent",
     "intro": "Before you start, please tell us how MediFirstCard may use your information.",
-    "healthData": "I consent to MediFirstCard collecting, using and displaying my health data (blood type, chronic conditions, drug allergies, medications, medical documents) to (1) show the emergency information I choose on my lock screen and (2) store my own medical documents.",
-    "aiProvider": "I consent to sending document images to AI providers (Google Gemini and SCB 10X Typhoon) for text extraction; the providers may use the data to improve their services.",
-    "retention": "Data is kept until I delete my account and erased within 30 days. I may withdraw consent at any time under More > Privacy at no cost.",
+    "healthData": "I consent to MediFirstCard collecting, storing and displaying the health information I enter (blood type, allergies, medical conditions, medications and medical documents) for the purposes of (1) showing the emergency information I select on my lock screen and to the people I choose to share it with, and (2) keeping my medical documents for my own use. I understand this information is self-reported and is not a substitute for professional medical advice.",
+    "aiProvider": "I consent to images of the documents I scan being sent to third-party AI services (Google Gemini and SCB 10X Typhoon) for text extraction. I understand that these providers process the images under their own terms and may use them to improve their services, and that I may decline this and enter document details manually.",
     "contact": "I have informed my emergency contacts that their name and phone number are stored in this app and may be shown to rescuers.",
     "agree": "I agree"
   },
