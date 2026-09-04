@@ -2,7 +2,7 @@
   "expo": {
     "name": "MediFirstCard",
     "slug": "medifirstcard",
-    "version": "1.0.5",
+    "version": "1.0.6",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "medifirstcard",
@@ -16,7 +16,7 @@
         "backgroundImage": "./assets/images/android-icon-background.png",
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
-      "versionCode": 6
+      "versionCode": 7
     },
     "web": {
       "output": "static",
@@ -59,7 +59,8 @@
           }
         }
       ],
-      "./plugins/withReleaseSigning"
+      "./plugins/withReleaseSigning",
+      "@react-native-community/datetimepicker"
     ],
     "experiments": {
       "typedRoutes": true

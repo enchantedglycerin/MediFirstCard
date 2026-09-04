@@ -100,7 +100,7 @@ export default function Records() {
   return (
     <>
       {review ? (
-        <Screen>
+        <Screen bottomInset={false}>
           <RecordReviewForm
             recordId={review.recordId}
             result={review.result}
@@ -109,7 +109,7 @@ export default function Records() {
           />
         </Screen>
       ) : (
-        <Screen>
+        <Screen bottomInset={false}>
           <Button mode="contained" icon="camera" onPress={() => setSourceOpen(true)} disabled={busy} contentStyle={styles.btnContent}>
             {t("records.scan")}
           </Button>
@@ -136,13 +136,7 @@ export default function Records() {
           ) : null}
 
           {!records.isLoading && !records.isError && list.length === 0 ? (
-            <EmptyState
-              icon="file-document-multiple-outline"
-              title={t("records.empty")}
-              hint={t("records.emptyHint")}
-              actionLabel={t("records.scan")}
-              onAction={() => setSourceOpen(true)}
-            />
+            <EmptyState icon="file-document-multiple-outline" title={t("records.empty")} hint={t("records.emptyHint")} />
           ) : null}
 
           {list.length > 0 ? (

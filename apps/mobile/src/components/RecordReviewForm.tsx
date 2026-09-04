@@ -11,6 +11,7 @@ import {
 } from "@mfc/shared";
 import { api, errorKey, fieldValue, type ExtractResult, type RecordDto } from "../lib/api";
 import { daysUntil, isValidIsoDate } from "../lib/format";
+import { DateField } from "./DateField";
 import { Section } from "./Section";
 import { palette, paletteDark, space } from "../theme/tokens";
 
@@ -195,8 +196,10 @@ export function RecordReviewForm({ recordId, result, onSaved, onCancel }: Props)
   const [facility, setFacility] = useState(() => fieldValue(ex, "hospital"));
   const [doctorName, setDoctorName] = useState(() => fieldValue(ex, "doctor_name"));
   const [doctorLicenseNo, setDoctorLicenseNo] = useState(() => fieldValue(ex, "doctor_license_no"));
-  const [issuedAt, setIssuedAt] = useState(() => fieldValue(ex, "visit_date"));
-  const [validUntil, setValidUntil] = useState(() => defaultValidUntil(initialKind, fieldValue(ex, "visit_date")) ?? "");
+  // The extractor may return a date in any shape; only a clean ISO day survives into the picker.
+  const extractedIssuedAt = isValidIsoDate(fieldValue(ex, "visit_date")) ? fieldValue(ex, "visit_date") : "";
+  const [issuedAt, setIssuedAt] = useState(extractedIssuedAt);
+  const [validUntil, setValidUntil] = useState(() => defaultValidUntil(initialKind, extractedIssuedAt) ?? "");
   const [validUntilTouched, setValidUntilTouched] = useState(false);
   const [notes, setNotes] = useState(() => buildNotes(ex, (k) => String(t(k))));
   const [errors, setErrors] = useState<{ issuedAt?: string; validUntil?: string }>({});
@@ -298,24 +301,28 @@ export function RecordReviewForm({ recordId, result, onSaved, onCancel }: Props)
             band={meta.doctor_license_no?.band}
             autoCapitalize="none"
           />
-          <ReviewField
-            label={t("records.fields.issuedAt")}
-            value={issuedAt}
-            onChangeText={changeIssuedAt}
-            band={meta.visit_date?.band}
-            error={errors.issuedAt}
-            hint={t("records.dateHint")}
-            keyboardType="numbers-and-punctuation"
-            autoCapitalize="none"
-          />
-          <ReviewField
+          <View style={styles.field}>
+            <DateField
+              label={t("records.fields.issuedAt")}
+              value={issuedAt}
+              onChange={changeIssuedAt}
+              maximumDate={new Date()}
+              error={errors.issuedAt}
+              clearable
+            />
+            {meta.visit_date?.band ? (
+              <View style={styles.fieldMeta}>
+                <View style={styles.helper} />
+                <ConfidenceChip band={meta.visit_date.band} />
+              </View>
+            ) : null}
+          </View>
+          <DateField
             label={t("records.fields.validUntil")}
             value={validUntil}
-            onChangeText={changeValidUntil}
+            onChange={changeValidUntil}
             error={errors.validUntil}
-            hint={t("records.dateHint")}
-            keyboardType="numbers-and-punctuation"
-            autoCapitalize="none"
+            clearable
           />
           <ReviewField label={t("records.fields.notes")} value={notes} onChangeText={setNotes} multiline />
         </View>

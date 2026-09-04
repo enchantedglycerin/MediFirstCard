@@ -33,7 +33,7 @@ export default function CardScreen() {
 
   if (profile.isLoading || card.isLoading) {
     return (
-      <Screen scroll={false} style={styles.center}>
+      <Screen bottomInset={false} scroll={false} style={styles.center}>
         <ActivityIndicator size="large" />
       </Screen>
     );
@@ -41,7 +41,7 @@ export default function CardScreen() {
 
   if (profile.isError) {
     return (
-      <Screen scroll={false} style={styles.center}>
+      <Screen bottomInset={false} scroll={false} style={styles.center}>
         <Text variant="bodyLarge" style={[styles.centerText, { color: theme.colors.error }]}>{t(errorKey(profile.error))}</Text>
         <Button mode="contained" icon="refresh" onPress={() => void profile.refetch()}>{t("common.retry")}</Button>
       </Screen>
@@ -50,7 +50,7 @@ export default function CardScreen() {
 
   if (!hasProfile) {
     return (
-      <Screen scroll={false} style={styles.center}>
+      <Screen bottomInset={false} scroll={false} style={styles.center}>
         <EmptyState
           icon="card-account-details-outline"
           title={t("card.empty")}
@@ -66,7 +66,7 @@ export default function CardScreen() {
 
   return (
     <>
-      <Screen>
+      <Screen bottomInset={false}>
         {data ? (
           <EmergencyCardView payload={data} showEms onCallFailed={() => setSnack(t("errors.callFailed"))} />
         ) : (

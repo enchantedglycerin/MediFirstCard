@@ -156,7 +156,7 @@ export default function More() {
 
   return (
     <>
-      <Screen>
+      <Screen bottomInset={false}>
         <Section title={t("more.account")}>
           <List.Item
             title={email ?? t("common.unknown")}

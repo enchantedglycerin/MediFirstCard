@@ -113,9 +113,7 @@ export default function Register() {
           left={<TextInput.Icon icon="lock-outline" />}
           right={eye}
         />
-        <HelperText type={errors.password ? "error" : "info"} visible>
-          {errors.password ?? t("auth.passwordHint")}
-        </HelperText>
+        {errors.password ? <HelperText type="error" visible>{errors.password}</HelperText> : null}
 
         <TextInput
           ref={confirmRef}
@@ -136,6 +134,7 @@ export default function Register() {
           right={eye}
         />
         {errors.confirm ? <HelperText type="error" visible>{errors.confirm}</HelperText> : null}
+        {!errors.password ? <HelperText type="info" visible>{t("auth.passwordHint")}</HelperText> : null}
         {errors.form ? <HelperText type="error" visible>{errors.form}</HelperText> : null}
 
         <Button

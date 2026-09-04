@@ -5,6 +5,8 @@
     "disclaimer": "Educational prototype (course 040333215). Not a medical device. Do not use for diagnosis or treatment."
   },
   "common": {
+    "clear": "Clear",
+    "selectDate": "Select date",
     "save": "Save", "cancel": "Cancel", "delete": "Delete", "add": "Add", "edit": "Edit", "ok": "OK", "back": "Back",
     "confirm": "Confirm", "done": "Done", "close": "Close", "loading": "Loading…", "saved": "Saved", "deleted": "Deleted",
     "retry": "Retry", "yes": "Yes", "no": "No", "optional": "optional", "required": "required", "none": "None",
@@ -34,7 +36,7 @@
     "records": "Documents", "alerts": "Alerts", "quickActions": "Quick actions", "scan": "Scan a document",
     "viewCard": "View card", "editProfile": "Edit profile", "completeness": "Profile completeness",
     "complete": "Your emergency profile is complete", "missing": {
-      "name": "Add your name", "blood": "Add your blood type", "allergies": "Add allergies (or mark none known)",
+      "name": "Add your name", "blood": "Add your blood type", "allergies": "Add your allergies, or mark none known",
       "contact": "Add an emergency contact"
     },
     "recent": "Recent documents", "unread": "{{count}} unread", "lockScreenOn": "Lock-screen card is on",
@@ -53,6 +55,7 @@
     "lockScreenCard": "Lock-screen card", "shareTitle": "My emergency card"
   },
   "lockScreen": {
+    "notificationTitle": "Emergency",
     "deviceHint": "If your lock screen shows only an icon, change the phone setting: Settings → Lock screen → Notifications → show content / Details (on Samsung phones). The app cannot change this for you.",
     "title": "Lock-screen card", "showOnLockScreen": "Show card on lock screen",
     "exposureWarning": "Anyone holding your phone can read the fields you show here, even when locked. Show only what could save your life.",
@@ -69,9 +72,9 @@
   "profile": {
     "fixField": "Please fix the highlighted field — {{field}}: {{reason}}",
     "title": "Emergency profile", "identity": "Identity", "firstNameTh": "First name (Thai)", "lastNameTh": "Last name (Thai)",
-    "nameEn": "Name (English)", "dob": "Date of birth", "dobHint": "YYYY-MM-DD", "sex": "Sex",
+    "nameEn": "Name (English)", "dob": "Date of birth", "sex": "Sex",
     "sexOptions": { "male": "Male", "female": "Female", "other": "Other", "unspecified": "Not specified" },
-    "blood": "Blood type", "rh": "Rh factor", "noKnownAllergy": "No known drug allergies", "flags": "Medical flags",
+    "blood": "Blood type", "rh": "Rh factor", "flags": "Medical flags",
     "flagsHint": "Shown to rescuers as critical conditions",
     "flagOptions": {
       "anticoagulant": "On blood thinners", "insulin": "Insulin-dependent", "pacemaker": "Pacemaker",
@@ -88,13 +91,16 @@
     "saveFirst": "Save the basics first, then add your lists below."
   },
   "allergies": {
+    "emptyHint": "No allergies listed. Add one, or turn on the switch above if you have none known.",
+    "hasItemsHint": "Rescuers see the allergies listed here. To mark “no known drug allergies”, delete them all first.",
+    "noKnownHint": "Rescuers will see “No known drug allergies”. If that changes, turn it off and add the allergy.",
+    "noKnownAllergy": "I have no known drug allergies",
     "title": "Allergies", "add": "Add allergy", "edit": "Edit allergy", "substanceTh": "Substance (Thai)",
     "substanceEn": "Substance (English)", "category": "Category",
     "categories": { "medication": "Medication", "food": "Food", "environment": "Environment" },
     "reaction": "Reaction", "severity": "Severity",
     "severities": { "mild": "Mild", "moderate": "Moderate", "severe": "Severe" },
-    "empty": "No allergies recorded", "emptyHint": "If you have no known drug allergies, turn on the switch in your profile instead.",
-    "needSubstance": "Enter the substance in Thai or English"
+    "empty": "No allergies recorded", "needSubstance": "Enter the substance in Thai or English"
   },
   "conditions": {
     "title": "Conditions", "add": "Add condition", "edit": "Edit condition", "labelTh": "Condition (Thai)",
@@ -144,8 +150,7 @@
     "reviewHint": "Fields marked in red were hard to read. Please check and correct them before saving.",
     "status": { "pending": "Pending", "uploaded": "Uploaded", "extracted": "Needs review", "reviewed": "Reviewed" },
     "expiresSoon": "Expires soon", "expired": "Expired", "validUntil": "Valid until {{date}}", "issued": "Issued {{date}}",
-    "notMedical": "This does not look like a medical document. You can still save it with your own details.",
-    "dateHint": "YYYY-MM-DD", "count": "{{count}} documents", "reviewNow": "Review now", "share": "Share with a clinician"
+    "notMedical": "This does not look like a medical document. You can still save it with your own details.", "count": "{{count}} documents", "reviewNow": "Review now", "share": "Share with a clinician"
   },
   "share": {
     "title": "Share with a clinician",
@@ -193,6 +198,7 @@
     "typeDelete": "Type DELETE to confirm", "dataProtection": "Your health data is encrypted on the server. Only you can see it, plus rescuers you show your card to."
   },
   "errors": {
+    "allergiesExist": "Delete the allergies in your list before marking none known.",
     "serverWaking": "Waking up the server (free hosting) — this can take up to a minute…",
     "required": "This field is required", "invalid_thai_id": "Invalid Thai national ID", "invalid_phone": "Invalid phone number",
     "invalid_date": "Invalid date", "future_date": "Date cannot be in the future",

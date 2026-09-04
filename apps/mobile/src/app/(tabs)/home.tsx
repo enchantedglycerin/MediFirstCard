@@ -79,7 +79,7 @@ export default function Home() {
 
   return (
     <>
-      <Screen>
+      <Screen bottomInset={false}>
         <View style={styles.greeting}>
           <Text variant="headlineSmall" style={styles.bold}>{t("home.greeting")}</Text>
           {email ? <Text variant="bodyMedium" style={{ color: theme.colors.onSurfaceVariant }}>{email}</Text> : null}
@@ -187,18 +187,12 @@ export default function Home() {
 
         <Section
           title={t("home.recent")}
-          action={<Button compact onPress={() => router.push("/records")}>{t("common.seeAll")}</Button>}
+          action={recent.length > 0 ? <Button compact onPress={() => router.push("/records")}>{t("common.seeAll")}</Button> : undefined}
         >
           {records.isLoading ? (
             <ActivityIndicator style={styles.loading} />
           ) : recent.length === 0 ? (
-            <EmptyState
-              icon="file-document-outline"
-              title={t("records.empty")}
-              hint={t("records.emptyHint")}
-              actionLabel={t("home.scan")}
-              onAction={() => router.push("/records")}
-            />
+            <EmptyState icon="file-document-outline" title={t("records.empty")} hint={t("records.emptyHint")} />
           ) : (
             recent.map((r, i) => (
               <View key={r.id}>

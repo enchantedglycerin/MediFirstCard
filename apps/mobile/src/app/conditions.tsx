@@ -1,10 +1,11 @@
 import { Banner } from "react-native-paper";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import type { ConditionInput } from "@mfc/shared";
 import { Screen } from "../components/Screen";
 import { CollectionEditor, type FieldSpec, type Values } from "../components/CollectionEditor";
 import { api, errorKey, type ConditionDto } from "../lib/api";
+import { invalidateAfterEdit } from "../lib/refresh";
 
 const STATUSES = ["active", "resolved"] as const;
 const MIN_YEAR = 1900;
@@ -36,14 +37,9 @@ function toInput(v: Values): Partial<ConditionInput> {
 
 export default function Conditions() {
   const { t } = useTranslation();
-  const qc = useQueryClient();
   const conditions = useQuery({ queryKey: ["conditions"], queryFn: api.listConditions });
 
-  const refresh = () =>
-    Promise.all([
-      qc.invalidateQueries({ queryKey: ["conditions"] }),
-      qc.invalidateQueries({ queryKey: ["emergency-card"] }),
-    ]);
+  const refresh = () => invalidateAfterEdit("conditions");
 
   const fields: FieldSpec[] = [
     { key: "labelTh", label: t("conditions.labelTh"), type: "text" },

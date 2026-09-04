@@ -1,10 +1,11 @@
 import { Banner } from "react-native-paper";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import type { MedicationInput } from "@mfc/shared";
 import { Screen } from "../components/Screen";
 import { CollectionEditor, type FieldSpec, type Values } from "../components/CollectionEditor";
 import { api, errorKey, type MedicationDto } from "../lib/api";
+import { invalidateAfterEdit } from "../lib/refresh";
 
 /** Trimmed text out of a dialog value (switch values never map to text). */
 const text = (v: Values[string]): string => (v === undefined || typeof v === "boolean" ? "" : String(v)).trim();
@@ -22,14 +23,9 @@ function toInput(v: Values): Partial<MedicationInput> {
 
 export default function Medications() {
   const { t } = useTranslation();
-  const qc = useQueryClient();
   const medications = useQuery({ queryKey: ["medications"], queryFn: api.listMedications });
 
-  const refresh = () =>
-    Promise.all([
-      qc.invalidateQueries({ queryKey: ["medications"] }),
-      qc.invalidateQueries({ queryKey: ["emergency-card"] }),
-    ]);
+  const refresh = () => invalidateAfterEdit("medications");
 
   const fields: FieldSpec[] = [
     { key: "name", label: t("medications.name"), type: "text", required: true },

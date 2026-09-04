@@ -2,7 +2,7 @@ import { StyleSheet, View } from "react-native";
 import { Button, Divider, IconButton, Text, useTheme } from "react-native-paper";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
-import type { CardLine, CardPayload } from "@mfc/shared";
+import { NO_KNOWN_DRUG_ALLERGY, type CardLine, type CardPayload } from "@mfc/shared";
 import { callNumber, callEms, EMERGENCY_NUMBER } from "../lib/phone";
 import { formatDate } from "../lib/format";
 import { palette, space, radius } from "../theme/tokens";
@@ -46,8 +46,9 @@ export function EmergencyCardView({ payload, showEms = false, compact = false, o
   const blood = payload.lines.find((l) => l.kind === "blood");
   const rest = payload.lines.filter((l) => l.kind !== "identity" && l.kind !== "blood");
 
-  const valueText = (l: CardLine) =>
-    l.kind === "allergy" && !l.urgent && l.value === "No known drug allergies" ? t("card.noKnownAllergy") : l.value;
+  const noneKnown = (l: CardLine) => l.kind === "allergy" && l.value === NO_KNOWN_DRUG_ALLERGY;
+  const valueText = (l: CardLine) => (noneKnown(l) ? t("card.noKnownAllergy") : l.value);
+  const labelText = (l: CardLine) => (noneKnown(l) ? t("card.allergies") : t(LABEL_KEY[l.kind]));
 
   async function call(phone: string) {
     if (!(await callNumber(phone))) onCallFailed?.();
@@ -103,7 +104,7 @@ export function EmergencyCardView({ payload, showEms = false, compact = false, o
                 />
                 <View style={styles.rowText}>
                   <Text variant="labelSmall" style={[styles.label, { color: theme.colors.onSurfaceVariant }]}>
-                    {t(LABEL_KEY[l.kind])}
+                    {labelText(l)}
                   </Text>
                   <Text
                     variant={compact ? "bodyLarge" : "titleMedium"}

@@ -1,21 +1,20 @@
 import { useEffect, useRef, useState } from "react";
-import type { ScrollView as RNScrollView } from "react-native";
 import { StyleSheet, View } from "react-native";
 import { router } from "expo-router";
 import {
-  ActivityIndicator, Banner, Button, Chip, Divider, HelperText, List, Portal, SegmentedButtons, Snackbar, Switch,
+  ActivityIndicator, Banner, Button, Chip, Divider, List, Portal, SegmentedButtons, Snackbar, Switch,
   Text, TextInput, TouchableRipple, useTheme,
 } from "react-native-paper";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import dayjs from "dayjs";
 import { Screen } from "../components/Screen";
 import { Section } from "../components/Section";
+import { DateField } from "../components/DateField";
 import {
   api, errorKey, profileExists,
   type BloodAbo, type BloodRh, type InsuranceScheme, type ProfileDto, type ProfileFlags, type Sex,
 } from "../lib/api";
-import { isValidIsoDate } from "../lib/format";
+import { invalidateAfterEdit } from "../lib/refresh";
 import { currentLang } from "../i18n";
 import { space } from "../theme/tokens";
 
@@ -25,6 +24,7 @@ const RH: readonly BloodRh[] = ["pos", "neg", "unknown"];
 const FLAGS: readonly (keyof ProfileFlags)[] = ["anticoagulant", "insulin", "pacemaker", "dialysis", "pregnancy"];
 const INSURANCE: readonly InsuranceScheme[] = ["ucs", "sss", "csmbs", "private", "self_pay", "unknown"];
 const NO_FLAGS: ProfileFlags = { anticoagulant: false, insulin: false, pacemaker: false, dialysis: false, pregnancy: false };
+const DOB_MIN = new Date(1900, 0, 1);
 
 /** Compact, language-neutral labels for the blood rows (symbols, not words). */
 const ABO_LABEL: Record<BloodAbo, string> = { A: "A", B: "B", AB: "AB", O: "O", unknown: "?" };
@@ -38,7 +38,6 @@ interface Form {
   sex: Sex;
   bloodAbo: BloodAbo;
   bloodRh: BloodRh;
-  noKnownDrugAllergy: boolean;
   flags: ProfileFlags;
   insuranceScheme: InsuranceScheme;
   notes: string;
@@ -46,7 +45,7 @@ interface Form {
 
 const EMPTY: Form = {
   firstNameTh: "", lastNameTh: "", nameEn: "", dob: "", sex: "unspecified",
-  bloodAbo: "unknown", bloodRh: "unknown", noKnownDrugAllergy: false, flags: NO_FLAGS,
+  bloodAbo: "unknown", bloodRh: "unknown", flags: NO_FLAGS,
   insuranceScheme: "unknown", notes: "",
 };
 
@@ -59,7 +58,6 @@ function fromProfile(p: ProfileDto): Form {
     sex: p.sex ?? "unspecified",
     bloodAbo: p.bloodAbo ?? "unknown",
     bloodRh: p.bloodRh ?? "unknown",
-    noKnownDrugAllergy: p.noKnownDrugAllergy ?? false,
     flags: { ...NO_FLAGS, ...(p.flags ?? {}) },
     insuranceScheme: p.insuranceScheme ?? "unknown",
     notes: p.notes ?? "",
@@ -88,7 +86,6 @@ function SwitchRow({ label, value, onChange }: { label: string; value: boolean; 
 export default function Profile() {
   const { t } = useTranslation();
   const theme = useTheme();
-  const qc = useQueryClient();
   const profile = useQuery({ queryKey: ["profile"], queryFn: api.getProfile });
   const allergies = useQuery({ queryKey: ["allergies"], queryFn: api.listAllergies });
   const conditions = useQuery({ queryKey: ["conditions"], queryFn: api.listConditions });
@@ -96,23 +93,9 @@ export default function Profile() {
   const contacts = useQuery({ queryKey: ["contacts"], queryFn: api.listContacts });
 
   const [form, setForm] = useState<Form>(EMPTY);
-  const [dobError, setDobError] = useState<string | null>(null);
   const [msg, setMsg] = useState<string | null>(null);
   // Seed the form from the server exactly once; background refetches must not clobber typing.
   const seeded = useRef(false);
-  const scrollRef = useRef<RNScrollView>(null);
-  const dobRef = useRef<View>(null);
-  /** Bring the date-of-birth field into view when Save is blocked by it (it sits far above the button). */
-  const scrollToDob = () => {
-    const scroller = scrollRef.current;
-    const host = scroller?.getNativeScrollRef?.() ?? scroller;
-    if (!host || !dobRef.current) return;
-    dobRef.current.measureLayout(
-      host as never,
-      (_x, y) => scroller?.scrollTo({ y: Math.max(0, y - 24), animated: true }),
-      () => scroller?.scrollTo({ y: 0, animated: true }),
-    );
-  };
 
   useEffect(() => {
     if (seeded.current || !profile.data) return;
@@ -133,7 +116,7 @@ export default function Profile() {
         sex: f.sex,
         bloodAbo: f.bloodAbo,
         bloodRh: f.bloodRh,
-        noKnownDrugAllergy: f.noKnownDrugAllergy,
+        // noKnownDrugAllergy is edited on the Allergies screen; omitting it leaves it unchanged.
         flags: f.flags,
         insuranceScheme: f.insuranceScheme,
         // Not edited here; resend it so the server default does not reset the user's choice.
@@ -142,33 +125,10 @@ export default function Profile() {
       }),
     onSuccess: async () => {
       setMsg(t("profile.saved"));
-      await Promise.all([
-        qc.invalidateQueries({ queryKey: ["profile"] }),
-        qc.invalidateQueries({ queryKey: ["emergency-card"] }),
-      ]);
+      await invalidateAfterEdit("profile");
     },
     onError: (e) => setMsg(t(errorKey(e))),
   });
-
-  const validateDob = (dob: string): string | null => {
-    const v = dob.trim();
-    if (!v) return null;
-    if (!isValidIsoDate(v)) return t("errors.invalid_date");
-    if (v > dayjs().format("YYYY-MM-DD")) return t("errors.future_date");
-    return null;
-  };
-
-  const onSave = () => {
-    const err = validateDob(form.dob);
-    setDobError(err);
-    if (err) {
-      // The field is far above the Save button: say what is wrong and show it.
-      setMsg(t("profile.fixField", { field: t("profile.dob"), reason: err }));
-      scrollToDob();
-      return;
-    }
-    save.mutate(form);
-  };
 
   const exists = profileExists(profile.data);
 
@@ -259,22 +219,14 @@ export default function Profile() {
             onChangeText={(v) => patch({ nameEn: v })}
             autoCapitalize="words"
           />
-          <View ref={dobRef} collapsable={false}>
-            <TextInput
-              mode="outlined"
-              label={t("profile.dob")}
-              value={form.dob}
-              onChangeText={(v) => {
-                patch({ dob: v });
-                if (dobError) setDobError(null);
-              }}
-              placeholder={t("profile.dobHint")}
-              keyboardType="numbers-and-punctuation"
-              autoCapitalize="none"
-              error={!!dobError}
-            />
-            <HelperText type={dobError ? "error" : "info"} visible>{dobError ?? t("profile.dobHint")}</HelperText>
-          </View>
+          <DateField
+            label={t("profile.dob")}
+            value={form.dob}
+            onChange={(iso) => patch({ dob: iso })}
+            minimumDate={DOB_MIN}
+            maximumDate={new Date()}
+            clearable
+          />
           <Text variant="labelLarge">{t("profile.sex")}</Text>
           <View style={styles.chips}>
             {SEXES.map((s) => {
@@ -323,12 +275,6 @@ export default function Profile() {
             buttons={RH.map((r) => ({ value: r, label: RH_LABEL[r] }))}
           />
         </View>
-        <Divider />
-        <SwitchRow
-          label={t("profile.noKnownAllergy")}
-          value={form.noKnownDrugAllergy}
-          onChange={(v) => patch({ noKnownDrugAllergy: v })}
-        />
       </Section>
 
       <Section title={t("profile.flags")}>
@@ -378,7 +324,7 @@ export default function Profile() {
       <Button
         mode="contained"
         icon="content-save-outline"
-        onPress={onSave}
+        onPress={() => save.mutate(form)}
         loading={save.isPending}
         disabled={save.isPending}
         contentStyle={styles.saveContent}
@@ -389,7 +335,7 @@ export default function Profile() {
   );
 
   return (
-    <Screen scrollRef={scrollRef}>
+    <Screen>
       {exists ? lists : null}
       {basics}
       {exists ? null : lists}

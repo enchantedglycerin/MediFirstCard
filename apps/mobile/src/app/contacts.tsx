@@ -1,12 +1,13 @@
 import { useMemo, useState } from "react";
 import { StyleSheet } from "react-native";
 import { Banner, IconButton, Portal, Snackbar, Text, useTheme } from "react-native-paper";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import type { ContactInput } from "@mfc/shared";
 import { Screen } from "../components/Screen";
 import { CollectionEditor, type FieldSpec, type Values } from "../components/CollectionEditor";
 import { api, errorKey, type ContactDto } from "../lib/api";
+import { invalidateAfterEdit } from "../lib/refresh";
 import { callNumber } from "../lib/phone";
 import { isValidThaiPhone, normalizeThaiPhone } from "../lib/format";
 import { space } from "../theme/tokens";
@@ -32,7 +33,6 @@ function toInput(v: Values): Partial<ContactInput> {
 export default function Contacts() {
   const { t } = useTranslation();
   const theme = useTheme();
-  const qc = useQueryClient();
   const contacts = useQuery({ queryKey: ["contacts"], queryFn: api.listContacts });
   const [msg, setMsg] = useState<string | null>(null);
 
@@ -42,11 +42,7 @@ export default function Contacts() {
     [contacts.data],
   );
 
-  const refresh = () =>
-    Promise.all([
-      qc.invalidateQueries({ queryKey: ["contacts"] }),
-      qc.invalidateQueries({ queryKey: ["emergency-card"] }),
-    ]);
+  const refresh = () => invalidateAfterEdit("contacts");
 
   const fields: FieldSpec[] = [
     { key: "name", label: t("contacts.name"), type: "text", required: true },

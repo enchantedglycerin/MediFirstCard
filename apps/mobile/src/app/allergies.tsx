@@ -1,10 +1,15 @@
-import { Banner } from "react-native-paper";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
+import { StyleSheet, View } from "react-native";
+import { Banner, List, Portal, Snackbar, Switch } from "react-native-paper";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import type { AllergyInput } from "@mfc/shared";
 import { Screen } from "../components/Screen";
+import { Section } from "../components/Section";
 import { CollectionEditor, type FieldSpec, type Values } from "../components/CollectionEditor";
 import { api, errorKey, type AllergyDto } from "../lib/api";
+import { invalidateAfterEdit } from "../lib/refresh";
+import { space } from "../theme/tokens";
 
 const CATEGORIES = ["medication", "food", "environment"] as const;
 const SEVERITIES = ["mild", "moderate", "severe"] as const;
@@ -29,14 +34,22 @@ function toInput(v: Values): Partial<AllergyInput> {
 
 export default function Allergies() {
   const { t } = useTranslation();
-  const qc = useQueryClient();
   const allergies = useQuery({ queryKey: ["allergies"], queryFn: api.listAllergies });
+  const profile = useQuery({ queryKey: ["profile"], queryFn: api.getProfile });
+  const [msg, setMsg] = useState<string | null>(null);
 
-  const refresh = () =>
-    Promise.all([
-      qc.invalidateQueries({ queryKey: ["allergies"] }),
-      qc.invalidateQueries({ queryKey: ["emergency-card"] }),
-    ]);
+  const refresh = () => invalidateAfterEdit("allergies");
+
+  // "No known drug allergies" only means something while the list is empty: listed allergies win
+  // (the server clears the flag when one is added), so the switch is locked once items exist.
+  const hasItems = (allergies.data?.length ?? 0) > 0;
+  const noneKnown = !hasItems && !!profile.data?.noKnownDrugAllergy;
+  const setNoneKnown = useMutation({
+    mutationFn: (value: boolean) => api.setNoKnownDrugAllergy(value),
+    onSuccess: () => refresh(),
+    onError: (e) => setMsg(t(errorKey(e))),
+  });
+  const switchLocked = hasItems || allergies.isPending || profile.isPending || setNoneKnown.isPending;
 
   const fields: FieldSpec[] = [
     { key: "substanceTh", label: t("allergies.substanceTh"), type: "text" },
@@ -68,6 +81,27 @@ export default function Allergies() {
           {t(errorKey(allergies.error))}
         </Banner>
       ) : null}
+
+      <Section>
+        <List.Item
+          title={t("allergies.noKnownAllergy")}
+          titleStyle={styles.rowTitle}
+          titleNumberOfLines={2}
+          description={hasItems ? t("allergies.hasItemsHint") : t("allergies.noKnownHint")}
+          descriptionNumberOfLines={4}
+          onPress={switchLocked ? undefined : () => setNoneKnown.mutate(!noneKnown)}
+          right={() => (
+            <View style={styles.switchWrap}>
+              <Switch
+                value={noneKnown}
+                disabled={switchLocked}
+                onValueChange={(v) => setNoneKnown.mutate(v)}
+                accessibilityLabel={t("allergies.noKnownAllergy")}
+              />
+            </View>
+          )}
+        />
+      </Section>
 
       {allergies.isError && !allergies.data ? null : (
         <CollectionEditor<AllergyDto>
@@ -105,6 +139,15 @@ export default function Allergies() {
           }}
         />
       )}
+
+      <Portal>
+        <Snackbar visible={!!msg} onDismiss={() => setMsg(null)} duration={4000}>{msg ?? ""}</Snackbar>
+      </Portal>
     </Screen>
   );
 }
+
+const styles = StyleSheet.create({
+  rowTitle: { fontSize: 17, fontWeight: "600" },
+  switchWrap: { justifyContent: "center", minHeight: 48, paddingLeft: space.sm },
+});
