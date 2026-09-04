@@ -276,11 +276,23 @@ export default function Profile() {
             <HelperText type={dobError ? "error" : "info"} visible>{dobError ?? t("profile.dobHint")}</HelperText>
           </View>
           <Text variant="labelLarge">{t("profile.sex")}</Text>
-          <SegmentedButtons
-            value={form.sex}
-            onValueChange={(v) => patch({ sex: pick(SEXES, v, "unspecified") })}
-            buttons={SEXES.map((s) => ({ value: s, label: t(`profile.sexOptions.${s}`), labelStyle: styles.segLabel }))}
-          />
+          <View style={styles.chips}>
+            {SEXES.map((s) => {
+              const selected = form.sex === s;
+              return (
+                <Chip
+                  key={s}
+                  selected={selected}
+                  showSelectedCheck
+                  mode={selected ? "flat" : "outlined"}
+                  onPress={() => patch({ sex: s })}
+                  textStyle={styles.chipText}
+                >
+                  {t(`profile.sexOptions.${s}`)}
+                </Chip>
+              );
+            })}
+          </View>
         </View>
       </Section>
 

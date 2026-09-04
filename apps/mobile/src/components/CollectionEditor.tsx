@@ -185,7 +185,7 @@ export function CollectionEditor<T extends { id: string }>(props: Props<T>) {
                   return (
                     <View key={f.key} style={styles.selectWrap}>
                       <Text variant="labelLarge" style={styles.selectLabel}>{f.label}</Text>
-                      {opts.length <= 4 ? (
+                      {opts.length <= 3 && opts.reduce((n, o) => n + o.label.length, 0) <= 24 ? (
                         <SegmentedButtons value={String(v ?? "")} onValueChange={(x) => setValue(f.key, x)} buttons={opts.map((o) => ({ value: o.value, label: o.label }))} />
                       ) : (
                         <View style={styles.chips}>
