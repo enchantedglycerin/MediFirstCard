@@ -16,6 +16,14 @@ services:
     buildCommand: npm ci --include=dev && npm run build -w apps/api && npm run db:migrate -w apps/api
     startCommand: npm start -w apps/api
     healthCheckPath: /health
+    # Only redeploy when the API or its shared contract changes (docs/app-only pushes are skipped).
+    buildFilter:
+      paths:
+        - apps/api/**
+        - packages/shared/**
+        - package.json
+        - package-lock.json
+        - render.yaml
     envVars:
       - key: NODE_VERSION
         value: "24"

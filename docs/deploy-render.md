@@ -32,7 +32,7 @@ Push to `main` → Render rebuilds and redeploys automatically (`autoDeploy: tru
 
 ## Behaviour you should expect
 
-- **Cold start.** The free instance sleeps after 15 minutes without traffic; the first request then takes 30–60 s. Open `/health` in a browser a minute before the demo, or run the API on the laptop as the fallback (the runbook covers both).
+- **Cold start.** The free instance sleeps after 15 minutes without traffic; the first request then takes 30–60 s. Two keep-alive pings prevent that: a GitHub Actions cron (`.github/workflows/keepalive.yml`, every 10 min, but GitHub may delay or skip scheduled runs on quiet repos) and a `pg_cron` job inside the Supabase database (`keep-render-warm`, every 10 min, `net.http_get` to `/health`; see the Supabase SQL editor → `select * from cron.job`). If you ever remove both, open `/health` a minute before the demo, or run the API on the laptop as the fallback.
 - **Logs.** Render → service → Logs. Provider failures appear as `[extract] …` lines without secrets; the app shows the example result with a warning chip instead of failing.
 - **Rotating a key.** Change it under service → Environment → Save; Render restarts the service. Never rotate `FIELD_ENC_KEY` after data exists.
 - **HTTPS everywhere.** With the API on Render the app talks HTTPS, so the cleartext-HTTP flag in `apps/mobile/app.json` (`expo-build-properties`) is only needed for laptop-hosted demos and can be removed later.
