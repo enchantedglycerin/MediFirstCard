@@ -76,6 +76,7 @@ function StartupServices() {
   useEffect(() => {
     if (status !== "signedIn" || !unlocked) return;
     const repin = () => {
+      console.log("[lockcard] checking pinned card (launch/resume)");
       void ensureLockScreenCardPinned(
         async () => { const c = await api.emergencyCard(); return { lines: c.lines, lastReviewedAt: c.lastReviewedAt }; },
         { channelName: t("lockScreen.title"), footer: t("app.name") },

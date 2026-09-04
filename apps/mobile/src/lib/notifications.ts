@@ -81,14 +81,19 @@ export async function ensureLockScreenCardPinned(
   fetchCard: () => Promise<Pick<CardPayload, "lines" | "lastReviewedAt">>,
   opts: { channelName: string; footer?: string },
 ): Promise<boolean> {
-  if (!(await isLockScreenCardOn())) return false;
+  const log = (msg: string) => console.log(`[lockcard] ${msg}`); // kept in release builds: cheap, no personal data
+  if (!(await isLockScreenCardOn())) { log("flag off, nothing to re-pin"); return false; }
   try {
     const presented = await Notifications.getPresentedNotificationsAsync();
-    if (presented.some((n) => n.request.identifier === ID)) return true;
+    if (presented.some((n) => n.request.identifier === ID)) { log("already presented"); return true; }
+    log(`not presented (${presented.length} other), fetching card`);
     const card = await fetchCard();
-    if (card.lines.length === 0) return false;
-    return await showLockScreenCard({ lines: card.lines, lastReviewedAt: card.lastReviewedAt }, opts);
-  } catch {
+    if (card.lines.length === 0) { log("card empty, not pinning"); return false; }
+    const ok = await showLockScreenCard({ lines: card.lines, lastReviewedAt: card.lastReviewedAt }, opts);
+    log(ok ? `re-pinned ${card.lines.length} lines` : "permission missing, not pinned");
+    return ok;
+  } catch (e) {
+    log(`re-pin failed: ${e instanceof Error ? `${e.name}: ${e.message}` : String(e)}`);
     return false;
   }
 }
