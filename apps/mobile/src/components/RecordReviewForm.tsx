@@ -221,7 +221,11 @@ export function RecordReviewForm({ recordId, result, onSaved, onCancel }: Props)
     if (issuedAt.trim() && !isValidIsoDate(issuedAt.trim())) errs.issuedAt = t("errors.invalid_date");
     if (validUntil.trim() && !isValidIsoDate(validUntil.trim())) errs.validUntil = t("errors.invalid_date");
     setErrors(errs);
-    if (errs.issuedAt || errs.validUntil) return;
+    if (errs.issuedAt || errs.validUntil) {
+      const field = errs.issuedAt ? t("records.fields.issuedAt") : t("records.fields.validUntil");
+      setMsg(t("profile.fixField", { field, reason: errs.issuedAt ?? errs.validUntil }));
+      return;
+    }
 
     const input: ReviewedRecordInput = { kind };
     const put = (key: TextKey, v: string) => {

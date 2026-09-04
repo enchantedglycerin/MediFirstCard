@@ -71,3 +71,24 @@ export async function hideLockScreenCard(): Promise<void> {
 export async function isLockScreenCardOn(): Promise<boolean> {
   return (await secure.get(KEYS.lockCard)) === "1";
 }
+
+/**
+ * Android drops an app's notifications when the app is updated or reinstalled, and the
+ * user can clear them from the shade. If the card was turned on but is not currently
+ * presented, fetch the latest payload and pin it again. Called on launch and on resume.
+ */
+export async function ensureLockScreenCardPinned(
+  fetchCard: () => Promise<Pick<CardPayload, "lines" | "lastReviewedAt">>,
+  opts: { channelName: string; footer?: string },
+): Promise<boolean> {
+  if (!(await isLockScreenCardOn())) return false;
+  try {
+    const presented = await Notifications.getPresentedNotificationsAsync();
+    if (presented.some((n) => n.request.identifier === ID)) return true;
+    const card = await fetchCard();
+    if (card.lines.length === 0) return false;
+    return await showLockScreenCard({ lines: card.lines, lastReviewedAt: card.lastReviewedAt }, opts);
+  } catch {
+    return false;
+  }
+}

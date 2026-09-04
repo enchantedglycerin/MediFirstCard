@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import type { ScrollView as RNScrollView } from "react-native";
 import { StyleSheet, View } from "react-native";
 import { router } from "expo-router";
 import {
@@ -99,6 +100,19 @@ export default function Profile() {
   const [msg, setMsg] = useState<string | null>(null);
   // Seed the form from the server exactly once; background refetches must not clobber typing.
   const seeded = useRef(false);
+  const scrollRef = useRef<RNScrollView>(null);
+  const dobRef = useRef<View>(null);
+  /** Bring the date-of-birth field into view when Save is blocked by it (it sits far above the button). */
+  const scrollToDob = () => {
+    const scroller = scrollRef.current;
+    const host = scroller?.getNativeScrollRef?.() ?? scroller;
+    if (!host || !dobRef.current) return;
+    dobRef.current.measureLayout(
+      host as never,
+      (_x, y) => scroller?.scrollTo({ y: Math.max(0, y - 24), animated: true }),
+      () => scroller?.scrollTo({ y: 0, animated: true }),
+    );
+  };
 
   useEffect(() => {
     if (seeded.current || !profile.data) return;
@@ -147,7 +161,12 @@ export default function Profile() {
   const onSave = () => {
     const err = validateDob(form.dob);
     setDobError(err);
-    if (err) return;
+    if (err) {
+      // The field is far above the Save button: say what is wrong and show it.
+      setMsg(t("profile.fixField", { field: t("profile.dob"), reason: err }));
+      scrollToDob();
+      return;
+    }
     save.mutate(form);
   };
 
@@ -240,7 +259,7 @@ export default function Profile() {
             onChangeText={(v) => patch({ nameEn: v })}
             autoCapitalize="words"
           />
-          <View>
+          <View ref={dobRef} collapsable={false}>
             <TextInput
               mode="outlined"
               label={t("profile.dob")}
@@ -358,7 +377,7 @@ export default function Profile() {
   );
 
   return (
-    <Screen>
+    <Screen scrollRef={scrollRef}>
       {exists ? lists : null}
       {basics}
       {exists ? null : lists}

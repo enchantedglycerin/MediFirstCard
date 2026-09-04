@@ -1,10 +1,10 @@
 import "react-native-gesture-handler";
 import { useEffect, useState } from "react";
-import { useColorScheme } from "react-native";
+import { AppState, useColorScheme } from "react-native";
 import { Stack, router, useSegments } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { PaperProvider } from "react-native-paper";
+import { PaperProvider, Portal, Snackbar } from "react-native-paper";
 import { QueryClientProvider } from "@tanstack/react-query";
 import * as SplashScreen from "expo-splash-screen";
 import { useTranslation } from "react-i18next";
@@ -13,6 +13,8 @@ import {
 } from "@expo-google-fonts/sarabun";
 import { lightTheme, darkTheme } from "../theme/paper";
 import { queryClient } from "../lib/query";
+import { api } from "../lib/api";
+import { ensureLockScreenCardPinned } from "../lib/notifications";
 import { useSession } from "../store/session";
 import { loadSavedLanguage } from "../i18n";
 
@@ -47,6 +49,50 @@ function useAuthGuard() {
     }
     if (onAuth || onLock || first === undefined) router.replace("/home");
   }, [status, pinEnabled, unlocked, first]);
+}
+
+/**
+ * Background chores that need the providers mounted:
+ *  - warm the API as soon as the app opens (the free Render instance sleeps after 15 min)
+ *    and tell the user when it is cold instead of leaving a silent spinner;
+ *  - re-pin the lock-screen card, which Android drops on app update/reinstall or "clear all".
+ */
+function StartupServices() {
+  const { t } = useTranslation();
+  const status = useSession((s) => s.status);
+  const unlocked = useSession((s) => s.unlocked);
+  const apiBaseUrl = useSession((s) => s.apiBaseUrl);
+  const [waking, setWaking] = useState(false);
+
+  useEffect(() => {
+    let settled = false;
+    const slow = setTimeout(() => { if (!settled) setWaking(true); }, 3000);
+    fetch(`${apiBaseUrl}/health`)
+      .catch(() => undefined)
+      .finally(() => { settled = true; clearTimeout(slow); setWaking(false); });
+    return () => clearTimeout(slow);
+  }, [apiBaseUrl]);
+
+  useEffect(() => {
+    if (status !== "signedIn" || !unlocked) return;
+    const repin = () => {
+      void ensureLockScreenCardPinned(
+        async () => { const c = await api.emergencyCard(); return { lines: c.lines, lastReviewedAt: c.lastReviewedAt }; },
+        { channelName: t("lockScreen.title"), footer: t("app.name") },
+      );
+    };
+    repin();
+    const sub = AppState.addEventListener("change", (s) => { if (s === "active") repin(); });
+    return () => sub.remove();
+  }, [status, unlocked, t]);
+
+  return (
+    <Portal>
+      <Snackbar visible={waking} onDismiss={() => setWaking(false)} duration={60000}>
+        {t("errors.serverWaking")}
+      </Snackbar>
+    </Portal>
+  );
 }
 
 export default function RootLayout() {
@@ -98,6 +144,7 @@ export default function RootLayout() {
             <Stack.Screen name="share" options={{ title: t("share.title") }} />
             <Stack.Screen name="record/[id]" options={{ title: t("records.detail") }} />
           </Stack>
+          <StartupServices />
         </PaperProvider>
       </QueryClientProvider>
     </SafeAreaProvider>

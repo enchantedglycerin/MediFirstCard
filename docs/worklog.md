@@ -21,3 +21,4 @@ Dated entries per member, for IPAC evidence. One line per work session.
 - 2026-09-04 — TEST: signed v1.0.1 on the phone over Wi-Fi against https://medifirstcard-api.onrender.com (USB link to the laptop removed): Home loads the Supabase data; Server URL setting verified (screenshots 21–22) (AI-assisted, reviewed).
 - 2026-09-04 — UX/DEV: app icon set generated from the team artwork (launcher, adaptive, monochrome, notification, splash, favicon); v1.0.2 build with versionCode 3.
 - 2026-09-04 — DEV: v1.0.2 signed release published with the new app icon (versionCode 3).
+- 2026-09-04 — DEV: re-pin lock-screen card on launch/resume, Render keep-alive + wake-up notice, Save-time validation feedback with scroll-to-field; v1.0.3 (AI-assisted, reviewed).

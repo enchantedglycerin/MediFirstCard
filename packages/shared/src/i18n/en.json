@@ -67,6 +67,7 @@
     "updated": "Lock-screen card updated", "nothingToShow": "Turn on at least one field with data"
   },
   "profile": {
+    "fixField": "Please fix the highlighted field — {{field}}: {{reason}}",
     "title": "Emergency profile", "identity": "Identity", "firstNameTh": "First name (Thai)", "lastNameTh": "Last name (Thai)",
     "nameEn": "Name (English)", "dob": "Date of birth", "dobHint": "YYYY-MM-DD", "sex": "Sex",
     "sexOptions": { "male": "Male", "female": "Female", "other": "Other", "unspecified": "Not specified" },
@@ -192,6 +193,7 @@
     "typeDelete": "Type DELETE to confirm", "dataProtection": "Your health data is encrypted on the server. Only you can see it, plus rescuers you show your card to."
   },
   "errors": {
+    "serverWaking": "Waking up the server (free hosting) — this can take up to a minute…",
     "required": "This field is required", "invalid_thai_id": "Invalid Thai national ID", "invalid_phone": "Invalid phone number",
     "invalid_date": "Invalid date", "future_date": "Date cannot be in the future",
     "image_blurry": "The photo is not clear. Please retake it in good light.", "duplicate_record": "This document was already added.",
