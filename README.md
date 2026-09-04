@@ -153,9 +153,9 @@ Taken on a Samsung phone (Android 13) and a Redmi (Android 14). All are in [docs
 |---|---|---|---|
 | <img src="docs/screenshots/03-consent.png" width="180"> | <img src="docs/screenshots/04-contacts.png" width="180"> | <img src="docs/screenshots/17-card-thai.png" width="180"> | <img src="docs/screenshots/16-alerts-language.png" width="180"> |
 
-| "None known" chosen<br>on the Allergies page | Date of birth picked,<br>never typed |
-|---|---|
-| <img src="docs/screenshots/25-allergies-none-known.png" width="180"> | <img src="docs/screenshots/26-date-picker.png" width="180"> |
+| "None known" chosen<br>on the Allergies page | Date of birth picked,<br>never typed | Lock-screen card settings | Records list |
+|---|---|---|---|
+| <img src="docs/screenshots/25-allergies-none-known.png" width="180"> | <img src="docs/screenshots/26-date-picker.png" width="180"> | <img src="docs/screenshots/08-lock-screen-settings.png" width="180"> | <img src="docs/screenshots/10-records-list.png" width="180"> |
 
 ## Demo video links
 - App introduction video (≤ 3 min): _to be added before 7 Oct 2026_
