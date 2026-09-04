@@ -36,3 +36,6 @@ apps/mobile/credentials/
 
 # public build-time app config (no secrets)
 !apps/mobile/.env.production
+
+# AI-assistant working notes (plans, decisions, worklog, research) - local only
+.notes/

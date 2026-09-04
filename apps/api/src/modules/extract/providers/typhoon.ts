@@ -1,7 +1,7 @@
 import { ProviderError, isRetryableStatus, withRetry, type FetchLike } from "./common.js";
 
 // Typhoon OCR 1.5 (SCB 10X) via the OpenAI-compatible chat/completions endpoint.
-// Verified 2026-09-03 in docs/research/research-free-ocr.md: no dedicated OCR
+// Verified 2026-09-03 in the local research notes: no dedicated OCR
 // route, the image goes in as an image_url data URI, output is Markdown text in
 // choices[0].message.content, and the model only works with the exact prompt the
 // official typhoon-ocr package sends. Free tier: 2 rps / 20 rpm -> 429, retried.

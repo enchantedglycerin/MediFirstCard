@@ -16,4 +16,5 @@ export const KEYS = {
   pinSalt: "mfc.pinSalt",
   lang: "mfc.lang",
   lockCard: "mfc.lockCard",
+  permsAsked: "mfc.permsAsked",
 } as const;

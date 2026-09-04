@@ -68,6 +68,21 @@ export async function hideLockScreenCard(): Promise<void> {
   await secure.del(KEYS.lockCard);
 }
 
+/**
+ * Ask for every runtime permission the app uses, once, right after sign-in: notifications
+ * (lock-screen card), camera and photos (document scan). Later features then never
+ * surprise the user with a system dialog mid-task. Returns true when it ran this time.
+ */
+export async function requestAllPermissionsOnce(): Promise<boolean> {
+  if ((await secure.get(KEYS.permsAsked)) === "1") return false;
+  const { requestCameraPermissionsAsync, requestMediaLibraryPermissionsAsync } = await import("expo-image-picker");
+  await Notifications.requestPermissionsAsync().catch(() => undefined);
+  await requestCameraPermissionsAsync().catch(() => undefined);
+  await requestMediaLibraryPermissionsAsync().catch(() => undefined);
+  await secure.set(KEYS.permsAsked, "1");
+  return true;
+}
+
 export async function isLockScreenCardOn(): Promise<boolean> {
   return (await secure.get(KEYS.lockCard)) === "1";
 }

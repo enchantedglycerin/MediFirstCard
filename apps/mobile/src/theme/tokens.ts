@@ -1,4 +1,4 @@
-// Design tokens (from docs/research/research-ui-kit.md §6.3). Clinical blue accent,
+// Design tokens (clinical palette, see README). Clinical blue accent,
 // red reserved for allergies/urgent, WCAG-AA contrast, elderly-first type scale.
 export const palette = {
   primary: "#005B96",

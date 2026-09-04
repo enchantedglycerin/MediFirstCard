@@ -2,7 +2,7 @@ import { z } from "zod";
 
 // Every field is {value, confidence, evidence} so a single model call yields both
 // the per-field confidence score and the explainability snippet. Mirrors
-// docs/research/research-ocr-ai.md §6 and research-free-ocr.md.
+// the local research notes (OCR/AI provider comparison).
 
 const strField = z.object({
   value: z.string().nullable(),

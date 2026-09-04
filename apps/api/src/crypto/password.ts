@@ -2,7 +2,7 @@ import { randomBytes, scryptSync, timingSafeEqual } from "node:crypto";
 
 // scrypt (memory-hard, built into Node) for password + PIN-fallback hashing.
 // PLAN specified argon2id; scrypt is chosen to avoid a native dependency on the
-// Windows dev machine, CI and Render. Documented in docs/decisions.md.
+// Windows dev machine, CI and Render. Documented in the local working notes.
 const N = 16384; // CPU/memory cost (~16 MB with r=8)
 const R = 8;
 const P = 1;

@@ -87,7 +87,7 @@ apps/
               src/store (session), src/theme (tokens, Paper themes)
 packages/
   shared/     Contract used by both apps: zod schemas, buildCardPayload(), Buddhist-era dates, TH/EN strings
-docs/         PLAN-full, research notes, decisions log, worklog, test plan, handout, screenshots
+docs/         handout, demo runbook, Render deploy guide, screenshots, synthetic sample documents
 .github/      CI: api-ci (shared + API tests), mobile-ci (strict typecheck)
 ```
 
@@ -110,7 +110,7 @@ Release builds are signed with the team's own keystore (certificate `CN=MediFirs
 
 ```bash
 npm run api:dev                          # Express on :3000; PGlite auto-migrates to apps/api/.data/pg
-cd apps/mobile && npx expo run:android   # ALWAYS from apps/mobile (see docs/decisions.md); builds + installs the debug app
+cd apps/mobile && npx expo run:android   # ALWAYS from apps/mobile (running it at the repo root corrupts the root package.json); builds + installs the debug app
 ```
 The debug app loads JavaScript from Metro. If it stays on the splash screen, Metro is not reachable: run `npx expo start` in `apps/mobile` from a normal terminal (not a CI shell) and, for a USB phone, `adb reverse tcp:8081 tcp:8081 && adb reverse tcp:8082 tcp:8081 && adb reverse tcp:3000 tcp:3000`. Set the API address under **More → Developer → Server URL** if the phone cannot use `localhost`.
 
@@ -131,7 +131,7 @@ Env reference: [apps/api/.env.example](apps/api/.env.example). Extraction provid
 - **Validation in one place** — zod schemas in `packages/shared` are used by the API (request bodies) and the app (forms): Thai phone `0XXXXXXXXX`, Thai national ID checksum, ISO dates, enums, size limits; duplicate documents are rejected by hash.
 - **App state** — TanStack Query caches server data and invalidates after every mutation; a zustand store holds the session (tokens in SecureStore); the PIN never leaves the device (salted, iterated SHA-256).
 - **History** — records list with dates and status, notification feed, per-link access log, consent versions.
-- **Testing** — 13 shared unit tests and 63 API tests (integration on an in-memory PGlite database, plus the Gemini/Typhoon/Supabase adapters against a fake `fetch`) run in CI; the app is typechecked in strict mode in CI; every flow was exercised on a physical phone (see worklog).
+- **Testing** — 13 shared unit tests and 70 API tests (integration on an in-memory PGlite database, plus the Gemini/Typhoon/Supabase/Resend adapters against a fake `fetch`) run in CI; the app is typechecked in strict mode in CI; every flow was exercised on two physical phones.
 - **Error handling** — the API returns coded JSON errors (`DUPLICATE_RECORD`, `NO_PROFILE`, `UNAUTHENTICATED`, …) through one error middleware; the app maps them to Thai/English messages, retries expired tokens once with a single-flight refresh, and shows "cannot reach the server" instead of crashing when the API is down.
 
 ## Screenshots

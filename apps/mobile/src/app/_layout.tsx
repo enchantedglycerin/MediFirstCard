@@ -14,7 +14,7 @@ import {
 import { lightTheme, darkTheme } from "../theme/paper";
 import { queryClient } from "../lib/query";
 import { api } from "../lib/api";
-import { ensureLockScreenCardPinned } from "../lib/notifications";
+import { ensureLockScreenCardPinned, requestAllPermissionsOnce } from "../lib/notifications";
 import { useSession } from "../store/session";
 import { loadSavedLanguage } from "../i18n";
 
@@ -82,7 +82,8 @@ function StartupServices() {
         { channelName: t("lockScreen.title"), footer: t("app.name") },
       );
     };
-    repin();
+    // First signed-in launch: ask for notifications, camera and photos up front, then re-pin.
+    void requestAllPermissionsOnce().finally(repin);
     const sub = AppState.addEventListener("change", (s) => { if (s === "active") repin(); });
     return () => sub.remove();
   }, [status, unlocked, t]);
