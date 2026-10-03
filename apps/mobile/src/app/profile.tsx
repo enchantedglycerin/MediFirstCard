@@ -21,9 +21,11 @@ import { space } from "../theme/tokens";
 const SEXES: readonly Sex[] = ["male", "female", "other", "unspecified"];
 const ABO: readonly BloodAbo[] = ["A", "B", "AB", "O", "unknown"];
 const RH: readonly BloodRh[] = ["pos", "neg", "unknown"];
-const FLAGS: readonly (keyof ProfileFlags)[] = ["anticoagulant", "insulin", "pacemaker", "dialysis", "pregnancy"];
+const FLAGS: readonly ("anticoagulant" | "insulin" | "pacemaker" | "dialysis" | "pregnancy")[] = ["anticoagulant", "insulin", "pacemaker", "dialysis", "pregnancy"];
 const INSURANCE: readonly InsuranceScheme[] = ["ucs", "sss", "csmbs", "private", "self_pay", "unknown"];
-const NO_FLAGS: ProfileFlags = { anticoagulant: false, insulin: false, pacemaker: false, dialysis: false, pregnancy: false };
+const NO_FLAGS: ProfileFlags = {
+  anticoagulant: false, insulin: false, pacemaker: false, dialysis: false, pregnancy: false, customConditions: "",
+};
 const DOB_MIN = new Date(1900, 0, 1);
 
 /** Compact, language-neutral labels for the blood rows (symbols, not words). */
@@ -104,7 +106,7 @@ export default function Profile() {
   }, [profile.data]);
 
   const patch = (p: Partial<Form>) => setForm((f) => ({ ...f, ...p }));
-  const setFlag = (k: keyof ProfileFlags, on: boolean) => setForm((f) => ({ ...f, flags: { ...f.flags, [k]: on } }));
+  const setFlag = (k: typeof FLAGS[number], on: boolean) => setForm((f) => ({ ...f, flags: { ...f.flags, [k]: on } }));
 
   const save = useMutation({
     mutationFn: (f: Form) =>
@@ -285,6 +287,17 @@ export default function Profile() {
             <SwitchRow label={t(`profile.flagOptions.${k}`)} value={form.flags[k]} onChange={(v) => setFlag(k, v)} />
           </View>
         ))}
+        <TextInput
+          mode="outlined"
+          label={t("profile.customConditions")}
+          placeholder={t("profile.customConditionsHint")}
+          value={form.flags.customConditions}
+          onChangeText={(value) => setForm((f) => ({ ...f, flags: { ...f.flags, customConditions: value } }))}
+          multiline
+          numberOfLines={3}
+          maxLength={300}
+          textAlignVertical="top"
+        />
       </Section>
 
       <Section title={t("profile.insurance")}>

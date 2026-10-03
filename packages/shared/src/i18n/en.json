@@ -80,6 +80,8 @@
       "anticoagulant": "On blood thinners", "insulin": "Insulin-dependent", "pacemaker": "Pacemaker",
       "dialysis": "On dialysis", "pregnancy": "Pregnant"
     },
+    "customConditions": "Other medical conditions",
+    "customConditionsHint": "Add other conditions rescuers should know about",
     "insurance": "Insurance scheme",
     "insuranceOptions": {
       "ucs": "Universal Coverage (Gold card)", "sss": "Social Security", "csmbs": "Civil servant",

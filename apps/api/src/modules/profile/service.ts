@@ -15,6 +15,8 @@ export async function loadCardProfile(ctx: AppContext, userId: string): Promise<
     ctx.db.select().from(medications).where(eq(medications.userId, userId)),
     ctx.db.select().from(emergencyContacts).where(eq(emergencyContacts.userId, userId)).orderBy(asc(emergencyContacts.priority)),
   ]);
+  const storedFlags = p.flags as { customConditions?: unknown } | null;
+  const customConditions = typeof storedFlags?.customConditions === "string" ? storedFlags.customConditions.trim() : "";
   return {
     nameTh: [decryptOptional(p.firstNameThEnc), decryptOptional(p.lastNameThEnc)].filter(Boolean).join(" ") || null,
     nameEn: decryptOptional(p.nameEnEnc),
@@ -22,7 +24,10 @@ export async function loadCardProfile(ctx: AppContext, userId: string): Promise<
     bloodRh: p.bloodRh,
     noKnownDrugAllergy: p.noKnownDrugAllergy,
     allergies: al.map((a) => ({ substance: decryptOptional(a.substanceThEnc) || decryptOptional(a.substanceEnEnc) || "", severity: a.severity })),
-    conditions: co.map((c) => ({ label: decryptOptional(c.labelThEnc) || decryptOptional(c.labelEnEnc) || "", critical: c.critical })),
+    conditions: [
+      ...co.map((c) => ({ label: decryptOptional(c.labelThEnc) || decryptOptional(c.labelEnEnc) || "", critical: c.critical })),
+      ...(customConditions ? [{ label: customConditions, critical: true }] : []),
+    ],
     medications: me.map((m) => ({ name: decryptOptional(m.nameEnc) || "", critical: m.critical })),
     contacts: ct.map((c) => ({ name: decryptOptional(c.nameEnc) || "", relationship: c.relationship, phone: decryptOptional(c.phoneEnc) || "" })),
     lastReviewedAt: p.lastReviewedAt ? p.lastReviewedAt.toISOString().slice(0, 10) : null,

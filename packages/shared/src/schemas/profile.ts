@@ -72,6 +72,7 @@ export const profileFlags = z.object({
   pacemaker: z.boolean().default(false),
   dialysis: z.boolean().default(false),
   pregnancy: z.boolean().default(false),
+  customConditions: z.string().max(300).default(""),
 });
 
 export const DEFAULT_FLAGS = {
@@ -80,6 +81,7 @@ export const DEFAULT_FLAGS = {
   pacemaker: false,
   dialysis: false,
   pregnancy: false,
+  customConditions: "",
 };
 
 export const lockScreenFieldsSchema = z.object({
