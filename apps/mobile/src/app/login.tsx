@@ -138,16 +138,18 @@ export default function Login() {
           {t("app.disclaimer")}
         </Text>
       </Screen>
-      <SegmentedButtons
-        value={i18n.language === "en" ? "en" : "th"}
-        onValueChange={(value) => void setLanguage(value === "en" ? "en" : "th")}
-        buttons={[
-          { value: "th", label: t("more.thai"), disabled: busy, style: styles.languageButton, labelStyle: styles.languageLabel },
-          { value: "en", label: t("more.english"), disabled: busy, style: styles.languageButton, labelStyle: styles.languageLabel },
-        ]}
-        density="small"
-        style={[styles.language, { top: insets.top + space.sm, right: insets.right + space.md }]}
-      />
+      <View style={[styles.languagePosition, { top: insets.top + space.sm, right: insets.right + space.xxl }]}>
+        <SegmentedButtons
+          value={i18n.language === "en" ? "en" : "th"}
+          onValueChange={(value) => void setLanguage(value === "en" ? "en" : "th")}
+          buttons={[
+            { value: "th", label: t("more.thai"), disabled: busy, style: styles.languageButton, labelStyle: styles.languageLabel },
+            { value: "en", label: t("more.english"), disabled: busy, style: styles.languageButton, labelStyle: styles.languageLabel },
+          ]}
+          density="small"
+          style={styles.language}
+        />
+      </View>
     </View>
   );
 }
@@ -157,7 +159,8 @@ const styles = StyleSheet.create({
   container: { flexGrow: 1 },
   body: { flex: 1, justifyContent: "center", gap: space.xxl },
   brand: { alignItems: "center", gap: space.sm },
-  language: { position: "absolute", width: 128, zIndex: 1 },
+  languagePosition: { position: "absolute", zIndex: 1 },
+  language: { width: 176 },
   languageButton: { paddingHorizontal: space.xs },
   languageLabel: { fontSize: 12 },
   badge: { width: 96, height: 96, borderRadius: 48, alignItems: "center", justifyContent: "center", marginBottom: space.sm },
