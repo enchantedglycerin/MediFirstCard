@@ -29,8 +29,8 @@ const NO_FLAGS: ProfileFlags = {
 const DOB_MIN = new Date(1900, 0, 1);
 
 /** Compact, language-neutral labels for the blood rows (symbols, not words). */
-const ABO_LABEL: Record<BloodAbo, string> = { A: "A", B: "B", AB: "AB", O: "O", unknown: "?" };
-const RH_LABEL: Record<BloodRh, string> = { pos: "Rh+", neg: "Rh−", unknown: "?" };
+const ABO_LABEL: Record<Exclude<BloodAbo, "unknown">, string> = { A: "A", B: "B", AB: "AB", O: "O" };
+const RH_LABEL: Record<Exclude<BloodRh, "unknown">, string> = { pos: "Rh+", neg: "Rh−" };
 
 interface Form {
   firstNameTh: string;
@@ -255,6 +255,7 @@ export default function Profile() {
           <View style={styles.chips}>
             {ABO.map((a) => {
               const selected = form.bloodAbo === a;
+              const label = a === "unknown" ? t("common.unknown") : ABO_LABEL[a];
               return (
                 <Chip
                   key={a}
@@ -263,9 +264,9 @@ export default function Profile() {
                   mode={selected ? "flat" : "outlined"}
                   onPress={() => patch({ bloodAbo: a })}
                   textStyle={styles.chipText}
-                  accessibilityLabel={`${t("profile.blood")} ${ABO_LABEL[a]}`}
+                  accessibilityLabel={`${t("profile.blood")} ${label}`}
                 >
-                  {ABO_LABEL[a]}
+                  {label}
                 </Chip>
               );
             })}
@@ -274,7 +275,7 @@ export default function Profile() {
           <SegmentedButtons
             value={form.bloodRh}
             onValueChange={(v) => patch({ bloodRh: pick(RH, v, "unknown") })}
-            buttons={RH.map((r) => ({ value: r, label: RH_LABEL[r] }))}
+            buttons={RH.map((r) => ({ value: r, label: r === "unknown" ? t("common.unknown") : RH_LABEL[r] }))}
           />
         </View>
       </Section>
