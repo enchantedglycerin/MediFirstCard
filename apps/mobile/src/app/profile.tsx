@@ -36,6 +36,7 @@ interface Form {
   firstNameTh: string;
   lastNameTh: string;
   nameEn: string;
+  lastNameEn: string;
   dob: string;
   sex: Sex;
   bloodAbo: BloodAbo;
@@ -46,7 +47,7 @@ interface Form {
 }
 
 const EMPTY: Form = {
-  firstNameTh: "", lastNameTh: "", nameEn: "", dob: "", sex: "unspecified",
+  firstNameTh: "", lastNameTh: "", nameEn: "", lastNameEn: "", dob: "", sex: "unspecified",
   bloodAbo: "unknown", bloodRh: "unknown", flags: NO_FLAGS,
   insuranceScheme: "unknown", notes: "",
 };
@@ -56,6 +57,7 @@ function fromProfile(p: ProfileDto): Form {
     firstNameTh: p.firstNameTh ?? "",
     lastNameTh: p.lastNameTh ?? "",
     nameEn: p.nameEn ?? "",
+    lastNameEn: p.lastNameEn ?? "",
     dob: (p.dob ?? "").slice(0, 10),
     sex: p.sex ?? "unspecified",
     bloodAbo: p.bloodAbo ?? "unknown",
@@ -114,6 +116,7 @@ export default function Profile() {
         firstNameTh: f.firstNameTh.trim() || undefined,
         lastNameTh: f.lastNameTh.trim() || undefined,
         nameEn: f.nameEn.trim() || undefined,
+        lastNameEn: f.lastNameEn.trim() || undefined,
         dob: f.dob.trim() || undefined,
         sex: f.sex,
         bloodAbo: f.bloodAbo,
@@ -219,6 +222,13 @@ export default function Profile() {
             label={t("profile.nameEn")}
             value={form.nameEn}
             onChangeText={(v) => patch({ nameEn: v })}
+            autoCapitalize="words"
+          />
+          <TextInput
+            mode="outlined"
+            label={t("profile.lastNameEn")}
+            value={form.lastNameEn}
+            onChangeText={(v) => patch({ lastNameEn: v })}
             autoCapitalize="words"
           />
           <DateField

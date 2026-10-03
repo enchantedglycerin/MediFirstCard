@@ -97,6 +97,7 @@ export const emergencyProfileInput = z.object({
   firstNameTh: z.string().max(120).optional(),
   lastNameTh: z.string().max(120).optional(),
   nameEn: z.string().max(160).optional(),
+  lastNameEn: z.string().max(120).optional(),
   dob: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "invalid_date").optional(),
   sex: sex.default("unspecified"),
   bloodAbo: bloodAbo.default("unknown"),

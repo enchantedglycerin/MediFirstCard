@@ -47,6 +47,7 @@ export const emergencyProfiles = pgTable("emergency_profiles", {
   firstNameThEnc: text("first_name_th_enc"),
   lastNameThEnc: text("last_name_th_enc"),
   nameEnEnc: text("name_en_enc"),
+  lastNameEnEnc: text("last_name_en_enc"),
   dob: date("dob"),
   sex: sex("sex").notNull().default("unspecified"),
   photoPath: text("photo_path"),

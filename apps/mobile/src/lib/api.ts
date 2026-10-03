@@ -109,7 +109,7 @@ export interface ProfileFlags {
 /** GET /me/profile returns `{ lockScreenFields, exists: false }` before the first save, so most fields are optional. */
 export interface ProfileDto {
   exists?: boolean;
-  firstNameTh?: string | null; lastNameTh?: string | null; nameEn?: string | null;
+  firstNameTh?: string | null; lastNameTh?: string | null; nameEn?: string | null; lastNameEn?: string | null;
   dob?: string | null; sex?: Sex; bloodAbo?: BloodAbo; bloodRh?: BloodRh;
   noKnownDrugAllergy?: boolean; flags?: Partial<ProfileFlags>; insuranceScheme?: InsuranceScheme;
   preferredLanguage?: "th" | "en"; notes?: string | null;

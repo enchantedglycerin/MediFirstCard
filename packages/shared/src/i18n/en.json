@@ -72,7 +72,7 @@
   "profile": {
     "fixField": "Please fix the highlighted field — {{field}}: {{reason}}",
     "title": "Emergency profile", "identity": "Identity", "firstNameTh": "First name (Thai)", "lastNameTh": "Last name (Thai)",
-    "nameEn": "Name (English)", "dob": "Date of birth", "sex": "Sex",
+    "nameEn": "Name (English)", "lastNameEn": "Last name (English)", "dob": "Date of birth", "sex": "Sex",
     "sexOptions": { "male": "Male", "female": "Female", "other": "Other", "unspecified": "Not specified" },
     "blood": "Blood type", "rh": "Rh factor", "flags": "Medical flags",
     "flagsHint": "Shown to rescuers as critical conditions",

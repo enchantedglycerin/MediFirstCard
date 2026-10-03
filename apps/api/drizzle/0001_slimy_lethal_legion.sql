@@ -1,0 +1,1 @@
+ALTER TABLE "emergency_profiles" ADD COLUMN "last_name_en_enc" text;
