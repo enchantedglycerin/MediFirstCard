@@ -50,6 +50,10 @@ Everything below runs today on a real Android phone. Verified 2026-09-04 both ag
 
 ## System architecture diagram
 
+<p align="center"><img src="docs/architecture.png" width="900" alt="MediFirstCard system architecture: app, API, cloud services"></p>
+
+Source: `docs/architecture.svg`. The same structure as text:
+
 ```mermaid
 flowchart LR
   subgraph Phone["Android app — Expo SDK 57 / React Native / TypeScript"]

@@ -1,0 +1,122 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080">
+<defs>
+  <marker id="head" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L10,5 L0,10 z" fill="#005B96"/></marker>
+  <marker id="tail" markerWidth="10" markerHeight="10" refX="1" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path d="M10,0 L0,5 L10,10 z" fill="#005B96"/></marker>
+</defs>
+<rect width="1920" height="1080" fill="#FFFFFF"/>
+<text x="80" y="66" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="38" font-weight="700" fill="#1A1C1E" text-anchor="start">MediFirstCard — system architecture</text>
+<text x="80" y="100" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="18" font-weight="400" fill="#44474E" text-anchor="start">Emergency card on the lock screen, encrypted medical records, AI document reading · Android app + REST API + cloud services</text>
+<rect x="80" y="136" width="480" height="844" rx="18" fill="#F3F6FA"/>
+<text x="104" y="174" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="15" font-weight="700" fill="#005B96" text-anchor="start" letter-spacing="1.6">USERS &amp; DEVICES</text>
+<rect x="680" y="136" width="560" height="844" rx="18" fill="#F3F6FA"/>
+<text x="704" y="174" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="15" font-weight="700" fill="#005B96" text-anchor="start" letter-spacing="1.6">MEDIFIRSTCARD API  ·  RENDER (SINGAPORE)</text>
+<rect x="1360" y="136" width="480" height="844" rx="18" fill="#F3F6FA"/>
+<text x="1384" y="174" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="15" font-weight="700" fill="#005B96" text-anchor="start" letter-spacing="1.6">CLOUD SERVICES</text>
+<rect x="104" y="190" width="432" height="404" rx="12" fill="#FFFFFF" stroke="#C9D3DF" stroke-width="1.5"/>
+<text x="124" y="222" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="20" font-weight="700" fill="#1A1C1E" text-anchor="start">Owner's phone — MediFirstCard app</text>
+<text x="124" y="248" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="400" fill="#44474E" text-anchor="start">Expo SDK 57 · React Native · TypeScript · Paper MD3</text>
+<text x="124" y="272" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="400" fill="#44474E" text-anchor="start">• Home · Card · Records · More</text>
+<text x="124" y="296" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="400" fill="#44474E" text-anchor="start">• Emergency profile, allergies, conditions,</text>
+<text x="124" y="320" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="400" fill="#44474E" text-anchor="start">   medications, emergency contacts</text>
+<text x="124" y="344" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="400" fill="#44474E" text-anchor="start">• Share with a clinician · app PIN / biometrics</text>
+<text x="124" y="368" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="400" fill="#44474E" text-anchor="start">• Tokens and PIN in SecureStore</text>
+<text x="124" y="392" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="400" fill="#44474E" text-anchor="start">• Query cache, refresh on focus, pull-to-refresh</text>
+<rect x="124" y="430" width="392" height="146" rx="12" fill="#FFF4F3" stroke="#C62828" stroke-width="2"/>
+<rect x="124" y="430" width="6" height="146" rx="3" fill="#C62828"/>
+<text x="150" y="462" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="20" font-weight="700" fill="#C62828" text-anchor="start">Lock-screen card — native module</text>
+<text x="150" y="488" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="400" fill="#44474E" text-anchor="start">Pinned public notification · Call 1669 action</text>
+<text x="150" y="512" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="400" fill="#44474E" text-anchor="start">Re-posted after swipe-away, reboot, app update</text>
+<text x="150" y="536" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="400" fill="#44474E" text-anchor="start">Text built by buildCardPayload(): critical first</text>
+<rect x="104" y="622" width="432" height="150" rx="12" fill="#FFFFFF" stroke="#C9D3DF" stroke-width="1.5"/>
+<text x="124" y="654" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="20" font-weight="700" fill="#1A1C1E" text-anchor="start">Rescuer — any phone, no app</text>
+<text x="124" y="680" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="400" fill="#44474E" text-anchor="start">Scans the QR on the card or opens the link</text>
+<text x="124" y="704" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="400" fill="#44474E" text-anchor="start">Reads the public card page /e/:token</text>
+<text x="124" y="728" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="400" fill="#44474E" text-anchor="start">Tap-to-call contacts · Call 1669</text>
+<rect x="104" y="800" width="432" height="150" rx="12" fill="#FFFFFF" stroke="#C9D3DF" stroke-width="1.5"/>
+<text x="124" y="832" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="20" font-weight="700" fill="#1A1C1E" text-anchor="start">Clinician — browser</text>
+<text x="124" y="858" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="400" fill="#44474E" text-anchor="start">Opens a time-limited share link /s/:token</text>
+<text x="124" y="882" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="400" fill="#44474E" text-anchor="start">Optional 4-digit passcode (5 failures revoke)</text>
+<text x="124" y="906" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="400" fill="#44474E" text-anchor="start">Sees the selected documents with images</text>
+<rect x="704" y="190" width="512" height="92" rx="12" fill="#FFFFFF" stroke="#C9D3DF" stroke-width="1.5"/>
+<text x="724" y="222" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="20" font-weight="700" fill="#1A1C1E" text-anchor="start">Auth &amp; validation</text>
+<text x="724" y="248" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="400" fill="#44474E" text-anchor="start">JWT access/refresh with rotation and reuse detection</text>
+<text x="724" y="272" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="400" fill="#44474E" text-anchor="start">zod schemas shared with the app (packages/shared)</text>
+<rect x="704" y="296" width="512" height="116" rx="12" fill="#FFFFFF" stroke="#C9D3DF" stroke-width="1.5"/>
+<text x="724" y="328" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="20" font-weight="700" fill="#1A1C1E" text-anchor="start">Emergency profile &amp; card builder</text>
+<text x="724" y="354" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="400" fill="#44474E" text-anchor="start">buildCardPayload(): identity · blood · allergies ·</text>
+<text x="724" y="378" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="400" fill="#44474E" text-anchor="start">warnings (medical flags) · conditions · medications ·</text>
+<text x="724" y="402" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="400" fill="#44474E" text-anchor="start">contacts — one source for app, notification, web page</text>
+<rect x="704" y="426" width="512" height="92" rx="12" fill="#FFFFFF" stroke="#C9D3DF" stroke-width="1.5"/>
+<text x="724" y="458" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="20" font-weight="700" fill="#1A1C1E" text-anchor="start">Records pipeline</text>
+<text x="724" y="484" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="400" fill="#44474E" text-anchor="start">SHA-256 dedupe → upload → AI extraction →</text>
+<text x="724" y="508" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="400" fill="#44474E" text-anchor="start">red-field review → encrypted columns</text>
+<rect x="704" y="532" width="512" height="92" rx="12" fill="#FFFFFF" stroke="#C9D3DF" stroke-width="1.5"/>
+<text x="724" y="564" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="20" font-weight="700" fill="#1A1C1E" text-anchor="start">Share links &amp; alerts</text>
+<text x="724" y="590" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="400" fill="#44474E" text-anchor="start">Scope · passcode · expiry · view count · access log</text>
+<text x="724" y="614" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="400" fill="#44474E" text-anchor="start">Card or link viewed → in-app alert + e-mail</text>
+<rect x="704" y="638" width="512" height="92" rx="12" fill="#FFFFFF" stroke="#C9D3DF" stroke-width="1.5"/>
+<text x="724" y="670" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="20" font-weight="700" fill="#1A1C1E" text-anchor="start">Public pages</text>
+<text x="724" y="696" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="400" fill="#44474E" text-anchor="start">/e/:token rescuer card · /s/:token clinician documents</text>
+<text x="724" y="720" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="400" fill="#44474E" text-anchor="start">Thai or English · signed, expiring image URLs</text>
+<rect x="704" y="744" width="512" height="96" rx="12" fill="#D6EBFF" stroke="#D6EBFF" stroke-width="1.5"/>
+<text x="724" y="776" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="20" font-weight="700" fill="#00294A" text-anchor="start">Privacy by design</text>
+<text x="724" y="802" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="400" fill="#00294A" text-anchor="start">AES-256-GCM on every health text column · PDPA consent ·</text>
+<text x="724" y="826" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="400" fill="#00294A" text-anchor="start">withdraw consent revokes links · hard delete</text>
+<rect x="704" y="854" width="512" height="96" rx="12" fill="#FFFFFF" stroke="#C9D3DF" stroke-width="1.5"/>
+<text x="724" y="886" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="20" font-weight="700" fill="#1A1C1E" text-anchor="start">Delivery</text>
+<text x="724" y="912" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="400" fill="#44474E" text-anchor="start">GitHub Actions CI (tests, strict typecheck) → Render</text>
+<text x="724" y="936" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="400" fill="#44474E" text-anchor="start">auto-deploy on push, migrations run at build · /health</text>
+<rect x="1384" y="190" width="432" height="120" rx="12" fill="#FFFFFF" stroke="#C9D3DF" stroke-width="1.5"/>
+<text x="1404" y="222" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="20" font-weight="700" fill="#1A1C1E" text-anchor="start">Supabase PostgreSQL</text>
+<text x="1404" y="248" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="400" fill="#44474E" text-anchor="start">ap-northeast-2 · Drizzle ORM · encrypted columns</text>
+<text x="1404" y="272" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="400" fill="#44474E" text-anchor="start">PGlite in-memory for local runs and tests</text>
+<rect x="1384" y="330" width="432" height="96" rx="12" fill="#FFFFFF" stroke="#C9D3DF" stroke-width="1.5"/>
+<text x="1404" y="362" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="20" font-weight="700" fill="#1A1C1E" text-anchor="start">Supabase Storage</text>
+<text x="1404" y="388" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="400" fill="#44474E" text-anchor="start">Document images (resized JPEG)</text>
+<text x="1404" y="412" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="400" fill="#44474E" text-anchor="start">Served only through signed, expiring URLs</text>
+<rect x="1384" y="446" width="432" height="146" rx="12" fill="#FFFFFF" stroke="#C9D3DF" stroke-width="1.5"/>
+<text x="1404" y="478" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="20" font-weight="700" fill="#1A1C1E" text-anchor="start">AI document reading</text>
+<text x="1404" y="504" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="400" fill="#44474E" text-anchor="start">Google Gemini 3.5 — primary</text>
+<text x="1404" y="528" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="400" fill="#44474E" text-anchor="start">SCB 10X Typhoon — fallback (Thai documents)</text>
+<text x="1404" y="552" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="400" fill="#44474E" text-anchor="start">Image → JSON fields, confidence and evidence</text>
+<text x="1404" y="576" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="400" fill="#44474E" text-anchor="start">snippet per field; retries with back-off</text>
+<rect x="1384" y="612" width="432" height="96" rx="12" fill="#FFFFFF" stroke="#C9D3DF" stroke-width="1.5"/>
+<text x="1404" y="644" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="20" font-weight="700" fill="#1A1C1E" text-anchor="start">Resend</text>
+<text x="1404" y="670" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="400" fill="#44474E" text-anchor="start">E-mail alerts to the owner's address</text>
+<text x="1404" y="694" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="400" fill="#44474E" text-anchor="start">Never blocks the rescuer page</text>
+<rect x="1384" y="728" width="432" height="96" rx="12" fill="#FFFFFF" stroke="#C9D3DF" stroke-width="1.5"/>
+<text x="1404" y="760" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="20" font-weight="700" fill="#1A1C1E" text-anchor="start">GitHub</text>
+<text x="1404" y="786" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="400" fill="#44474E" text-anchor="start">Repository · Actions CI · Releases</text>
+<text x="1404" y="810" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="400" fill="#44474E" text-anchor="start">Signed APK (release keystore) per version</text>
+<rect x="1384" y="844" width="432" height="108" rx="12" fill="#FFFFFF" stroke="#C9D3DF" stroke-width="1.5"/>
+<text x="1404" y="876" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="20" font-weight="700" fill="#1A1C1E" text-anchor="start">Android system</text>
+<text x="1404" y="902" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="400" fill="#44474E" text-anchor="start">Notification channel · lock-screen visibility</text>
+<text x="1404" y="926" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="400" fill="#44474E" text-anchor="start">Battery and vendor Autostart settings</text>
+<text x="1404" y="950" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="400" fill="#44474E" text-anchor="start">Photo picker · camera · biometrics</text>
+<path d="M 536 236 L 704 236" fill="none" stroke="#005B96" stroke-width="2.5" marker-end="url(#head)" marker-start="url(#tail)"/>
+<rect x="538.2" y="211" width="163.6" height="22" rx="6" fill="#FFFFFF"/>
+<text x="620" y="227" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="600" fill="#005B96" text-anchor="middle">HTTPS · JSON · JWT</text>
+<path d="M 536 684 L 704 684" fill="none" stroke="#005B96" stroke-width="2.5" marker-end="url(#head)"/>
+<rect x="534.1" y="659" width="171.79999999999998" height="22" rx="6" fill="#FFFFFF"/>
+<text x="620" y="675" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="600" fill="#005B96" text-anchor="middle">scan QR / open link</text>
+<path d="M 536 875 C 606 875, 634 716, 704 716" fill="none" stroke="#005B96" stroke-width="2.5" marker-end="url(#head)"/>
+<rect x="550.5" y="794.5" width="139" height="22" rx="6" fill="#FFFFFF"/>
+<text x="620" y="810.5" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="600" fill="#005B96" text-anchor="middle">link + passcode</text>
+<path d="M 1216 262 L 1384 262" fill="none" stroke="#005B96" stroke-width="2.5" marker-end="url(#head)"/>
+<rect x="1214.1" y="237" width="171.79999999999998" height="22" rx="6" fill="#FFFFFF"/>
+<text x="1300" y="253" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="600" fill="#005B96" text-anchor="middle">Drizzle · encrypted</text>
+<path d="M 1216 354 L 1384 378" fill="none" stroke="#005B96" stroke-width="2.5" marker-end="url(#head)"/>
+<rect x="1267.4" y="341" width="65.19999999999999" height="22" rx="6" fill="#FFFFFF"/>
+<text x="1300" y="357" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="600" fill="#005B96" text-anchor="middle">images</text>
+<path d="M 1216 472 C 1256 472, 1344 519, 1384 519" fill="none" stroke="#005B96" stroke-width="2.5" marker-end="url(#head)"/>
+<rect x="1234.6" y="470.5" width="130.79999999999998" height="22" rx="6" fill="#FFFFFF"/>
+<text x="1300" y="486.5" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="600" fill="#005B96" text-anchor="middle">image → fields</text>
+<path d="M 1216 578 C 1266 578, 1334 660, 1384 660" fill="none" stroke="#005B96" stroke-width="2.5" marker-end="url(#head)"/>
+<rect x="1242.8" y="594" width="114.39999999999999" height="22" rx="6" fill="#FFFFFF"/>
+<text x="1300" y="610" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="600" fill="#005B96" text-anchor="middle">alert e-mail</text>
+<path d="M 1384 776 C 1324 776, 1276 902, 1216 902" fill="none" stroke="#005B96" stroke-width="2.5" marker-end="url(#head)"/>
+<rect x="1214.1" y="838" width="171.79999999999998" height="22" rx="6" fill="#FFFFFF"/>
+<text x="1300" y="854" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="600" fill="#005B96" text-anchor="middle">auto-deploy on push</text>
+<rect x="80" y="1000" width="1760" height="56" rx="12" fill="#D6EBFF"/>
+<text x="960" y="1035" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="17" font-weight="600" fill="#00294A" text-anchor="middle">packages/shared — one contract for app and API:  zod schemas  ·  buildCardPayload()  ·  Thai / English strings  ·  Buddhist-era dates</text>
+</svg>
