@@ -1,3 +1,4 @@
+import { Platform } from "react-native";
 import * as Notifications from "expo-notifications";
 import { EMERGENCY_NUMBER, NO_KNOWN_DRUG_ALLERGY, flagKeyOfValue, type CardLine, type CardPayload } from "@mfc/shared";
 import i18n from "../i18n";
@@ -109,7 +110,8 @@ export async function requestAllPermissionsOnce(): Promise<boolean> {
   const { requestCameraPermissionsAsync, requestMediaLibraryPermissionsAsync } = await import("expo-image-picker");
   await Notifications.requestPermissionsAsync().catch(() => undefined);
   await requestCameraPermissionsAsync().catch(() => undefined);
-  await requestMediaLibraryPermissionsAsync().catch(() => undefined);
+  // Only Android 7-9 still need WRITE_EXTERNAL_STORAGE (the camera saves its capture); the photo picker needs nothing.
+  if (Platform.OS === "android" && Number(Platform.Version) < 29) await requestMediaLibraryPermissionsAsync(true).catch(() => undefined);
   await secure.set(KEYS.permsAsked, "1");
   return true;
 }

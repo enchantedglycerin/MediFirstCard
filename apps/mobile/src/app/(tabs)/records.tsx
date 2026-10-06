@@ -89,14 +89,15 @@ export default function Records() {
         if (!perm.granted) { setMsg(t("errors.permissionCamera")); return; }
         picked = await ImagePicker.launchCameraAsync({ quality: 0.9 });
       } else {
-        const perm = await ImagePicker.requestMediaLibraryPermissionsAsync();
-        if (!perm.granted) { setMsg(t("errors.permissionPhotos")); return; }
+        // The system photo picker (and GET_CONTENT before Android 11) needs no storage permission.
         picked = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ["images"], quality: 0.9 });
       }
       const asset = picked.canceled ? undefined : picked.assets[0];
       if (asset) scan.mutate(asset.uri);
     } catch (e) {
-      setMsg(t(errorKey(e)));
+      // Android 7-9 ask for storage inside launchCameraAsync itself; a refusal surfaces as this code.
+      const code = (e as { code?: string }).code;
+      setMsg(code === "ERR_USER_REJECTED_PERMISSIONS" ? t(source === "camera" ? "errors.permissionCamera" : "errors.permissionPhotos") : t(errorKey(e)));
     }
   }
 

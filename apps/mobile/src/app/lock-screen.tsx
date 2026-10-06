@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { AppState, StyleSheet, View } from "react-native";
+import { AppState, Linking, StyleSheet, View } from "react-native";
 import { router, useFocusEffect } from "expo-router";
 import { ActivityIndicator, Banner, Button, Dialog, Divider, List, Snackbar, Switch, Text, useTheme, Portal } from "react-native-paper";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -125,7 +125,7 @@ export default function LockScreen() {
         }
       } else {
         setOn(false);
-        setSnack({ text: t("lockScreen.permissionDenied") });
+        setSnack({ text: t("lockScreen.permissionDenied"), action: { label: t("common.open"), onPress: () => void Linking.openSettings() } });
       }
     } catch (e) {
       setOn(false);
@@ -150,7 +150,7 @@ export default function LockScreen() {
         const ok = await pin(fresh.data);
         if (!ok) {
           setOn(false);
-          setSnack({ text: t("lockScreen.permissionDenied") });
+          setSnack({ text: t("lockScreen.permissionDenied"), action: { label: t("common.open"), onPress: () => void Linking.openSettings() } });
           return;
         }
       }
@@ -183,7 +183,7 @@ export default function LockScreen() {
             title={t("lockScreen.showOnLockScreen")}
             titleStyle={styles.rowTitle}
             description={t("lockScreen.howItWorks")}
-            descriptionNumberOfLines={5}
+            descriptionNumberOfLines={8}
             descriptionStyle={{ color: theme.colors.onSurfaceVariant }}
             onPress={() => void toggle(!on)}
             disabled={busy || loading}

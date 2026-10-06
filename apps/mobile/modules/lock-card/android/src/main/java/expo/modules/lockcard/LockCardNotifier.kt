@@ -37,6 +37,11 @@ object LockCardNotifier {
 
     // On API 33+ this reflects the POST_NOTIFICATIONS runtime grant as well as channel/app state.
     if (!NotificationManagerCompat.from(context).areNotificationsEnabled()) return false
+    // A channel set to "Off" in Settings (API 26+) still accepts notify(); treat it as not shown.
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+      val nm = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+      if (nm.getNotificationChannel(payload.channelId)?.importance == NotificationManager.IMPORTANCE_NONE) return false
+    }
 
     val flags = PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
 

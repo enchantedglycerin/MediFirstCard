@@ -25,7 +25,8 @@ body{margin:0;font:18px/1.5 -apple-system,"Segoe UI",Tahoma,sans-serif;backgroun
 .row:last-child{border-bottom:0}
 .label{font-size:13px;letter-spacing:.04em;text-transform:uppercase;color:#5b6370}
 .value{font-size:22px;font-weight:600}
-.urgent .value{color:#B3261E}
+.value.urgent{color:#B3261E}
+.item{margin-top:2px}
 a.call{display:inline-block;margin-top:4px;color:#005B96;font-weight:600;text-decoration:none}
 a.ems{display:block;margin:12px 0;padding:14px;border-radius:12px;background:#C62828;color:#fff;text-align:center;font-size:20px;font-weight:700;text-decoration:none}
 .foot{padding:14px 18px;font-size:13px;color:#5b6370;background:#fbfbfd}
@@ -61,24 +62,28 @@ export function renderEmergencyPage(opts: {
     ? { title: "บัตรฉุกเฉิน", reviewed: "ปรับปรุงล่าสุด", ems: "โทร 1669 (แพทย์ฉุกเฉิน)" }
     : { title: "Emergency Card", reviewed: "Last updated", ems: "Call 1669 (Emergency medical service)" };
   const m = i18nMessages[lang] as typeof i18nMessages.en;
+  // One box per kind: the label is the group name, items are listed inside.
   const LABEL: Record<CardLine["kind"], string> = {
-    identity: m.card.identity, blood: m.card.bloodShort, allergy: m.card.allergy, warning: m.card.warning,
-    condition: m.card.condition, medication: m.card.medication, contact: m.card.ice,
+    identity: m.card.identity, blood: m.card.bloodShort, allergy: m.card.allergies, warning: m.card.warnings,
+    condition: m.card.conditions, medication: m.card.medications, contact: m.card.contacts,
   };
   const noneKnown = (l: CardLine) => l.kind === "allergy" && l.value === NO_KNOWN_DRUG_ALLERGY;
-  const label = (l: CardLine) => (noneKnown(l) ? m.card.allergies : LABEL[l.kind]);
   const value = (l: CardLine) => {
     if (noneKnown(l)) return m.card.noKnownAllergy;
     const flag = l.kind === "warning" ? flagKeyOfValue(l.value) : null;
     return flag ? m.profile.flagOptions[flag] : l.value;
   };
   const blood = opts.lines.find((l) => l.kind === "blood");
-  const rows = opts.lines
-    .filter((l) => l.kind !== "blood")
-    .map((l) => `<div class="row ${l.urgent ? "urgent" : ""}">
-      <div class="label">${esc(label(l))}</div>
-      <div class="value">${esc(value(l))}</div>
-      ${l.kind === "contact" ? `<a class="call" href="tel:${esc(l.phone ?? dialable(l.value))}">📞 ${lang === "th" ? "โทร" : "Call"}</a>` : ""}
+  const groups: { kind: CardLine["kind"]; lines: CardLine[] }[] = [];
+  for (const l of opts.lines.filter((x) => x.kind !== "blood")) {
+    const last = groups[groups.length - 1];
+    if (last && last.kind === l.kind) last.lines.push(l);
+    else groups.push({ kind: l.kind, lines: [l] });
+  }
+  const rows = groups
+    .map((g) => `<div class="row">
+      <div class="label">${esc(LABEL[g.kind])}</div>
+      ${g.lines.map((l) => `<div class="item"><div class="value${l.urgent ? " urgent" : ""}">${esc(value(l))}</div>${l.kind === "contact" ? `<a class="call" href="tel:${esc(l.phone ?? dialable(l.value))}">📞 ${lang === "th" ? "โทร" : "Call"}</a>` : ""}</div>`).join("")}
     </div>`)
     .join("");
   const body = `<a class="ems" href="tel:${EMERGENCY_NUMBER}">🚑 ${t.ems}</a><div class="card">

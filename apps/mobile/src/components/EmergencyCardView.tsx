@@ -16,15 +16,29 @@ interface Props {
   onCallFailed?: () => void;
 }
 
-const LABEL_KEY: Record<CardLine["kind"], string> = {
+/** One box per kind, so the label is the group name, not repeated per item. */
+const GROUP_LABEL: Record<CardLine["kind"], string> = {
   identity: "card.identity",
   blood: "card.bloodShort",
-  allergy: "card.allergy",
-  warning: "card.warning",
-  condition: "card.condition",
-  medication: "card.medication",
-  contact: "card.ice",
+  allergy: "card.allergies",
+  warning: "card.warnings",
+  condition: "card.conditions",
+  medication: "card.medications",
+  contact: "card.contacts",
 };
+
+interface Group { kind: CardLine["kind"]; lines: CardLine[] }
+
+/** Consecutive lines of the same kind become one group; the builder already emits kinds in order. */
+function groupLines(lines: CardLine[]): Group[] {
+  const groups: Group[] = [];
+  for (const l of lines) {
+    const last = groups[groups.length - 1];
+    if (last && last.kind === l.kind) last.lines.push(l);
+    else groups.push({ kind: l.kind, lines: [l] });
+  }
+  return groups;
+}
 
 const ICON: Record<CardLine["kind"], keyof typeof MaterialCommunityIcons.glyphMap> = {
   identity: "account",
@@ -55,7 +69,7 @@ export function EmergencyCardView({ payload, showEms = false, compact = false, o
     const flag = flagOf(l);
     return flag ? t(`profile.flagOptions.${flag}`) : l.value;
   };
-  const labelText = (l: CardLine) => (noneKnown(l) ? t("card.allergies") : t(LABEL_KEY[l.kind]));
+  const groups = groupLines(rest);
 
   async function call(phone: string) {
     if (!(await callNumber(phone))) onCallFailed?.();
@@ -99,38 +113,42 @@ export function EmergencyCardView({ payload, showEms = false, compact = false, o
             <Text variant="bodyLarge" style={{ color: theme.colors.onSurfaceVariant }}>{t("card.notEntered")}</Text>
           </View>
         ) : (
-          rest.map((l, i) => (
-            <View key={`${l.kind}-${i}`}>
+          groups.map((g, i) => (
+            <View key={g.kind}>
               {i > 0 ? <Divider /> : null}
               <View style={styles.row}>
                 <MaterialCommunityIcons
-                  name={ICON[l.kind]}
+                  name={ICON[g.kind]}
                   size={22}
-                  color={l.urgent ? theme.colors.error : theme.colors.onSurfaceVariant}
+                  color={g.lines.some((l) => l.urgent) ? theme.colors.error : theme.colors.onSurfaceVariant}
                   style={styles.icon}
                 />
                 <View style={styles.rowText}>
                   <Text variant="labelSmall" style={[styles.label, { color: theme.colors.onSurfaceVariant }]}>
-                    {labelText(l)}
+                    {t(GROUP_LABEL[g.kind])}
                   </Text>
-                  <Text
-                    variant={compact ? "bodyLarge" : "titleMedium"}
-                    style={[styles.value, l.urgent && { color: theme.colors.error }]}
-                  >
-                    {valueText(l)}
-                  </Text>
+                  {g.lines.map((l, j) => (
+                    <View key={j} style={styles.item}>
+                      <Text
+                        variant={compact ? "bodyLarge" : "titleMedium"}
+                        style={[styles.value, l.urgent && { color: theme.colors.error }]}
+                      >
+                        {valueText(l)}
+                      </Text>
+                      {l.kind === "contact" && l.phone ? (
+                        <IconButton
+                          icon="phone"
+                          mode="contained"
+                          containerColor={theme.colors.primary}
+                          iconColor={theme.colors.onPrimary}
+                          size={compact ? 20 : 24}
+                          onPress={() => void call(l.phone!)}
+                          accessibilityLabel={`${t("common.call")} ${l.value}`}
+                        />
+                      ) : null}
+                    </View>
+                  ))}
                 </View>
-                {l.kind === "contact" && l.phone ? (
-                  <IconButton
-                    icon="phone"
-                    mode="contained"
-                    containerColor={theme.colors.primary}
-                    iconColor={theme.colors.onPrimary}
-                    size={compact ? 20 : 24}
-                    onPress={() => void call(l.phone!)}
-                    accessibilityLabel={`${t("common.call")} ${l.value}`}
-                  />
-                ) : null}
               </View>
             </View>
           ))
@@ -159,10 +177,11 @@ const styles = StyleSheet.create({
   bloodLabel: { color: palette.onEmergencyHeader, fontSize: 11, textTransform: "uppercase", letterSpacing: 1, opacity: 0.9 },
   blood: { color: palette.onEmergencyHeader, fontSize: 30, fontWeight: "800", lineHeight: 34 },
   bloodUrgent: { textDecorationLine: "underline" },
-  row: { flexDirection: "row", alignItems: "center", paddingHorizontal: space.lg, paddingVertical: space.md, gap: space.md },
+  row: { flexDirection: "row", alignItems: "flex-start", paddingHorizontal: space.lg, paddingVertical: space.md, gap: space.md },
+  item: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: space.sm },
   icon: { width: 24 },
   rowText: { flex: 1 },
   label: { textTransform: "uppercase", letterSpacing: 0.6 },
-  value: { fontWeight: "600", marginTop: 2 },
+  value: { fontWeight: "600", marginTop: 2, flexShrink: 1 },
   foot: { paddingHorizontal: space.lg, paddingVertical: space.md },
 });

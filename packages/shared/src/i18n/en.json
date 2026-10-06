@@ -67,7 +67,7 @@
     "shown": "The card is pinned to your lock screen", "hidden": "The card is not on your lock screen",
     "permissionDenied": "Notifications are turned off. Allow them in Android Settings to show the card.",
     "noProfile": "Create your emergency profile first", "preview": "Preview", "fieldsTitle": "Fields to show",
-    "howItWorks": "The card is shown as a pinned notification that stays visible on the lock screen until you turn it off.",
+    "howItWorks": "The card is shown as a pinned notification that stays visible on the lock screen until you turn it off. Its Call 1669 button works once the phone is unlocked; rescuers can still dial 1669 from the lock screen's Emergency call. After a restart the card returns once the phone has been unlocked once.",
     "updated": "Lock-screen card updated", "nothingToShow": "Turn on at least one field with data"
   },
   "profile": {
