@@ -1,0 +1,1 @@
+ALTER TABLE "emergency_profiles" ADD COLUMN "custom_conditions_enc" text;

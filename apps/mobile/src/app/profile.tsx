@@ -21,14 +21,12 @@ import { space } from "../theme/tokens";
 const SEXES: readonly Sex[] = ["male", "female", "other", "unspecified"];
 const ABO: readonly BloodAbo[] = ["A", "B", "AB", "O", "unknown"];
 const RH: readonly BloodRh[] = ["pos", "neg", "unknown"];
-const FLAGS: readonly ("anticoagulant" | "insulin" | "pacemaker" | "dialysis" | "pregnancy")[] = ["anticoagulant", "insulin", "pacemaker", "dialysis", "pregnancy"];
+const FLAGS: readonly (keyof ProfileFlags)[] = ["anticoagulant", "insulin", "pacemaker", "dialysis", "pregnancy"];
 const INSURANCE: readonly InsuranceScheme[] = ["ucs", "sss", "csmbs", "private", "self_pay", "unknown"];
-const NO_FLAGS: ProfileFlags = {
-  anticoagulant: false, insulin: false, pacemaker: false, dialysis: false, pregnancy: false, customConditions: "",
-};
+const NO_FLAGS: ProfileFlags = { anticoagulant: false, insulin: false, pacemaker: false, dialysis: false, pregnancy: false };
 const DOB_MIN = new Date(1900, 0, 1);
 
-/** Compact, language-neutral labels for the blood rows (symbols, not words). */
+/** Compact labels for the known blood values; "unknown" renders as t("common.unknown"). */
 const ABO_LABEL: Record<Exclude<BloodAbo, "unknown">, string> = { A: "A", B: "B", AB: "AB", O: "O" };
 const RH_LABEL: Record<Exclude<BloodRh, "unknown">, string> = { pos: "Rh+", neg: "Rh−" };
 
@@ -42,13 +40,14 @@ interface Form {
   bloodAbo: BloodAbo;
   bloodRh: BloodRh;
   flags: ProfileFlags;
+  customConditions: string;
   insuranceScheme: InsuranceScheme;
   notes: string;
 }
 
 const EMPTY: Form = {
   firstNameTh: "", lastNameTh: "", nameEn: "", lastNameEn: "", dob: "", sex: "unspecified",
-  bloodAbo: "unknown", bloodRh: "unknown", flags: NO_FLAGS,
+  bloodAbo: "unknown", bloodRh: "unknown", flags: NO_FLAGS, customConditions: "",
   insuranceScheme: "unknown", notes: "",
 };
 
@@ -63,6 +62,7 @@ function fromProfile(p: ProfileDto): Form {
     bloodAbo: p.bloodAbo ?? "unknown",
     bloodRh: p.bloodRh ?? "unknown",
     flags: { ...NO_FLAGS, ...(p.flags ?? {}) },
+    customConditions: p.customConditions ?? "",
     insuranceScheme: p.insuranceScheme ?? "unknown",
     notes: p.notes ?? "",
   };
@@ -108,7 +108,7 @@ export default function Profile() {
   }, [profile.data]);
 
   const patch = (p: Partial<Form>) => setForm((f) => ({ ...f, ...p }));
-  const setFlag = (k: typeof FLAGS[number], on: boolean) => setForm((f) => ({ ...f, flags: { ...f.flags, [k]: on } }));
+  const setFlag = (k: keyof ProfileFlags, on: boolean) => setForm((f) => ({ ...f, flags: { ...f.flags, [k]: on } }));
 
   const save = useMutation({
     mutationFn: (f: Form) =>
@@ -123,6 +123,7 @@ export default function Profile() {
         bloodRh: f.bloodRh,
         // noKnownDrugAllergy is edited on the Allergies screen; omitting it leaves it unchanged.
         flags: f.flags,
+        customConditions: f.customConditions.replace(/\s+/g, " ").trim() || undefined,
         insuranceScheme: f.insuranceScheme,
         // Not edited here; resend it so the server default does not reset the user's choice.
         preferredLanguage: profile.data?.preferredLanguage ?? currentLang(),
@@ -298,17 +299,21 @@ export default function Profile() {
             <SwitchRow label={t(`profile.flagOptions.${k}`)} value={form.flags[k]} onChange={(v) => setFlag(k, v)} />
           </View>
         ))}
-        <TextInput
-          mode="outlined"
-          label={t("profile.customConditions")}
-          placeholder={t("profile.customConditionsHint")}
-          value={form.flags.customConditions}
-          onChangeText={(value) => setForm((f) => ({ ...f, flags: { ...f.flags, customConditions: value } }))}
-          multiline
-          numberOfLines={3}
-          maxLength={300}
-          textAlignVertical="top"
-        />
+        <Divider />
+        <View style={styles.body}>
+          <TextInput
+            mode="outlined"
+            label={t("profile.customConditions")}
+            placeholder={t("profile.customConditionsHint")}
+            value={form.customConditions}
+            onChangeText={(v) => patch({ customConditions: v })}
+            multiline
+            numberOfLines={3}
+            maxLength={300}
+            textAlignVertical="top"
+            style={styles.other}
+          />
+        </View>
       </Section>
 
       <Section title={t("profile.insurance")}>
@@ -387,6 +392,7 @@ const styles = StyleSheet.create({
   chips: { flexDirection: "row", flexWrap: "wrap", gap: space.sm },
   chipText: { fontSize: 16, lineHeight: 24, marginVertical: 10 },
   notes: { minHeight: 110 },
+  other: { minHeight: 88 },
   itemTitle: { fontWeight: "600" },
   saveContent: { height: 52 },
 });

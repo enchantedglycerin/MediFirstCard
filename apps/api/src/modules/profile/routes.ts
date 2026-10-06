@@ -31,6 +31,7 @@ function profileDto(row: typeof emergencyProfiles.$inferSelect) {
     lastNameTh: decryptOptional(row.lastNameThEnc),
     nameEn: decryptOptional(row.nameEnEnc),
     lastNameEn: decryptOptional(row.lastNameEnEnc),
+    customConditions: decryptOptional(row.customConditionsEnc),
     dob: row.dob,
     sex: row.sex,
     bloodAbo: row.bloodAbo,
@@ -123,6 +124,7 @@ export function profileRoutes(ctx: AppContext): Router {
         lastNameThEnc: encryptOptional(input.lastNameTh),
         nameEnEnc: encryptOptional(input.nameEn),
         lastNameEnEnc: encryptOptional(input.lastNameEn),
+        customConditionsEnc: encryptOptional(input.customConditions?.replace(/\s+/g, " ").trim()),
         notesEnc: encryptOptional(input.notes),
       };
       const common = {

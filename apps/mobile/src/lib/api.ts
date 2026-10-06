@@ -101,18 +101,15 @@ export type BloodAbo = "A" | "B" | "AB" | "O" | "unknown";
 export type BloodRh = "pos" | "neg" | "unknown";
 export type Sex = "male" | "female" | "other" | "unspecified";
 export type InsuranceScheme = "ucs" | "sss" | "csmbs" | "private" | "self_pay" | "unknown";
-export interface ProfileFlags {
-  anticoagulant: boolean; insulin: boolean; pacemaker: boolean; dialysis: boolean; pregnancy: boolean;
-  customConditions: string;
-}
+export interface ProfileFlags { anticoagulant: boolean; insulin: boolean; pacemaker: boolean; dialysis: boolean; pregnancy: boolean }
 
 /** GET /me/profile returns `{ lockScreenFields, exists: false }` before the first save, so most fields are optional. */
 export interface ProfileDto {
   exists?: boolean;
   firstNameTh?: string | null; lastNameTh?: string | null; nameEn?: string | null; lastNameEn?: string | null;
   dob?: string | null; sex?: Sex; bloodAbo?: BloodAbo; bloodRh?: BloodRh;
-  noKnownDrugAllergy?: boolean; flags?: Partial<ProfileFlags>; insuranceScheme?: InsuranceScheme;
-  preferredLanguage?: "th" | "en"; notes?: string | null;
+  noKnownDrugAllergy?: boolean; flags?: ProfileFlags; insuranceScheme?: InsuranceScheme;
+  preferredLanguage?: "th" | "en"; customConditions?: string | null; notes?: string | null;
   lockScreenFields: LockScreenFields; lastReviewedAt?: string | null;
 }
 export function profileExists(p: ProfileDto | undefined): boolean {

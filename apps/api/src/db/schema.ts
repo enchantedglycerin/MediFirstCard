@@ -55,6 +55,7 @@ export const emergencyProfiles = pgTable("emergency_profiles", {
   bloodRh: bloodRh("blood_rh").notNull().default("unknown"),
   noKnownDrugAllergy: boolean("no_known_drug_allergy").notNull().default(false),
   flags: jsonb("flags").notNull().default({}),
+  customConditionsEnc: text("custom_conditions_enc"),
   insuranceScheme: insuranceScheme("insurance_scheme").notNull().default("unknown"),
   preferredLanguage: text("preferred_language").notNull().default("th"),
   notesEnc: text("notes_enc"),

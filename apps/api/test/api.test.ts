@@ -72,6 +72,34 @@ describe("profile + emergency card", () => {
     expect(card.body.qrPngDataUrl.startsWith("data:image/png;base64,")).toBe(true);
     expect(card.body.shareLinkId).toBeTruthy();
   });
+
+  it("joins the English surname on the card and shows the free-text condition as a critical line", async () => {
+    const u = await registerUser(t, "surname@t.com");
+    const h = bearer(u.accessToken);
+
+    const put = await t.agent.put("/api/v1/me/profile").set(h).send({
+      nameEn: "Somchai", lastNameEn: "Jaidee", customConditions: "  Epilepsy \n (controlled)  ",
+    });
+    expect(put.status).toBe(200);
+    expect(put.body.lastNameEn).toBe("Jaidee");
+    expect(put.body.customConditions).toBe("Epilepsy (controlled)"); // whitespace and newlines collapsed
+
+    const fields = await t.agent.put("/api/v1/me/lock-screen-fields").set(h).send({
+      name: true, bloodType: true, allergies: true, conditions: true, medications: false, contact: false,
+    });
+    expect(fields.status).toBe(200);
+
+    const card = await t.agent.get("/api/v1/me/emergency-card").set(h);
+    expect(card.status).toBe(200);
+    const lines = card.body.lines as { kind: string; value: string; urgent: boolean }[];
+    expect(lines.find((l) => l.kind === "identity")?.value).toBe("Somchai Jaidee");
+    expect(lines.find((l) => l.kind === "condition")).toMatchObject({ value: "Epilepsy (controlled)", urgent: true });
+
+    // A save that omits the field clears it, like every other profile text field.
+    const again = await t.agent.put("/api/v1/me/profile").set(h).send({ nameEn: "Somchai" });
+    expect(again.status).toBe(200);
+    expect(again.body.customConditions).toBeNull();
+  });
 });
 
 describe("records + extraction", () => {

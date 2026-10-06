@@ -15,11 +15,11 @@ export async function loadCardProfile(ctx: AppContext, userId: string): Promise<
     ctx.db.select().from(medications).where(eq(medications.userId, userId)),
     ctx.db.select().from(emergencyContacts).where(eq(emergencyContacts.userId, userId)).orderBy(asc(emergencyContacts.priority)),
   ]);
-  const storedFlags = p.flags as { customConditions?: unknown } | null;
-  const customConditions = typeof storedFlags?.customConditions === "string" ? storedFlags.customConditions.trim() : "";
+  // Free text typed under Medical flags: one extra condition line, always critical (what that section promises).
+  const customConditions = (decryptOptional(p.customConditionsEnc) ?? "").replace(/\s+/g, " ").trim();
   return {
     nameTh: [decryptOptional(p.firstNameThEnc), decryptOptional(p.lastNameThEnc)].filter(Boolean).join(" ") || null,
-    nameEn: decryptOptional(p.nameEnEnc),
+    nameEn: [decryptOptional(p.nameEnEnc), decryptOptional(p.lastNameEnEnc)].filter(Boolean).join(" ") || null,
     bloodAbo: p.bloodAbo,
     bloodRh: p.bloodRh,
     noKnownDrugAllergy: p.noKnownDrugAllergy,

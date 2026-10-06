@@ -80,8 +80,8 @@
       "anticoagulant": "ใช้ยาละลายลิ่มเลือด", "insulin": "ต้องใช้อินซูลิน", "pacemaker": "ใส่เครื่องกระตุ้นหัวใจ",
       "dialysis": "ฟอกไต", "pregnancy": "ตั้งครรภ์"
     },
-    "customConditions": "โรคหรือภาวะทางการแพทย์อื่น ๆ",
-    "customConditionsHint": "เพิ่มข้อมูลที่ผู้ช่วยเหลือควรทราบ",
+    "customConditions": "ภาวะสำคัญอื่น ๆ",
+    "customConditionsHint": "ภาวะอื่นที่ผู้ช่วยเหลือต้องรู้ เช่น โรคลมชัก",
     "insurance": "สิทธิการรักษา",
     "insuranceOptions": {
       "ucs": "บัตรทอง (หลักประกันสุขภาพถ้วนหน้า)", "sss": "ประกันสังคม", "csmbs": "ข้าราชการ",

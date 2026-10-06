@@ -72,7 +72,6 @@ export const profileFlags = z.object({
   pacemaker: z.boolean().default(false),
   dialysis: z.boolean().default(false),
   pregnancy: z.boolean().default(false),
-  customConditions: z.string().max(300).default(""),
 });
 
 export const DEFAULT_FLAGS = {
@@ -81,7 +80,6 @@ export const DEFAULT_FLAGS = {
   pacemaker: false,
   dialysis: false,
   pregnancy: false,
-  customConditions: "",
 };
 
 export const lockScreenFieldsSchema = z.object({
@@ -104,6 +102,8 @@ export const emergencyProfileInput = z.object({
   bloodRh: bloodRh.default("unknown"),
   noKnownDrugAllergy: z.boolean().optional(),
   flags: profileFlags.default(DEFAULT_FLAGS),
+  /** Free text under Medical flags; one extra critical condition line on the card. Stored encrypted. */
+  customConditions: z.string().max(300).optional(),
   insuranceScheme: insuranceScheme.default("unknown"),
   preferredLanguage: z.enum(["th", "en"]).default("th"),
   notes: z.string().max(2000).optional(),
