@@ -26,7 +26,7 @@ const INSURANCE: readonly InsuranceScheme[] = ["ucs", "sss", "csmbs", "private",
 const NO_FLAGS: ProfileFlags = { anticoagulant: false, insulin: false, pacemaker: false, dialysis: false, pregnancy: false };
 const DOB_MIN = new Date(1900, 0, 1);
 
-/** Compact labels for the known blood values; "unknown" renders as t("common.unknown"). */
+/** Compact labels for the known blood values; "unknown" renders as "?" with a spoken "Unknown" label. */
 const ABO_LABEL: Record<Exclude<BloodAbo, "unknown">, string> = { A: "A", B: "B", AB: "AB", O: "O" };
 const RH_LABEL: Record<Exclude<BloodRh, "unknown">, string> = { pos: "Rh+", neg: "Rh−" };
 
@@ -263,11 +263,11 @@ export default function Profile() {
 
       <Section title={t("profile.blood")}>
         <View style={styles.body}>
-          {/* All five on one row: no check icon and compact padding so "Unknown" fits beside A, B, AB, O. */}
+          {/* All five on one row; "?" stands for unknown (the word does not fit beside A, B, AB, O at this type size). */}
           <View style={styles.aboRow}>
             {ABO.map((a) => {
               const selected = form.bloodAbo === a;
-              const label = a === "unknown" ? t("common.unknown") : ABO_LABEL[a];
+              const label = a === "unknown" ? "?" : ABO_LABEL[a];
               return (
                 <Chip
                   key={a}
@@ -278,7 +278,7 @@ export default function Profile() {
                   onPress={() => patch({ bloodAbo: a })}
                   style={styles.aboChip}
                   textStyle={[styles.chipText, styles.chipCenter]}
-                  accessibilityLabel={`${t("profile.blood")} ${label}`}
+                  accessibilityLabel={`${t("profile.blood")} ${a === "unknown" ? t("common.unknown") : label}`}
                 >
                   {label}
                 </Chip>
@@ -289,7 +289,12 @@ export default function Profile() {
           <SegmentedButtons
             value={form.bloodRh}
             onValueChange={(v) => patch({ bloodRh: pick(RH, v, "unknown") })}
-            buttons={RH.map((r) => ({ value: r, label: r === "unknown" ? t("common.unknown") : RH_LABEL[r], labelStyle: styles.segLabel }))}
+            buttons={RH.map((r) => ({
+              value: r,
+              label: r === "unknown" ? "?" : RH_LABEL[r],
+              accessibilityLabel: r === "unknown" ? `${t("profile.rh")} ${t("common.unknown")}` : undefined,
+              labelStyle: styles.segLabel,
+            }))}
           />
         </View>
       </Section>
