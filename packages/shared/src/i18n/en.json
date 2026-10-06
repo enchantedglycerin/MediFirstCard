@@ -76,7 +76,7 @@
     "nameEn": "First name (English)", "lastNameEn": "Last name (English)", "dob": "Date of birth", "sex": "Sex",
     "sexOptions": { "male": "Male", "female": "Female", "other": "Other", "unspecified": "Not specified" },
     "blood": "Blood type", "rh": "Rh factor", "flags": "Medical flags",
-    "flagsHint": "Shown to rescuers as critical conditions",
+    "flagsHint": "Shown to rescuers as warnings at the top of your card",
     "flagOptions": {
       "anticoagulant": "On blood thinners", "insulin": "Insulin-dependent", "pacemaker": "Pacemaker",
       "dialysis": "On dialysis", "pregnancy": "Pregnant"
