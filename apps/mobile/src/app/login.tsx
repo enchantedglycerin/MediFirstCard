@@ -1,19 +1,22 @@
-import { useRef, useState } from "react";
-import { StyleSheet, View, type TextInput as RNTextInput } from "react-native";
+import { Fragment, useRef, useState } from "react";
+import { Pressable, StyleSheet, View, type TextInput as RNTextInput } from "react-native";
 import { router } from "expo-router";
-import { Button, HelperText, SegmentedButtons, Text, TextInput, useTheme } from "react-native-paper";
+import { Button, HelperText, Text, TextInput, useTheme } from "react-native-paper";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useTranslation } from "react-i18next";
 import { Screen } from "../components/Screen";
 import { api, ApiError, errorKey } from "../lib/api";
 import { useSession } from "../store/session";
-import { setLanguage } from "../i18n";
+import { setLanguage, type Lang } from "../i18n";
 import { space, touch } from "../theme/tokens";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
-/** Sign-in screen: brand block, language row, email + password, link to registration. No header (hidden by the root layout). */
+/** Each language named in itself, so the switch reads the same whichever one is active. */
+const LANGS: ReadonlyArray<{ code: Lang; label: string }> = [{ code: "th", label: "ไทย" }, { code: "en", label: "EN" }];
+
+/** Sign-in screen: brand block, email + password, link to registration; a small language toggle top right. No header (hidden by the root layout). */
 export default function Login() {
   const { t, i18n } = useTranslation();
   const theme = useTheme();
@@ -58,6 +61,33 @@ export default function Login() {
       style={{ ...styles.container, paddingTop: insets.top + space.xl, paddingBottom: insets.bottom + space.lg }}
       gap={space.lg}
     >
+      {/* Sits in the scroll content, so it moves with the form when the keyboard opens and never covers the brand. */}
+      <View style={[styles.langRow, { top: insets.top + space.sm }]}>
+        {LANGS.map((l, i) => {
+          const active = (i18n.language === "en" ? "en" : "th") === l.code;
+          return (
+            <Fragment key={l.code}>
+              {i > 0 ? <View style={[styles.langDivider, { backgroundColor: theme.colors.outlineVariant }]} /> : null}
+              <Pressable
+                onPress={() => void setLanguage(l.code)}
+                disabled={busy}
+                hitSlop={8}
+                accessibilityRole="button"
+                accessibilityState={{ selected: active }}
+                accessibilityLabel={`${t("more.language")}: ${l.label}`}
+                style={styles.langButton}
+              >
+                <Text
+                  variant="labelLarge"
+                  style={{ color: active ? theme.colors.primary : theme.colors.onSurfaceVariant, fontWeight: active ? "700" : "500" }}
+                >
+                  {l.label}
+                </Text>
+              </Pressable>
+            </Fragment>
+          );
+        })}
+      </View>
       <View style={styles.body}>
         <View style={styles.brand}>
           <View style={[styles.badge, { backgroundColor: theme.colors.primaryContainer }]}>
@@ -70,25 +100,6 @@ export default function Login() {
         </View>
 
         <View style={styles.form}>
-          {/* Same control as More > Language, so the two read as one thing; in the form so it scrolls with the keyboard. */}
-          <View style={styles.language}>
-            <Text variant="labelLarge">{t("more.language")}</Text>
-            <SegmentedButtons
-              value={i18n.language === "en" ? "en" : "th"}
-              onValueChange={(v) => void setLanguage(v === "en" ? "en" : "th")}
-              buttons={[
-                {
-                  value: "th", label: t("more.thai"), showSelectedCheck: true, disabled: busy, labelStyle: styles.segLabel,
-                  accessibilityLabel: `${t("more.language")}: ${t("more.thai")}`,
-                },
-                {
-                  value: "en", label: t("more.english"), showSelectedCheck: true, disabled: busy, labelStyle: styles.segLabel,
-                  accessibilityLabel: `${t("more.language")}: ${t("more.english")}`,
-                },
-              ]}
-            />
-          </View>
-
           <TextInput
             mode="outlined"
             label={t("auth.email")}
@@ -163,9 +174,9 @@ const styles = StyleSheet.create({
   container: { flexGrow: 1 },
   body: { flex: 1, justifyContent: "center", gap: space.xxl },
   brand: { alignItems: "center", gap: space.sm },
-  language: { gap: space.xs, marginBottom: space.sm },
-  // 16px label on a 30dp line + 2 x 9dp MD3 padding = 48dp segments; the tall line box also clears Thai ascenders.
-  segLabel: { fontSize: 16, lineHeight: touch.min - 18 },
+  langRow: { position: "absolute", right: space.lg, flexDirection: "row", alignItems: "center", gap: space.sm },
+  langButton: { minHeight: touch.min - 4, minWidth: 40, paddingHorizontal: space.xs, alignItems: "center", justifyContent: "center" },
+  langDivider: { width: 1, height: 16 },
   badge: { width: 96, height: 96, borderRadius: 48, alignItems: "center", justifyContent: "center", marginBottom: space.sm },
   appName: { fontWeight: "700", textAlign: "center" },
   tagline: { textAlign: "center" },
