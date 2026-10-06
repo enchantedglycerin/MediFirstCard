@@ -16,7 +16,7 @@ import {
 } from "../lib/api";
 import { invalidateAfterEdit } from "../lib/refresh";
 import { currentLang } from "../i18n";
-import { space, touch } from "../theme/tokens";
+import { space } from "../theme/tokens";
 
 const SEXES: readonly Sex[] = ["male", "female", "other", "unspecified"];
 const ABO: readonly BloodAbo[] = ["A", "B", "AB", "O", "unknown"];
@@ -26,9 +26,9 @@ const INSURANCE: readonly InsuranceScheme[] = ["ucs", "sss", "csmbs", "private",
 const NO_FLAGS: ProfileFlags = { anticoagulant: false, insulin: false, pacemaker: false, dialysis: false, pregnancy: false };
 const DOB_MIN = new Date(1900, 0, 1);
 
-/** Compact labels for the known blood values; "unknown" renders as "?" with a spoken "Unknown" label. */
-const ABO_LABEL: Record<Exclude<BloodAbo, "unknown">, string> = { A: "A", B: "B", AB: "AB", O: "O" };
-const RH_LABEL: Record<Exclude<BloodRh, "unknown">, string> = { pos: "Rh+", neg: "Rh−" };
+/** Compact, language-neutral labels for the blood rows (symbols, not words); "?" is spoken as "Unknown". */
+const ABO_LABEL: Record<BloodAbo, string> = { A: "A", B: "B", AB: "AB", O: "O", unknown: "?" };
+const RH_LABEL: Record<BloodRh, string> = { pos: "Rh+", neg: "Rh−", unknown: "?" };
 
 interface Form {
   firstNameTh: string;
@@ -263,24 +263,20 @@ export default function Profile() {
 
       <Section title={t("profile.blood")}>
         <View style={styles.body}>
-          {/* All five on one row; "?" stands for unknown (the word does not fit beside A, B, AB, O at this type size). */}
-          <View style={styles.aboRow}>
+          <View style={styles.chips}>
             {ABO.map((a) => {
               const selected = form.bloodAbo === a;
-              const label = a === "unknown" ? "?" : ABO_LABEL[a];
               return (
                 <Chip
                   key={a}
-                  compact
                   selected={selected}
-                  showSelectedCheck={false}
+                  showSelectedCheck
                   mode={selected ? "flat" : "outlined"}
                   onPress={() => patch({ bloodAbo: a })}
-                  style={styles.aboChip}
-                  textStyle={[styles.chipText, styles.chipCenter]}
-                  accessibilityLabel={`${t("profile.blood")} ${a === "unknown" ? t("common.unknown") : label}`}
+                  textStyle={styles.chipText}
+                  accessibilityLabel={`${t("profile.blood")} ${a === "unknown" ? t("common.unknown") : ABO_LABEL[a]}`}
                 >
-                  {label}
+                  {ABO_LABEL[a]}
                 </Chip>
               );
             })}
@@ -289,12 +285,7 @@ export default function Profile() {
           <SegmentedButtons
             value={form.bloodRh}
             onValueChange={(v) => patch({ bloodRh: pick(RH, v, "unknown") })}
-            buttons={RH.map((r) => ({
-              value: r,
-              label: r === "unknown" ? "?" : RH_LABEL[r],
-              accessibilityLabel: r === "unknown" ? `${t("profile.rh")} ${t("common.unknown")}` : undefined,
-              labelStyle: styles.segLabel,
-            }))}
+            buttons={RH.map((r) => ({ value: r, label: RH_LABEL[r], accessibilityLabel: r === "unknown" ? `${t("profile.rh")} ${t("common.unknown")}` : undefined }))}
           />
         </View>
       </Section>
@@ -388,8 +379,6 @@ export default function Profile() {
 const styles = StyleSheet.create({
   center: { alignItems: "center", justifyContent: "center" },
   body: { padding: space.lg, gap: space.md },
-  // 16px label on a 30dp line + 2 x 9dp MD3 padding = 48dp segments.
-  segLabel: { fontSize: 16, lineHeight: touch.min - 18 },
   hint: { paddingHorizontal: space.lg, paddingTop: space.md, paddingBottom: space.sm },
   helper: { paddingHorizontal: space.lg, paddingTop: space.md, paddingBottom: space.xs },
   switchRow: {
@@ -399,10 +388,6 @@ const styles = StyleSheet.create({
   switchLabel: { flex: 1 },
   chips: { flexDirection: "row", flexWrap: "wrap", gap: space.sm },
   chipText: { fontSize: 16, lineHeight: 24, marginVertical: 10 },
-  // Chip's content row is start-aligned; flex + textAlign centre the label inside a stretched chip.
-  chipCenter: { flex: 1, textAlign: "center" },
-  aboRow: { flexDirection: "row", gap: space.xs },
-  aboChip: { flexGrow: 1, flexShrink: 1, minWidth: 0 },
   notes: { minHeight: 110 },
   other: { minHeight: 88 },
   itemTitle: { fontWeight: "600" },

@@ -51,14 +51,14 @@ async function ensureChannel(name: string): Promise<void> {
  * "Label: value" line per card field, in card order.
  */
 /**
- * Notification body: one line per group ("Conditions: ⚠ Epilepsy, Asthma"), critical conditions and
- * medications first with a warning sign, one line per contact so each number stays readable.
+ * Notification body: one line per group ("Warnings: On blood thinners", "Conditions: ⚠ Epilepsy, Asthma"),
+ * critical conditions and medications first with a warning sign, one line per contact so each number stays readable.
  */
 export function lockCardText(payload: Payload): { title: string; lines: string[] } {
   const t = (key: string) => i18n.t(key);
   const value = (l: CardLine): string => {
     if (l.kind === "allergy" && l.value === NO_KNOWN_DRUG_ALLERGY) return t("card.noKnownAllergy");
-    const flag = l.kind === "condition" ? flagKeyOfValue(l.value) : null;
+    const flag = l.kind === "warning" ? flagKeyOfValue(l.value) : null;
     const text = flag ? t(`profile.flagOptions.${flag}`) : l.value;
     return l.urgent && (l.kind === "condition" || l.kind === "medication") ? `⚠ ${text}` : text;
   };
@@ -66,7 +66,8 @@ export function lockCardText(payload: Payload): { title: string; lines: string[]
   const lines: string[] = [];
   for (const l of ofKind("identity")) lines.push(`${t("card.identity")}: ${value(l)}`);
   for (const l of ofKind("blood")) lines.push(`${t("card.bloodShort")}: ${value(l)}`);
-  for (const [kind, labelKey] of [["allergy", "card.allergies"], ["condition", "card.conditions"], ["medication", "card.medications"]] as const) {
+  const groups = [["allergy", "card.allergies"], ["warning", "card.warnings"], ["condition", "card.conditions"], ["medication", "card.medications"]] as const;
+  for (const [kind, labelKey] of groups) {
     const values = ofKind(kind).map(value);
     if (values.length > 0) lines.push(`${t(labelKey)}: ${values.join(", ")}`);
   }

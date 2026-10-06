@@ -52,6 +52,7 @@
     "emptyHint": "Add your name, blood type, allergies and an emergency contact so rescuers can help you fast.",
     "setUp": "Set up profile", "qrHint": "Rescuers can scan this QR code to open your card",
     "identity": "Name", "bloodShort": "Blood", "allergy": "Allergy", "condition": "Condition", "medication": "Medication",
+    "warning": "Warning", "warnings": "Warnings",
     "ice": "Emergency contact", "rescuerNote": "This is exactly what a rescuer sees when they scan your QR code or open your link.",
     "lockScreenCard": "Lock-screen card", "shareTitle": "My emergency card"
   },

@@ -20,6 +20,7 @@ const LABEL_KEY: Record<CardLine["kind"], string> = {
   identity: "card.identity",
   blood: "card.bloodShort",
   allergy: "card.allergy",
+  warning: "card.warning",
   condition: "card.condition",
   medication: "card.medication",
   contact: "card.ice",
@@ -29,6 +30,7 @@ const ICON: Record<CardLine["kind"], keyof typeof MaterialCommunityIcons.glyphMa
   identity: "account",
   blood: "water",
   allergy: "alert-octagon",
+  warning: "alert",
   condition: "heart-pulse",
   medication: "pill",
   contact: "phone",
@@ -47,7 +49,7 @@ export function EmergencyCardView({ payload, showEms = false, compact = false, o
   const rest = payload.lines.filter((l) => l.kind !== "identity" && l.kind !== "blood");
 
   const noneKnown = (l: CardLine) => l.kind === "allergy" && l.value === NO_KNOWN_DRUG_ALLERGY;
-  const flagOf = (l: CardLine) => (l.kind === "condition" ? flagKeyOfValue(l.value) : null);
+  const flagOf = (l: CardLine) => (l.kind === "warning" ? flagKeyOfValue(l.value) : null);
   const valueText = (l: CardLine) => {
     if (noneKnown(l)) return t("card.noKnownAllergy");
     const flag = flagOf(l);

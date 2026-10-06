@@ -94,10 +94,10 @@ describe("profile + emergency card", () => {
     expect(card.status).toBe(200);
     const lines = card.body.lines as { kind: string; value: string; urgent: boolean }[];
     expect(lines.find((l) => l.kind === "identity")?.value).toBe("Somchai Jaidee");
-    // The switched-on flag comes first as a critical condition, then the typed text.
-    expect(lines.filter((l) => l.kind === "condition").map((l) => [l.value, l.urgent])).toEqual([
-      ["On blood thinners", true], ["Epilepsy (controlled)", true],
-    ]);
+    // The switched-on flag is a warning line ahead of the conditions; the typed text is a critical condition.
+    expect(lines.filter((l) => l.kind === "warning").map((l) => [l.value, l.urgent])).toEqual([["On blood thinners", true]]);
+    expect(lines.filter((l) => l.kind === "condition").map((l) => [l.value, l.urgent])).toEqual([["Epilepsy (controlled)", true]]);
+    expect(lines.findIndex((l) => l.kind === "warning")).toBeLessThan(lines.findIndex((l) => l.kind === "condition"));
 
     // A save that omits the field clears it, like every other profile text field.
     const again = await t.agent.put("/api/v1/me/profile").set(h).send({ nameEn: "Somchai" });

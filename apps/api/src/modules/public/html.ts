@@ -62,14 +62,14 @@ export function renderEmergencyPage(opts: {
     : { title: "Emergency Card", reviewed: "Last updated", ems: "Call 1669 (Emergency medical service)" };
   const m = i18nMessages[lang] as typeof i18nMessages.en;
   const LABEL: Record<CardLine["kind"], string> = {
-    identity: m.card.identity, blood: m.card.bloodShort, allergy: m.card.allergy,
+    identity: m.card.identity, blood: m.card.bloodShort, allergy: m.card.allergy, warning: m.card.warning,
     condition: m.card.condition, medication: m.card.medication, contact: m.card.ice,
   };
   const noneKnown = (l: CardLine) => l.kind === "allergy" && l.value === NO_KNOWN_DRUG_ALLERGY;
   const label = (l: CardLine) => (noneKnown(l) ? m.card.allergies : LABEL[l.kind]);
   const value = (l: CardLine) => {
     if (noneKnown(l)) return m.card.noKnownAllergy;
-    const flag = l.kind === "condition" ? flagKeyOfValue(l.value) : null;
+    const flag = l.kind === "warning" ? flagKeyOfValue(l.value) : null;
     return flag ? m.profile.flagOptions[flag] : l.value;
   };
   const blood = opts.lines.find((l) => l.kind === "blood");

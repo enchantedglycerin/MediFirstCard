@@ -24,7 +24,7 @@ export const DEFAULT_LOCK_SCREEN_FIELDS: LockScreenFields = {
 export const FLAG_KEYS = ["anticoagulant", "insulin", "pacemaker", "dialysis", "pregnancy"] as const;
 export type FlagKey = (typeof FLAG_KEYS)[number];
 
-/** Canonical card values for the Medical flags; renderers translate them via profile.flagOptions.<key>. */
+/** Canonical values of the "warning" lines made from the Medical flags; renderers translate them via profile.flagOptions.<key>. */
 export const FLAG_LINE_VALUES: Record<FlagKey, string> = {
   anticoagulant: "On blood thinners",
   insulin: "Insulin-dependent",
@@ -33,7 +33,7 @@ export const FLAG_LINE_VALUES: Record<FlagKey, string> = {
   pregnancy: "Pregnant",
 };
 
-/** The flag behind a condition line, or null for a user-typed condition. */
+/** The flag behind a warning line, or null when the value is not one of the flags. */
 export function flagKeyOfValue(value: string): FlagKey | null {
   return FLAG_KEYS.find((k) => FLAG_LINE_VALUES[k] === value) ?? null;
 }
@@ -41,7 +41,7 @@ export function flagKeyOfValue(value: string): FlagKey | null {
 export interface CardProfile {
   nameTh?: string | null;
   nameEn?: string | null;
-  /** Medical flags that are switched on; each becomes a critical condition line. */
+  /** Medical flags that are switched on; each becomes a "warning" line ahead of the conditions. */
   flags?: FlagKey[];
   bloodAbo?: "A" | "B" | "AB" | "O" | "unknown" | null;
   bloodRh?: "pos" | "neg" | "unknown" | null;
@@ -53,7 +53,7 @@ export interface CardProfile {
   lastReviewedAt?: string | null;
 }
 
-export type CardLineKind = "identity" | "blood" | "allergy" | "condition" | "medication" | "contact";
+export type CardLineKind = "identity" | "blood" | "allergy" | "warning" | "condition" | "medication" | "contact";
 
 export interface CardLine {
   kind: CardLineKind;
@@ -91,7 +91,7 @@ function bloodText(abo?: CardProfile["bloodAbo"], rh?: CardProfile["bloodRh"]): 
 /**
  * Build the ordered card lines from a profile and the user's field selection.
  * Order follows the "first 60 seconds" priority: identity, blood, allergies,
- * conditions, medications, contacts. Only fields the user enabled are included.
+ * warnings (medical flags), conditions, medications, contacts. Only fields the user enabled are included.
  */
 export function buildCardPayload(profile: CardProfile, fields: LockScreenFields): CardPayload {
   const lines: CardLine[] = [];
@@ -131,8 +131,9 @@ export function buildCardPayload(profile: CardProfile, fields: LockScreenFields)
     [...items.filter((i) => i.critical), ...items.filter((i) => !i.critical)];
 
   if (fields.conditions) {
+    // The flags ride on the Conditions toggle, so hiding conditions for privacy hides them too.
     for (const k of profile.flags ?? []) {
-      lines.push({ kind: "condition", label: "Condition", value: FLAG_LINE_VALUES[k], urgent: true });
+      lines.push({ kind: "warning", label: "Warning", value: FLAG_LINE_VALUES[k], urgent: true });
     }
     for (const c of criticalFirst((profile.conditions ?? []).filter((c) => c.label.trim().length > 0))) {
       lines.push({ kind: "condition", label: "Condition", value: c.label, urgent: Boolean(c.critical) });
