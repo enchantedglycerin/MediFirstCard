@@ -239,13 +239,16 @@ export default function More() {
           <List.Item
             title={
               notes.isLoading ? t("common.loading")
-                : unreadCount > 0 ? t("home.unread", { count: unreadCount })
                 : latestNote ? t(`alerts.kinds.${latestNote.kind}`, { defaultValue: latestNote.kind })
                 : t("alerts.empty")
             }
             titleStyle={styles.itemTitle}
             titleNumberOfLines={2}
-            description={latestNote ? formatDateTime(latestNote.createdAt, i18n.language) : t("alerts.emptyHint")}
+            description={
+              latestNote
+                ? [unreadCount > 0 ? t("home.unread", { count: unreadCount }) : null, formatDateTime(latestNote.createdAt, i18n.language)].filter(Boolean).join(" · ")
+                : t("alerts.emptyHint")
+            }
             descriptionNumberOfLines={2}
             onPress={goAlerts}
             left={(props) => <List.Icon {...props} icon={unreadCount > 0 ? "bell-badge" : "bell-outline"} color={unreadCount > 0 ? theme.colors.primary : props.color} />}

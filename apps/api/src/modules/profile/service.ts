@@ -1,6 +1,6 @@
 import { and, eq, asc } from "drizzle-orm";
 import { randomBytes } from "node:crypto";
-import { type CardProfile, type LockScreenFields, DEFAULT_LOCK_SCREEN_FIELDS, buildCardPayload } from "@mfc/shared";
+import { type CardProfile, type LockScreenFields, DEFAULT_LOCK_SCREEN_FIELDS, FLAG_KEYS, buildCardPayload } from "@mfc/shared";
 import type { AppContext } from "../../context.js";
 import { hashToken } from "../../auth/tokens.js";
 import { decryptOptional } from "../../crypto/fieldEncryption.js";
@@ -17,8 +17,10 @@ export async function loadCardProfile(ctx: AppContext, userId: string): Promise<
   ]);
   // Free text typed under Medical flags: one extra condition line, always critical (what that section promises).
   const customConditions = (decryptOptional(p.customConditionsEnc) ?? "").replace(/\s+/g, " ").trim();
+  const storedFlags = (p.flags ?? {}) as Record<string, unknown>;
   return {
     nameTh: [decryptOptional(p.firstNameThEnc), decryptOptional(p.lastNameThEnc)].filter(Boolean).join(" ") || null,
+    flags: FLAG_KEYS.filter((k) => storedFlags[k] === true),
     nameEn: [decryptOptional(p.nameEnEnc), decryptOptional(p.lastNameEnEnc)].filter(Boolean).join(" ") || null,
     bloodAbo: p.bloodAbo,
     bloodRh: p.bloodRh,

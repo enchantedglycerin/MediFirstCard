@@ -1,4 +1,4 @@
-import { EMERGENCY_NUMBER, dialable, i18nMessages, type CardLine } from "@mfc/shared";
+import { EMERGENCY_NUMBER, NO_KNOWN_DRUG_ALLERGY, dialable, flagKeyOfValue, i18nMessages, type CardLine } from "@mfc/shared";
 
 function esc(s: unknown): string {
   return String(s ?? "").replace(/[&<>"']/g, (c) => (
@@ -60,12 +60,24 @@ export function renderEmergencyPage(opts: {
   const t = lang === "th"
     ? { title: "บัตรฉุกเฉิน", reviewed: "ปรับปรุงล่าสุด", ems: "โทร 1669 (แพทย์ฉุกเฉิน)" }
     : { title: "Emergency Card", reviewed: "Last updated", ems: "Call 1669 (Emergency medical service)" };
+  const m = i18nMessages[lang] as typeof i18nMessages.en;
+  const LABEL: Record<CardLine["kind"], string> = {
+    identity: m.card.identity, blood: m.card.bloodShort, allergy: m.card.allergy,
+    condition: m.card.condition, medication: m.card.medication, contact: m.card.ice,
+  };
+  const noneKnown = (l: CardLine) => l.kind === "allergy" && l.value === NO_KNOWN_DRUG_ALLERGY;
+  const label = (l: CardLine) => (noneKnown(l) ? m.card.allergies : LABEL[l.kind]);
+  const value = (l: CardLine) => {
+    if (noneKnown(l)) return m.card.noKnownAllergy;
+    const flag = l.kind === "condition" ? flagKeyOfValue(l.value) : null;
+    return flag ? m.profile.flagOptions[flag] : l.value;
+  };
   const blood = opts.lines.find((l) => l.kind === "blood");
   const rows = opts.lines
     .filter((l) => l.kind !== "blood")
     .map((l) => `<div class="row ${l.urgent ? "urgent" : ""}">
-      <div class="label">${esc(l.label)}</div>
-      <div class="value">${esc(l.value)}</div>
+      <div class="label">${esc(label(l))}</div>
+      <div class="value">${esc(value(l))}</div>
       ${l.kind === "contact" ? `<a class="call" href="tel:${esc(l.phone ?? dialable(l.value))}">📞 ${lang === "th" ? "โทร" : "Call"}</a>` : ""}
     </div>`)
     .join("");

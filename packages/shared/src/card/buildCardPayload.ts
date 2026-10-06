@@ -21,9 +21,28 @@ export const DEFAULT_LOCK_SCREEN_FIELDS: LockScreenFields = {
   contact: true,
 };
 
+export const FLAG_KEYS = ["anticoagulant", "insulin", "pacemaker", "dialysis", "pregnancy"] as const;
+export type FlagKey = (typeof FLAG_KEYS)[number];
+
+/** Canonical card values for the Medical flags; renderers translate them via profile.flagOptions.<key>. */
+export const FLAG_LINE_VALUES: Record<FlagKey, string> = {
+  anticoagulant: "On blood thinners",
+  insulin: "Insulin-dependent",
+  pacemaker: "Pacemaker",
+  dialysis: "On dialysis",
+  pregnancy: "Pregnant",
+};
+
+/** The flag behind a condition line, or null for a user-typed condition. */
+export function flagKeyOfValue(value: string): FlagKey | null {
+  return FLAG_KEYS.find((k) => FLAG_LINE_VALUES[k] === value) ?? null;
+}
+
 export interface CardProfile {
   nameTh?: string | null;
   nameEn?: string | null;
+  /** Medical flags that are switched on; each becomes a critical condition line. */
+  flags?: FlagKey[];
   bloodAbo?: "A" | "B" | "AB" | "O" | "unknown" | null;
   bloodRh?: "pos" | "neg" | "unknown" | null;
   noKnownDrugAllergy?: boolean;
@@ -107,16 +126,21 @@ export function buildCardPayload(profile: CardProfile, fields: LockScreenFields)
     }
   }
 
+  // Critical items come first within their group, so what a rescuer must not miss is read first.
+  const criticalFirst = <T extends { critical?: boolean }>(items: T[]): T[] =>
+    [...items.filter((i) => i.critical), ...items.filter((i) => !i.critical)];
+
   if (fields.conditions) {
-    for (const c of profile.conditions ?? []) {
-      if (c.label.trim().length === 0) continue;
+    for (const k of profile.flags ?? []) {
+      lines.push({ kind: "condition", label: "Condition", value: FLAG_LINE_VALUES[k], urgent: true });
+    }
+    for (const c of criticalFirst((profile.conditions ?? []).filter((c) => c.label.trim().length > 0))) {
       lines.push({ kind: "condition", label: "Condition", value: c.label, urgent: Boolean(c.critical) });
     }
   }
 
   if (fields.medications) {
-    for (const m of profile.medications ?? []) {
-      if (m.name.trim().length === 0) continue;
+    for (const m of criticalFirst((profile.medications ?? []).filter((m) => m.name.trim().length > 0))) {
       lines.push({ kind: "medication", label: "Medication", value: m.name, urgent: Boolean(m.critical) });
     }
   }

@@ -79,6 +79,7 @@ describe("profile + emergency card", () => {
 
     const put = await t.agent.put("/api/v1/me/profile").set(h).send({
       nameEn: "Somchai", lastNameEn: "Jaidee", customConditions: "  Epilepsy \n (controlled)  ",
+      flags: { anticoagulant: true, insulin: false, pacemaker: false, dialysis: false, pregnancy: false },
     });
     expect(put.status).toBe(200);
     expect(put.body.lastNameEn).toBe("Jaidee");
@@ -93,7 +94,10 @@ describe("profile + emergency card", () => {
     expect(card.status).toBe(200);
     const lines = card.body.lines as { kind: string; value: string; urgent: boolean }[];
     expect(lines.find((l) => l.kind === "identity")?.value).toBe("Somchai Jaidee");
-    expect(lines.find((l) => l.kind === "condition")).toMatchObject({ value: "Epilepsy (controlled)", urgent: true });
+    // The switched-on flag comes first as a critical condition, then the typed text.
+    expect(lines.filter((l) => l.kind === "condition").map((l) => [l.value, l.urgent])).toEqual([
+      ["On blood thinners", true], ["Epilepsy (controlled)", true],
+    ]);
 
     // A save that omits the field clears it, like every other profile text field.
     const again = await t.agent.put("/api/v1/me/profile").set(h).send({ nameEn: "Somchai" });

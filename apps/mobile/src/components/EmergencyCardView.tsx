@@ -2,7 +2,7 @@ import { StyleSheet, View } from "react-native";
 import { Button, Divider, IconButton, Text, useTheme } from "react-native-paper";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
-import { NO_KNOWN_DRUG_ALLERGY, type CardLine, type CardPayload } from "@mfc/shared";
+import { NO_KNOWN_DRUG_ALLERGY, flagKeyOfValue, type CardLine, type CardPayload } from "@mfc/shared";
 import { callNumber, callEms, EMERGENCY_NUMBER } from "../lib/phone";
 import { formatDate } from "../lib/format";
 import { palette, space, radius } from "../theme/tokens";
@@ -47,7 +47,12 @@ export function EmergencyCardView({ payload, showEms = false, compact = false, o
   const rest = payload.lines.filter((l) => l.kind !== "identity" && l.kind !== "blood");
 
   const noneKnown = (l: CardLine) => l.kind === "allergy" && l.value === NO_KNOWN_DRUG_ALLERGY;
-  const valueText = (l: CardLine) => (noneKnown(l) ? t("card.noKnownAllergy") : l.value);
+  const flagOf = (l: CardLine) => (l.kind === "condition" ? flagKeyOfValue(l.value) : null);
+  const valueText = (l: CardLine) => {
+    if (noneKnown(l)) return t("card.noKnownAllergy");
+    const flag = flagOf(l);
+    return flag ? t(`profile.flagOptions.${flag}`) : l.value;
+  };
   const labelText = (l: CardLine) => (noneKnown(l) ? t("card.allergies") : t(LABEL_KEY[l.kind]));
 
   async function call(phone: string) {

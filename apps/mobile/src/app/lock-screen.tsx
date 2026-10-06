@@ -136,7 +136,7 @@ export default function LockScreen() {
   }
 
   const save = useMutation({
-    mutationFn: () => api.setLockScreenFields(fields),
+    mutationFn: (next: LockScreenFields) => api.setLockScreenFields(next),
     onSuccess: async () => {
       await Promise.all([qc.invalidateQueries({ queryKey: ["profile"] }), qc.invalidateQueries({ queryKey: ["emergency-card"] })]);
       const fresh = await card.refetch();
@@ -154,13 +154,19 @@ export default function LockScreen() {
           return;
         }
       }
-      setSnack({ text: t("lockScreen.updated") });
     },
     onError: (e) => {
       if (e instanceof ApiError && e.code === "NO_PROFILE") setSnack({ text: t("lockScreen.noProfile"), action: goToProfile });
       else setSnack({ text: t(errorKey(e)) });
     },
   });
+
+  /** Each switch saves itself; the pinned card is refreshed by the mutation above. */
+  const toggleField = (key: keyof LockScreenFields, v?: boolean) => {
+    const next = { ...fields, [key]: v ?? !fields[key] };
+    setFields(next);
+    save.mutate(next);
+  };
 
   const loading = profile.isLoading || card.isLoading;
   const statusColor = on ? theme.colors.primary : theme.colors.onSurfaceVariant;
@@ -218,12 +224,12 @@ export default function LockScreen() {
               <List.Item
                 title={t(`lockScreen.fields.${key}`)}
                 titleStyle={styles.rowTitle}
-                onPress={() => setFields((f) => ({ ...f, [key]: !f[key] }))}
+                onPress={() => toggleField(key)}
                 right={() => (
                   <View style={styles.switchWrap}>
                     <Switch
                       value={fields[key]}
-                      onValueChange={(v) => setFields((f) => ({ ...f, [key]: v }))}
+                      onValueChange={(v) => toggleField(key, v)}
                       accessibilityLabel={t(`lockScreen.fields.${key}`)}
                     />
                   </View>
@@ -231,19 +237,6 @@ export default function LockScreen() {
               />
             </View>
           ))}
-          <Divider />
-          <View style={styles.saveWrap}>
-            <Button
-              mode="contained"
-              icon="content-save-outline"
-              contentStyle={styles.btnContent}
-              onPress={() => save.mutate()}
-              loading={save.isPending}
-              disabled={save.isPending || loading}
-            >
-              {t("common.save")}
-            </Button>
-          </View>
         </Section>
 
         <Section title={t("lockScreen.preview")} card={false}>
@@ -309,7 +302,6 @@ const styles = StyleSheet.create({
   switchWrap: { justifyContent: "center", minHeight: 48, paddingLeft: space.sm },
   status: { flexDirection: "row", alignItems: "center", gap: space.sm, paddingHorizontal: space.lg, paddingVertical: space.md },
   statusText: { flex: 1 },
-  saveWrap: { padding: space.lg },
   btnContent: { minHeight: 48 },
   previewLoading: { marginVertical: space.lg },
   previewText: { textAlign: "center", paddingVertical: space.lg },

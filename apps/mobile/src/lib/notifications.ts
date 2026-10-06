@@ -1,5 +1,5 @@
 import * as Notifications from "expo-notifications";
-import { EMERGENCY_NUMBER, NO_KNOWN_DRUG_ALLERGY, type CardLine, type CardPayload } from "@mfc/shared";
+import { EMERGENCY_NUMBER, NO_KNOWN_DRUG_ALLERGY, flagKeyOfValue, type CardLine, type CardPayload } from "@mfc/shared";
 import i18n from "../i18n";
 import { secure, KEYS } from "./secure";
 import { hideLockCard, isLockCardShown, showLockCard } from "../../modules/lock-card";
@@ -16,15 +16,6 @@ const COLOR = "#C62828";
 const LEGACY_ID = "mfc-lock-card";
 
 type Payload = Pick<CardPayload, "lines" | "lastReviewedAt">;
-
-const LABEL_KEY: Record<CardLine["kind"], string> = {
-  identity: "card.identity",
-  blood: "card.bloodShort",
-  allergy: "card.allergy",
-  condition: "card.condition",
-  medication: "card.medication",
-  contact: "card.ice",
-};
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -59,12 +50,27 @@ async function ensureChannel(name: string): Promise<void> {
  * ("Emergency medical card"; Android already prints the app name in the header) and one
  * "Label: value" line per card field, in card order.
  */
+/**
+ * Notification body: one line per group ("Conditions: ⚠ Epilepsy, Asthma"), critical conditions and
+ * medications first with a warning sign, one line per contact so each number stays readable.
+ */
 export function lockCardText(payload: Payload): { title: string; lines: string[] } {
   const t = (key: string) => i18n.t(key);
-  const lines = payload.lines.map((l) => {
-    if (l.kind === "allergy" && l.value === NO_KNOWN_DRUG_ALLERGY) return `${t("card.allergies")}: ${t("card.noKnownAllergy")}`;
-    return `${t(LABEL_KEY[l.kind])}: ${l.value}`;
-  });
+  const value = (l: CardLine): string => {
+    if (l.kind === "allergy" && l.value === NO_KNOWN_DRUG_ALLERGY) return t("card.noKnownAllergy");
+    const flag = l.kind === "condition" ? flagKeyOfValue(l.value) : null;
+    const text = flag ? t(`profile.flagOptions.${flag}`) : l.value;
+    return l.urgent && (l.kind === "condition" || l.kind === "medication") ? `⚠ ${text}` : text;
+  };
+  const ofKind = (kind: CardLine["kind"]) => payload.lines.filter((l) => l.kind === kind);
+  const lines: string[] = [];
+  for (const l of ofKind("identity")) lines.push(`${t("card.identity")}: ${value(l)}`);
+  for (const l of ofKind("blood")) lines.push(`${t("card.bloodShort")}: ${value(l)}`);
+  for (const [kind, labelKey] of [["allergy", "card.allergies"], ["condition", "card.conditions"], ["medication", "card.medications"]] as const) {
+    const values = ofKind(kind).map(value);
+    if (values.length > 0) lines.push(`${t(labelKey)}: ${values.join(", ")}`);
+  }
+  for (const l of ofKind("contact")) lines.push(`${t("card.ice")}: ${value(l)}`);
   return { title: t("lockScreen.notificationTitle"), lines: lines.length > 0 ? lines : [t("lockScreen.title")] };
 }
 

@@ -263,20 +263,20 @@ export default function Profile() {
 
       <Section title={t("profile.blood")}>
         <View style={styles.body}>
-          {/* A, B, AB, O share row one; Unknown is a deliberate full-width row two, matching the Rh row below. */}
-          <View style={styles.chips}>
+          {/* All five on one row: no check icon and compact padding so "Unknown" fits beside A, B, AB, O. */}
+          <View style={styles.aboRow}>
             {ABO.map((a) => {
               const selected = form.bloodAbo === a;
-              const unknown = a === "unknown";
-              const label = unknown ? t("common.unknown") : ABO_LABEL[a];
+              const label = a === "unknown" ? t("common.unknown") : ABO_LABEL[a];
               return (
                 <Chip
                   key={a}
+                  compact
                   selected={selected}
-                  showSelectedCheck
+                  showSelectedCheck={false}
                   mode={selected ? "flat" : "outlined"}
                   onPress={() => patch({ bloodAbo: a })}
-                  style={unknown ? styles.aboUnknown : styles.aboChip}
+                  style={styles.aboChip}
                   textStyle={[styles.chipText, styles.chipCenter]}
                   accessibilityLabel={`${t("profile.blood")} ${label}`}
                 >
@@ -396,8 +396,8 @@ const styles = StyleSheet.create({
   chipText: { fontSize: 16, lineHeight: 24, marginVertical: 10 },
   // Chip's content row is start-aligned; flex + textAlign centre the label inside a stretched chip.
   chipCenter: { flex: 1, textAlign: "center" },
-  aboChip: { flexGrow: 1 },
-  aboUnknown: { flexGrow: 1, flexBasis: "100%" },
+  aboRow: { flexDirection: "row", gap: space.xs },
+  aboChip: { flexGrow: 1, flexShrink: 1, minWidth: 0 },
   notes: { minHeight: 110 },
   other: { minHeight: 88 },
   itemTitle: { fontWeight: "600" },
