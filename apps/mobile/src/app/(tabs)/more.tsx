@@ -3,7 +3,7 @@ import { StyleSheet, View } from "react-native";
 import { router } from "expo-router";
 import Constants from "expo-constants";
 import {
-  ActivityIndicator, Badge, Button, Dialog, Divider, HelperText, List, Portal, SegmentedButtons, Snackbar, Text, TextInput, useTheme,
+  ActivityIndicator, Button, Dialog, Divider, HelperText, List, Portal, SegmentedButtons, Snackbar, Text, TextInput, useTheme,
 } from "react-native-paper";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
@@ -252,12 +252,7 @@ export default function More() {
             descriptionNumberOfLines={2}
             onPress={goAlerts}
             left={(props) => <List.Icon {...props} icon={unreadCount > 0 ? "bell-badge" : "bell-outline"} color={unreadCount > 0 ? theme.colors.primary : props.color} />}
-            right={(props) => (
-              <View style={styles.rowEnd}>
-                {unreadCount > 0 ? <Badge size={22} style={{ backgroundColor: theme.colors.primary, color: theme.colors.onPrimary }}>{unreadCount}</Badge> : null}
-                <List.Icon {...props} icon="chevron-right" />
-              </View>
-            )}
+            right={(props) => <List.Icon {...props} icon="chevron-right" />}
           />
         </Section>
 
@@ -472,7 +467,6 @@ const styles = StyleSheet.create({
   itemTitle: { fontWeight: "600" },
   btnContent: { minHeight: 48 },
   divider: { marginVertical: space.xs },
-  rowEnd: { flexDirection: "row", alignItems: "center", gap: space.xs },
   loadingSmall: { alignSelf: "flex-start" },
   form: { gap: space.sm },
 });
