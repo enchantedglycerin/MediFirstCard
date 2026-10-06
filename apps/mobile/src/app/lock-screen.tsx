@@ -7,6 +7,8 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { DEFAULT_LOCK_SCREEN_FIELDS, type LockScreenFields } from "@mfc/shared";
 import { api, ApiError, errorKey, profileExists, type EmergencyCard } from "../lib/api";
+import { refreshQueries } from "../lib/query";
+import { useRefreshOnFocus } from "../lib/useRefreshOnFocus";
 import { hideLockScreenCard, isLockScreenCardOn, showLockScreenCard } from "../lib/notifications";
 import {
   isAutostartConfirmed, isBatteryUnrestricted, keepAliveSteps, markAutostartConfirmed, markKeepAliveAsked,
@@ -24,6 +26,9 @@ interface Snack {
   action?: { label: string; onPress: () => void };
 }
 
+/** Everything this screen shows; refetched on focus and on pull-to-refresh. */
+const LOCK_KEYS = ["profile", "emergency-card"] as const;
+
 /** Lock-screen card: master on/off (pinned notification), which fields it shows, and a preview. */
 export default function LockScreen() {
   const { t } = useTranslation();
@@ -33,6 +38,7 @@ export default function LockScreen() {
   const profile = useQuery({ queryKey: ["profile"], queryFn: api.getProfile });
   const hasProfile = profileExists(profile.data);
   const card = useQuery({ queryKey: ["emergency-card"], queryFn: api.emergencyCard, enabled: hasProfile });
+  useRefreshOnFocus(LOCK_KEYS);
 
   const [on, setOn] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -161,7 +167,7 @@ export default function LockScreen() {
 
   return (
     <>
-      <Screen>
+      <Screen onRefresh={() => refreshQueries(LOCK_KEYS)}>
         <Banner visible icon="alert" style={styles.banner}>
           {t("lockScreen.exposureWarning")}
         </Banner>

@@ -7,8 +7,13 @@ import { Screen } from "../components/Screen";
 import { Section } from "../components/Section";
 import { EmptyState } from "../components/EmptyState";
 import { api, errorKey } from "../lib/api";
+import { refreshQueries } from "../lib/query";
+import { useRefreshOnFocus } from "../lib/useRefreshOnFocus";
 import { formatDateTime } from "../lib/format";
 import { space } from "../theme/tokens";
+
+/** Everything this screen shows; refetched on focus and on pull-to-refresh. */
+const ALERT_KEYS = ["notifications"] as const;
 
 /** Every alert (card viewed, link opened, link revoked, expiry), newest first; tap marks one read. */
 export default function Alerts() {
@@ -18,6 +23,7 @@ export default function Alerts() {
   const [msg, setMsg] = useState<string | null>(null);
 
   const notes = useQuery({ queryKey: ["notifications"], queryFn: api.notifications });
+  useRefreshOnFocus(ALERT_KEYS);
   useEffect(() => { if (notes.error) setMsg(t(errorKey(notes.error))); }, [notes.error, t]);
 
   const sorted = [...(notes.data ?? [])].sort((a, b) => b.createdAt.localeCompare(a.createdAt));
@@ -31,7 +37,7 @@ export default function Alerts() {
 
   return (
     <>
-      <Screen>
+      <Screen onRefresh={() => refreshQueries(ALERT_KEYS)}>
         <Section
           action={unreadIds.length > 0 ? (
             <Button compact onPress={() => markRead.mutate(unreadIds)} loading={markRead.isPending} disabled={markRead.isPending}>

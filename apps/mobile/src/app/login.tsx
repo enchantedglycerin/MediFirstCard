@@ -13,7 +13,7 @@ import { space, touch } from "../theme/tokens";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
-/** Sign-in screen: language switch, brand block, email + password, link to registration. No header (hidden by the root layout). */
+/** Sign-in screen: brand block, language row, email + password, link to registration. No header (hidden by the root layout). */
 export default function Login() {
   const { t, i18n } = useTranslation();
   const theme = useTheme();
@@ -55,18 +55,9 @@ export default function Login() {
 
   return (
     <Screen
-      style={{ ...styles.container, paddingTop: insets.top + space.lg, paddingBottom: insets.bottom + space.lg }}
+      style={{ ...styles.container, paddingTop: insets.top + space.xl, paddingBottom: insets.bottom + space.lg }}
       gap={space.lg}
     >
-      <SegmentedButtons
-        value={i18n.language === "en" ? "en" : "th"}
-        onValueChange={(v) => void setLanguage(v === "en" ? "en" : "th")}
-        buttons={[
-          { value: "th", label: t("more.thai"), disabled: busy, accessibilityLabel: `${t("more.language")}: ${t("more.thai")}` },
-          { value: "en", label: t("more.english"), disabled: busy, accessibilityLabel: `${t("more.language")}: ${t("more.english")}` },
-        ]}
-        style={styles.language}
-      />
       <View style={styles.body}>
         <View style={styles.brand}>
           <View style={[styles.badge, { backgroundColor: theme.colors.primaryContainer }]}>
@@ -79,6 +70,25 @@ export default function Login() {
         </View>
 
         <View style={styles.form}>
+          {/* Same control as More > Language, so the two read as one thing; in the form so it scrolls with the keyboard. */}
+          <View style={styles.language}>
+            <Text variant="labelLarge">{t("more.language")}</Text>
+            <SegmentedButtons
+              value={i18n.language === "en" ? "en" : "th"}
+              onValueChange={(v) => void setLanguage(v === "en" ? "en" : "th")}
+              buttons={[
+                {
+                  value: "th", label: t("more.thai"), showSelectedCheck: true, disabled: busy, labelStyle: styles.segLabel,
+                  accessibilityLabel: `${t("more.language")}: ${t("more.thai")}`,
+                },
+                {
+                  value: "en", label: t("more.english"), showSelectedCheck: true, disabled: busy, labelStyle: styles.segLabel,
+                  accessibilityLabel: `${t("more.language")}: ${t("more.english")}`,
+                },
+              ]}
+            />
+          </View>
+
           <TextInput
             mode="outlined"
             label={t("auth.email")}
@@ -153,7 +163,9 @@ const styles = StyleSheet.create({
   container: { flexGrow: 1 },
   body: { flex: 1, justifyContent: "center", gap: space.xxl },
   brand: { alignItems: "center", gap: space.sm },
-  language: { alignSelf: "flex-end", width: 176 },
+  language: { gap: space.xs, marginBottom: space.sm },
+  // 16px label on a 30dp line + 2 x 9dp MD3 padding = 48dp segments; the tall line box also clears Thai ascenders.
+  segLabel: { fontSize: 16, lineHeight: touch.min - 18 },
   badge: { width: 96, height: 96, borderRadius: 48, alignItems: "center", justifyContent: "center", marginBottom: space.sm },
   appName: { fontWeight: "700", textAlign: "center" },
   tagline: { textAlign: "center" },

@@ -10,6 +10,8 @@ import { Screen } from "../../components/Screen";
 import { Section } from "../../components/Section";
 import { EmptyState } from "../../components/EmptyState";
 import { api, errorKey, profileExists, type RecordDto } from "../../lib/api";
+import { refreshQueries } from "../../lib/query";
+import { useRefreshOnFocus } from "../../lib/useRefreshOnFocus";
 import { isLockScreenCardOn } from "../../lib/notifications";
 import { formatDate } from "../../lib/format";
 import { useSession } from "../../store/session";
@@ -25,10 +27,15 @@ const goAllergies = () => router.push("/allergies");
 const goContacts = () => router.push("/contacts");
 const goRecord = (id: string) => router.push(`/record/${id}`);
 
+/** Everything this screen shows; refetched on focus and on pull-to-refresh. */
+const HOME_KEYS = ["profile", "allergies", "contacts", "emergency-card", "records", "notifications"] as const;
+
 /** Dashboard: hero card, profile completeness, stat tiles, quick actions and recent documents. */
 export default function Home() {
   const { t, i18n } = useTranslation();
   const theme = useTheme();
+  // The stat tiles sit on the page background; a white surface with a hairline edge keeps them visible like the other cards.
+  const tileSurface = { backgroundColor: theme.colors.surface, borderColor: theme.colors.outlineVariant };
   const email = useSession((s) => s.email);
 
   const profile = useQuery({ queryKey: ["profile"], queryFn: api.getProfile });
@@ -37,6 +44,7 @@ export default function Home() {
   const card = useQuery({ queryKey: ["emergency-card"], queryFn: api.emergencyCard });
   const records = useQuery({ queryKey: ["records"], queryFn: api.listRecords });
   const notes = useQuery({ queryKey: ["notifications"], queryFn: api.notifications });
+  useRefreshOnFocus(HOME_KEYS);
 
   // Lock-screen pin status lives on the device; re-read whenever the tab regains focus.
   const [lockOn, setLockOn] = useState<boolean | null>(null);
@@ -79,7 +87,7 @@ export default function Home() {
 
   return (
     <>
-      <Screen bottomInset={false}>
+      <Screen bottomInset={false} onRefresh={() => refreshQueries(HOME_KEYS)}>
         <View style={styles.greeting}>
           <Text variant="headlineSmall" style={styles.bold}>{t("home.greeting")}</Text>
           {email ? <Text variant="bodyMedium" style={{ color: theme.colors.onSurfaceVariant }}>{email}</Text> : null}
@@ -149,13 +157,13 @@ export default function Home() {
         </Section>
 
         <View style={styles.tiles}>
-          <Card mode="contained" style={styles.tile} onPress={() => router.push("/records")}>
+          <Card mode="outlined" style={[styles.tile, tileSurface]} onPress={() => router.push("/records")}>
             <Card.Content style={styles.tileContent}>
               <Text variant="displaySmall" style={styles.bold}>{records.data ? String(records.data.length) : "—"}</Text>
               <Text variant="bodyLarge">{t("home.records")}</Text>
             </Card.Content>
           </Card>
-          <Card mode="contained" style={styles.tile} onPress={() => router.push("/alerts")}>
+          <Card mode="outlined" style={[styles.tile, tileSurface]} onPress={() => router.push("/alerts")}>
             <Card.Content style={styles.tileContent}>
               <Text variant="displaySmall" style={styles.bold}>{notes.data ? String(notes.data.length) : "—"}</Text>
               <Text variant="bodyLarge">{t("home.alerts")}</Text>

@@ -90,7 +90,7 @@
     "notes": "Notes for rescuers", "notesHint": "Anything else a rescuer should know", "saved": "Profile saved",
     "lists": "Medical lists", "manageAllergies": "Allergies", "manageConditions": "Conditions",
     "manageMedications": "Medications", "manageContacts": "Emergency contacts", "basics": "Basics",
-    "saveFirst": "Save the basics first, then add your lists below."
+    "saveFirst": "Save the basics below first, then come back here to add your lists."
   },
   "allergies": {
     "noneKnownShown": "Shown on your emergency card and lock screen.",

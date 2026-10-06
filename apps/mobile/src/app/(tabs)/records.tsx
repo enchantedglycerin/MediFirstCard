@@ -10,6 +10,8 @@ import { useTranslation } from "react-i18next";
 import * as ImagePicker from "expo-image-picker";
 import { ImageManipulator, SaveFormat } from "expo-image-manipulator";
 import { api, errorKey, type ExtractResult } from "../../lib/api";
+import { refreshQueries } from "../../lib/query";
+import { useRefreshOnFocus } from "../../lib/useRefreshOnFocus";
 import { base64ToBytes, sha256Hex } from "../../lib/image";
 import { formatDate } from "../../lib/format";
 import { Screen } from "../../components/Screen";
@@ -38,11 +40,15 @@ function kindIcon(kind: string): Icon {
   }
 }
 
+/** Everything this screen shows; refetched on focus and on pull-to-refresh. */
+const RECORDS_KEYS = ["records"] as const;
+
 export default function Records() {
   const { t, i18n } = useTranslation();
   const theme = useTheme();
   const qc = useQueryClient();
   const records = useQuery({ queryKey: ["records"], queryFn: api.listRecords });
+  useRefreshOnFocus(RECORDS_KEYS);
   const [sourceOpen, setSourceOpen] = useState(false);
   const [step, setStep] = useState<Step | null>(null);
   const [review, setReview] = useState<{ recordId: string; result: ExtractResult } | null>(null);
@@ -100,7 +106,7 @@ export default function Records() {
   return (
     <>
       {review ? (
-        <Screen bottomInset={false}>
+        <Screen bottomInset={false} onRefresh={() => refreshQueries(RECORDS_KEYS)}>
           <RecordReviewForm
             recordId={review.recordId}
             result={review.result}
@@ -109,7 +115,7 @@ export default function Records() {
           />
         </Screen>
       ) : (
-        <Screen bottomInset={false}>
+        <Screen bottomInset={false} onRefresh={() => refreshQueries(RECORDS_KEYS)}>
           <Button mode="contained" icon="camera" onPress={() => setSourceOpen(true)} disabled={busy} contentStyle={styles.btnContent}>
             {t("records.scan")}
           </Button>

@@ -16,7 +16,7 @@ import {
 } from "../lib/api";
 import { invalidateAfterEdit } from "../lib/refresh";
 import { currentLang } from "../i18n";
-import { space } from "../theme/tokens";
+import { space, touch } from "../theme/tokens";
 
 const SEXES: readonly Sex[] = ["male", "female", "other", "unspecified"];
 const ABO: readonly BloodAbo[] = ["A", "B", "AB", "O", "unknown"];
@@ -263,10 +263,12 @@ export default function Profile() {
 
       <Section title={t("profile.blood")}>
         <View style={styles.body}>
+          {/* A, B, AB, O share row one; Unknown is a deliberate full-width row two, matching the Rh row below. */}
           <View style={styles.chips}>
             {ABO.map((a) => {
               const selected = form.bloodAbo === a;
-              const label = a === "unknown" ? t("common.unknown") : ABO_LABEL[a];
+              const unknown = a === "unknown";
+              const label = unknown ? t("common.unknown") : ABO_LABEL[a];
               return (
                 <Chip
                   key={a}
@@ -274,7 +276,8 @@ export default function Profile() {
                   showSelectedCheck
                   mode={selected ? "flat" : "outlined"}
                   onPress={() => patch({ bloodAbo: a })}
-                  textStyle={styles.chipText}
+                  style={unknown ? styles.aboUnknown : styles.aboChip}
+                  textStyle={[styles.chipText, styles.chipCenter]}
                   accessibilityLabel={`${t("profile.blood")} ${label}`}
                 >
                   {label}
@@ -286,7 +289,7 @@ export default function Profile() {
           <SegmentedButtons
             value={form.bloodRh}
             onValueChange={(v) => patch({ bloodRh: pick(RH, v, "unknown") })}
-            buttons={RH.map((r) => ({ value: r, label: r === "unknown" ? t("common.unknown") : RH_LABEL[r] }))}
+            buttons={RH.map((r) => ({ value: r, label: r === "unknown" ? t("common.unknown") : RH_LABEL[r], labelStyle: styles.segLabel }))}
           />
         </View>
       </Section>
@@ -365,9 +368,8 @@ export default function Profile() {
 
   return (
     <Screen>
-      {exists ? lists : null}
+      {lists}
       {basics}
-      {exists ? null : lists}
 
       <Portal>
         <Snackbar visible={!!msg} onDismiss={() => setMsg(null)} duration={2500}>
@@ -381,7 +383,8 @@ export default function Profile() {
 const styles = StyleSheet.create({
   center: { alignItems: "center", justifyContent: "center" },
   body: { padding: space.lg, gap: space.md },
-  segLabel: { fontSize: 13 },
+  // 16px label on a 30dp line + 2 x 9dp MD3 padding = 48dp segments.
+  segLabel: { fontSize: 16, lineHeight: touch.min - 18 },
   hint: { paddingHorizontal: space.lg, paddingTop: space.md, paddingBottom: space.sm },
   helper: { paddingHorizontal: space.lg, paddingTop: space.md, paddingBottom: space.xs },
   switchRow: {
@@ -391,6 +394,10 @@ const styles = StyleSheet.create({
   switchLabel: { flex: 1 },
   chips: { flexDirection: "row", flexWrap: "wrap", gap: space.sm },
   chipText: { fontSize: 16, lineHeight: 24, marginVertical: 10 },
+  // Chip's content row is start-aligned; flex + textAlign centre the label inside a stretched chip.
+  chipCenter: { flex: 1, textAlign: "center" },
+  aboChip: { flexGrow: 1 },
+  aboUnknown: { flexGrow: 1, flexBasis: "100%" },
   notes: { minHeight: 110 },
   other: { minHeight: 88 },
   itemTitle: { fontWeight: "600" },

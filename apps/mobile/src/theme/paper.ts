@@ -12,6 +12,9 @@ export const lightTheme: MD3Theme = {
     onPrimary: palette.onPrimary,
     primaryContainer: palette.primaryContainer,
     onPrimaryContainer: palette.onPrimaryContainer,
+    // Selected chips/segments and tonal buttons use secondaryContainer; keep them clinical blue, not MD3 purple.
+    secondaryContainer: palette.primaryContainer,
+    onSecondaryContainer: palette.onPrimaryContainer,
     secondary: palette.secondary,
     error: palette.urgent,
     errorContainer: palette.urgentContainer,
@@ -33,6 +36,8 @@ export const darkTheme: MD3Theme = {
     onPrimary: paletteDark.onPrimary,
     primaryContainer: paletteDark.primaryContainer,
     onPrimaryContainer: paletteDark.onPrimaryContainer,
+    secondaryContainer: paletteDark.primaryContainer,
+    onSecondaryContainer: paletteDark.onPrimaryContainer,
     secondary: paletteDark.secondary,
     error: paletteDark.urgent,
     errorContainer: paletteDark.urgentContainer,

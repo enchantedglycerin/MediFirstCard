@@ -5,6 +5,8 @@ import { ActivityIndicator, Button, Snackbar, Text, useTheme, Portal } from "rea
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { api, errorKey, profileExists } from "../../lib/api";
+import { refreshQueries } from "../../lib/query";
+import { useRefreshOnFocus } from "../../lib/useRefreshOnFocus";
 import { Screen } from "../../components/Screen";
 import { Section } from "../../components/Section";
 import { EmptyState } from "../../components/EmptyState";
@@ -12,6 +14,9 @@ import { EmergencyCardView } from "../../components/EmergencyCardView";
 import { palette, radius, space } from "../../theme/tokens";
 
 const QR_SIZE = 220;
+
+/** Everything this screen shows; refetched on focus and on pull-to-refresh. */
+const CARD_KEYS = ["profile", "emergency-card"] as const;
 
 /** Card tab: the emergency card as rescuers see it, its QR / link, and the actions around it. */
 export default function CardScreen() {
@@ -22,6 +27,7 @@ export default function CardScreen() {
   const profile = useQuery({ queryKey: ["profile"], queryFn: api.getProfile });
   const hasProfile = profileExists(profile.data);
   const card = useQuery({ queryKey: ["emergency-card"], queryFn: api.emergencyCard, enabled: hasProfile });
+  useRefreshOnFocus(CARD_KEYS);
 
   async function shareLink(url: string) {
     try {
@@ -66,7 +72,7 @@ export default function CardScreen() {
 
   return (
     <>
-      <Screen bottomInset={false}>
+      <Screen bottomInset={false} onRefresh={() => refreshQueries(CARD_KEYS)}>
         {data ? (
           <EmergencyCardView payload={data} showEms onCallFailed={() => setSnack(t("errors.callFailed"))} />
         ) : (

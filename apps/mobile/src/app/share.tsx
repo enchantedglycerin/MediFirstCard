@@ -10,6 +10,8 @@ import { Screen } from "../components/Screen";
 import { Section } from "../components/Section";
 import { EmptyState } from "../components/EmptyState";
 import { api, errorKey, type RecordDto, type ShareLinkDto } from "../lib/api";
+import { refreshQueries } from "../lib/query";
+import { useRefreshOnFocus } from "../lib/useRefreshOnFocus";
 import { formatDate, formatDateTime } from "../lib/format";
 import { radius, space } from "../theme/tokens";
 
@@ -36,6 +38,9 @@ const STATUS_ICON: Record<LinkStatus, string> = {
   revoked: "cancel",
 };
 
+/** Everything this screen shows; refetched on focus and on pull-to-refresh. */
+const SHARE_KEYS = ["share-links", "records"] as const;
+
 /** Share selected documents with a clinician through a short-lived, optionally passcode-protected link. */
 export default function ShareScreen() {
   const { t, i18n } = useTranslation();
@@ -43,6 +48,7 @@ export default function ShareScreen() {
   const qc = useQueryClient();
   const records = useQuery({ queryKey: ["records"], queryFn: api.listRecords });
   const links = useQuery({ queryKey: ["share-links"], queryFn: api.listShareLinks });
+  useRefreshOnFocus(SHARE_KEYS);
 
   const [selected, setSelected] = useState<string[]>([]);
   const [passcode, setPasscode] = useState("");
@@ -110,7 +116,7 @@ export default function ShareScreen() {
 
   return (
     <>
-      <Screen>
+      <Screen onRefresh={() => refreshQueries(SHARE_KEYS)}>
         <Text variant="bodyLarge" style={dim}>{t("share.hint")}</Text>
 
         <Section
