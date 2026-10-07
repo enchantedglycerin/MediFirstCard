@@ -52,7 +52,7 @@ Everything below runs today on a real Android phone. Verified 2026-09-04 both ag
 
 <p align="center"><img src="docs/architecture.png" width="900" alt="MediFirstCard system architecture: app, API, cloud services"></p>
 
-Source: `docs/architecture.svg`. The same structure as text:
+Source: `docs/architecture.svg`. A code-level view, generated from the imports, is in [docs/dependency-graph.png](docs/dependency-graph.png) (source `docs/dependency-graph.svg`). The same structure as text:
 
 ```mermaid
 flowchart LR

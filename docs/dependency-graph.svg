@@ -1,0 +1,175 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080">
+<defs>
+  <marker id="head" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L10,5 L0,10 z" fill="#005B96"/></marker>
+  <marker id="tail" markerWidth="10" markerHeight="10" refX="1" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path d="M10,0 L0,5 L10,10 z" fill="#005B96"/></marker>
+  <marker id="headAmber" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L10,5 L0,10 z" fill="#8A5A00"/></marker>
+  <marker id="tailAmber" markerWidth="10" markerHeight="10" refX="1" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path d="M10,0 L0,5 L10,10 z" fill="#8A5A00"/></marker>
+</defs>
+<rect width="1920" height="1080" fill="#FFFFFF"/>
+<text x="80" y="58" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="36" font-weight="700" fill="#1A1C1E" text-anchor="start">MediFirstCard — code dependency graph</text>
+<text x="80" y="90" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="17" font-weight="400" fill="#44474E" text-anchor="start">Folder-level modules of the monorepo (87 TypeScript files) · arrows are imports, labelled with what crosses them · generated from the source</text>
+<rect x="60" y="118" width="890" height="700" rx="18" fill="#F3F6FA"/>
+<text x="84" y="152" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="15" font-weight="700" fill="#005B96" text-anchor="start" letter-spacing="1.6">APPS/MOBILE  ·  EXPO REACT NATIVE APP</text>
+<text x="926" y="152" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="400" fill="#44474E" text-anchor="end">expo-router · react-native-paper · TanStack Query · react-i18next · expo-*</text>
+<rect x="84" y="160" width="842" height="92" rx="10" fill="#FFFFFF" stroke="#C9D3DF" stroke-width="1.5"/>
+<text x="100" y="188" font-family="Consolas, 'Courier New', monospace" font-size="17" font-weight="700" fill="#1A1C1E" text-anchor="start">app/ — Expo Router screens (21 files)</text>
+<text x="100" y="211" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="400" fill="#44474E" text-anchor="start">Tabs: Home · Card · Records · More  ·  login · register · consent · profile · allergies · conditions</text>
+<text x="100" y="231" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="400" fill="#44474E" text-anchor="start">medications · contacts · lock-screen · share · alerts · rescuer preview · record/[id] · PIN lock</text>
+<text x="100" y="251" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="400" fill="#44474E" text-anchor="start">Screens never touch SecureStore or the native module directly: everything goes through lib/</text>
+<rect x="124" y="316" width="300" height="104" rx="10" fill="#FFFFFF" stroke="#C9D3DF" stroke-width="1.5"/>
+<text x="140" y="344" font-family="Consolas, 'Courier New', monospace" font-size="17" font-weight="700" fill="#1A1C1E" text-anchor="start">components/ (7)</text>
+<text x="140" y="367" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="400" fill="#44474E" text-anchor="start">Screen · Section · EmptyState</text>
+<text x="140" y="387" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="400" fill="#44474E" text-anchor="start">CollectionEditor · DateField</text>
+<text x="140" y="407" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="400" fill="#44474E" text-anchor="start">EmergencyCardView · RecordReviewForm</text>
+<rect x="444" y="316" width="150" height="104" rx="10" fill="#FFFFFF" stroke="#C9D3DF" stroke-width="1.5"/>
+<text x="460" y="344" font-family="Consolas, 'Courier New', monospace" font-size="17" font-weight="700" fill="#1A1C1E" text-anchor="start">store/</text>
+<text x="460" y="367" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="400" fill="#44474E" text-anchor="start">session (zustand)</text>
+<text x="460" y="387" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="400" fill="#44474E" text-anchor="start">tokens · email</text>
+<text x="460" y="407" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="400" fill="#44474E" text-anchor="start">signOut</text>
+<rect x="614" y="316" width="150" height="104" rx="10" fill="#FFFFFF" stroke="#C9D3DF" stroke-width="1.5"/>
+<text x="630" y="344" font-family="Consolas, 'Courier New', monospace" font-size="17" font-weight="700" fill="#1A1C1E" text-anchor="start">theme/</text>
+<text x="630" y="367" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="400" fill="#44474E" text-anchor="start">tokens · Paper</text>
+<text x="630" y="387" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="400" fill="#44474E" text-anchor="start">light / dark themes</text>
+<text x="630" y="407" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="400" fill="#44474E" text-anchor="start">used everywhere</text>
+<rect x="784" y="316" width="142" height="104" rx="10" fill="#FFFFFF" stroke="#C9D3DF" stroke-width="1.5"/>
+<text x="800" y="344" font-family="Consolas, 'Courier New', monospace" font-size="17" font-weight="700" fill="#1A1C1E" text-anchor="start">i18n.ts</text>
+<text x="800" y="367" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="400" fill="#44474E" text-anchor="start">i18next init</text>
+<text x="800" y="387" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="400" fill="#44474E" text-anchor="start">setLanguage</text>
+<text x="800" y="407" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="400" fill="#44474E" text-anchor="start">currentLang</text>
+<rect x="84" y="484" width="842" height="110" rx="10" fill="#FFFFFF" stroke="#C9D3DF" stroke-width="1.5"/>
+<text x="100" y="512" font-family="Consolas, 'Courier New', monospace" font-size="17" font-weight="700" fill="#1A1C1E" text-anchor="start">lib/ (11)</text>
+<text x="100" y="535" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="400" fill="#44474E" text-anchor="start">api (fetch, JWT refresh, DTO types) · query + refresh + useRefreshOnFocus (cache) · secure (SecureStore) · pin</text>
+<text x="100" y="555" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="400" fill="#44474E" text-anchor="start">notifications (lock-card text, permission) · keepAlive (battery, Autostart) · phone (dial) · image (resize, SHA-256) · format</text>
+<rect x="84" y="650" width="560" height="86" rx="10" fill="#FFFFFF" stroke="#C9D3DF" stroke-width="1.5"/>
+<text x="100" y="678" font-family="Consolas, 'Courier New', monospace" font-size="17" font-weight="700" fill="#1A1C1E" text-anchor="start">modules/lock-card — native Expo module</text>
+<text x="100" y="701" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="400" fill="#44474E" text-anchor="start">Kotlin: LockCardNotifier · LockCardReceiver · LockCardStore</text>
+<text x="100" y="721" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="400" fill="#44474E" text-anchor="start">TS API: showLockCard · hideLockCard · isLockCardShown</text>
+<rect x="668" y="650" width="258" height="166" rx="10" fill="#FFF3D6" stroke="#E6C77A" stroke-width="1.5"/>
+<text x="684" y="678" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="17" font-weight="700" fill="#8A5A00" text-anchor="start">Notes</text>
+<text x="684" y="701" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="400" fill="#5A4300" text-anchor="start">Two small, intentional cycles:</text>
+<text x="684" y="721" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="400" fill="#5A4300" text-anchor="start">lib ⇄ store — api reads session tokens;</text>
+<text x="684" y="741" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="400" fill="#5A4300" text-anchor="start">signOut clears the cache and lock card.</text>
+<text x="684" y="761" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="400" fill="#5A4300" text-anchor="start">lib ⇄ i18n — notification text needs t();</text>
+<text x="684" y="781" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="400" fill="#5A4300" text-anchor="start">i18n saves the language via lib/secure.</text>
+<text x="684" y="801" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="400" fill="#5A4300" text-anchor="start">theme/ is imported by every screen.</text>
+<path d="M 274 252 L 274 316" fill="none" stroke="#005B96" stroke-width="2.2" marker-end="url(#head)"/>
+<rect x="51" y="275" width="446" height="20" rx="5" fill="#FFFFFF" stroke="#005B96" stroke-opacity="0.25"/>
+<text x="274" y="289" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="600" fill="#005B96" text-anchor="middle">Screen · Section · EmergencyCardView · RecordReviewForm (45)</text>
+<path d="M 519 252 L 519 316" fill="none" stroke="#005B96" stroke-width="2.2" marker-end="url(#head)"/>
+<rect x="476" y="275" width="86" height="20" rx="5" fill="#FFFFFF" stroke="#005B96" stroke-opacity="0.25"/>
+<text x="519" y="289" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="600" fill="#005B96" text-anchor="middle">useSession</text>
+<path d="M 689 252 L 689 316" fill="none" stroke="#005B96" stroke-width="2.2" marker-end="url(#head)"/>
+<rect x="660.4" y="275" width="57.2" height="20" rx="5" fill="#FFFFFF" stroke="#005B96" stroke-opacity="0.25"/>
+<text x="689" y="289" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="600" fill="#005B96" text-anchor="middle">tokens</text>
+<path d="M 855 252 L 855 316" fill="none" stroke="#005B96" stroke-width="2.2" marker-end="url(#head)"/>
+<rect x="808.4" y="275" width="93.2" height="20" rx="5" fill="#FFFFFF" stroke="#005B96" stroke-opacity="0.25"/>
+<text x="855" y="289" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="600" fill="#005B96" text-anchor="middle">setLanguage</text>
+<path d="M 100 252 L 100 484" fill="none" stroke="#005B96" stroke-width="2.2" marker-end="url(#head)"/>
+<rect x="90" y="435" width="597.2" height="20" rx="5" fill="#FFFFFF" stroke="#005B96" stroke-opacity="0.25"/>
+<text x="97" y="449" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="600" fill="#005B96" text-anchor="start">api · errorKey · invalidateAfterEdit · refreshQueries · pin · phone · format (53)</text>
+<path d="M 274 420 L 274 484" fill="none" stroke="#005B96" stroke-width="2.2" marker-end="url(#head)"/>
+<rect x="108.6" y="461" width="330.8" height="20" rx="5" fill="#FFFFFF" stroke="#005B96" stroke-opacity="0.25"/>
+<text x="274" y="475" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="600" fill="#005B96" text-anchor="middle">errorKey · formatDate · callNumber · callEms</text>
+<path d="M 519 420 L 519 484" fill="none" stroke="#8A5A00" stroke-width="2.2" marker-end="url(#headAmber)" marker-start="url(#tailAmber)"/>
+<rect x="479.6" y="461" width="78.8" height="20" rx="5" fill="#FFFFFF" stroke="#8A5A00" stroke-opacity="0.25"/>
+<text x="519" y="475" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="600" fill="#8A5A00" text-anchor="middle">⇄ session</text>
+<path d="M 855 420 L 855 484" fill="none" stroke="#8A5A00" stroke-width="2.2" marker-end="url(#headAmber)" marker-start="url(#tailAmber)"/>
+<rect x="812" y="461" width="86" height="20" rx="5" fill="#FFFFFF" stroke="#8A5A00" stroke-opacity="0.25"/>
+<text x="855" y="475" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="600" fill="#8A5A00" text-anchor="middle">⇄ language</text>
+<path d="M 364 594 L 364 650" fill="none" stroke="#005B96" stroke-width="2.2" marker-end="url(#head)"/>
+<rect x="195" y="609" width="338" height="20" rx="5" fill="#FFFFFF" stroke="#005B96" stroke-opacity="0.25"/>
+<text x="364" y="623" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="600" fill="#005B96" text-anchor="middle">showLockCard · hideLockCard · isLockCardShown</text>
+<rect x="970" y="118" width="890" height="700" rx="18" fill="#F3F6FA"/>
+<text x="994" y="152" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="15" font-weight="700" fill="#005B96" text-anchor="start" letter-spacing="1.6">APPS/API  ·  EXPRESS 5 REST API</text>
+<text x="1836" y="152" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="400" fill="#44474E" text-anchor="end">express · drizzle-orm · zod · jose · pg / pglite · qrcode</text>
+<rect x="994" y="160" width="842" height="72" rx="10" fill="#FFFFFF" stroke="#C9D3DF" stroke-width="1.5"/>
+<text x="1010" y="188" font-family="Consolas, 'Courier New', monospace" font-size="17" font-weight="700" fill="#1A1C1E" text-anchor="start">server.ts → app.ts</text>
+<text x="1010" y="211" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="400" fill="#44474E" text-anchor="start">initDb() then listen · createApp(): helmet, cors, pino-http, errorHandler · mounts every router under /api/v1</text>
+<rect x="994" y="272" width="842" height="112" rx="10" fill="#FFFFFF" stroke="#C9D3DF" stroke-width="1.5"/>
+<text x="1010" y="300" font-family="Consolas, 'Courier New', monospace" font-size="17" font-weight="700" fill="#1A1C1E" text-anchor="start">modules/ — route modules (9 folders, 17 files)</text>
+<text x="1010" y="323" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="400" fill="#44474E" text-anchor="start">profile (profile, lists, card builder, lock-screen fields) · records (upload, dedupe, review) · extract (Gemini → Typhoon, retries)</text>
+<text x="1010" y="343" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="400" fill="#44474E" text-anchor="start">share (links, passcodes, access log) · alerts (in-app + Resend e-mail) · notifications · consent (PDPA, withdraw, delete)</text>
+<text x="1010" y="363" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="400" fill="#44474E" text-anchor="start">public (/e/:token rescuer card, /s/:token clinician page) · health</text>
+<rect x="994" y="432" width="196" height="104" rx="10" fill="#FFFFFF" stroke="#C9D3DF" stroke-width="1.5"/>
+<text x="1010" y="460" font-family="Consolas, 'Courier New', monospace" font-size="17" font-weight="700" fill="#1A1C1E" text-anchor="start">auth/</text>
+<text x="1010" y="483" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="400" fill="#44474E" text-anchor="start">JWT access + refresh</text>
+<text x="1010" y="503" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="400" fill="#44474E" text-anchor="start">requireAuth · hashToken</text>
+<text x="1010" y="523" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="400" fill="#44474E" text-anchor="start">rotation, reuse detection</text>
+<rect x="1210" y="432" width="196" height="104" rx="10" fill="#FFFFFF" stroke="#C9D3DF" stroke-width="1.5"/>
+<text x="1226" y="460" font-family="Consolas, 'Courier New', monospace" font-size="17" font-weight="700" fill="#1A1C1E" text-anchor="start">crypto/</text>
+<text x="1226" y="483" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="400" fill="#44474E" text-anchor="start">AES-256-GCM fields</text>
+<text x="1226" y="503" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="400" fill="#44474E" text-anchor="start">encrypt / decryptOptional</text>
+<text x="1226" y="523" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="400" fill="#44474E" text-anchor="start">password hashing</text>
+<rect x="1426" y="432" width="196" height="104" rx="10" fill="#FFFFFF" stroke="#C9D3DF" stroke-width="1.5"/>
+<text x="1442" y="460" font-family="Consolas, 'Courier New', monospace" font-size="17" font-weight="700" fill="#1A1C1E" text-anchor="start">db/</text>
+<text x="1442" y="483" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="400" fill="#44474E" text-anchor="start">Drizzle schema</text>
+<text x="1442" y="503" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="400" fill="#44474E" text-anchor="start">client: pg or PGlite</text>
+<text x="1442" y="523" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="400" fill="#44474E" text-anchor="start">migrate · seed</text>
+<rect x="1642" y="432" width="194" height="104" rx="10" fill="#FFFFFF" stroke="#C9D3DF" stroke-width="1.5"/>
+<text x="1658" y="460" font-family="Consolas, 'Courier New', monospace" font-size="17" font-weight="700" fill="#1A1C1E" text-anchor="start">storage/</text>
+<text x="1658" y="483" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="400" fill="#44474E" text-anchor="start">local disk</text>
+<text x="1658" y="503" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="400" fill="#44474E" text-anchor="start">Supabase Storage</text>
+<text x="1658" y="523" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="400" fill="#44474E" text-anchor="start">getStorage()</text>
+<rect x="994" y="584" width="842" height="64" rx="10" fill="#FFFFFF" stroke="#C9D3DF" stroke-width="1.5"/>
+<text x="1010" y="612" font-family="Consolas, 'Courier New', monospace" font-size="17" font-weight="700" fill="#1A1C1E" text-anchor="start">config/ · context · middleware</text>
+<text x="1010" y="635" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="400" fill="#44474E" text-anchor="start">env (zod-validated) · AppContext { db, storage } handed to every router · errorHandler</text>
+<rect x="994" y="672" width="842" height="120" rx="10" fill="#FFF3D6" stroke="#E6C77A" stroke-width="1.5"/>
+<text x="1010" y="700" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="17" font-weight="700" fill="#8A5A00" text-anchor="start">Notes</text>
+<text x="1010" y="723" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="400" fill="#5A4300" text-anchor="start">Cross-module calls are few and one-way: public → profile (buildCardForUser), public → alerts (recordView);</text>
+<text x="1010" y="743" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="400" fill="#5A4300" text-anchor="start">auth → crypto (verifyPassword) and auth → db (users, refreshTokens); context wraps db + storage.</text>
+<text x="1010" y="763" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="400" fill="#5A4300" text-anchor="start">Layering quirk: alerts/ and storage/ import the HTTP retry helpers (withRetry, ProviderError) from modules/extract.</text>
+<text x="1010" y="783" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="400" fill="#5A4300" text-anchor="start">Every health text column passes through crypto/ before db/; route modules never see ciphertext.</text>
+<path d="M 1415 232 L 1415 272" fill="none" stroke="#005B96" stroke-width="2.2" marker-end="url(#head)"/>
+<rect x="1350.4" y="239" width="129.2" height="20" rx="5" fill="#FFFFFF" stroke="#005B96" stroke-opacity="0.25"/>
+<text x="1415" y="253" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="600" fill="#005B96" text-anchor="middle">mounts 9 routers</text>
+<path d="M 1092 384 L 1092 432" fill="none" stroke="#005B96" stroke-width="2.2" marker-end="url(#head)"/>
+<rect x="1002.2" y="395" width="179.6" height="20" rx="5" fill="#FFFFFF" stroke="#005B96" stroke-opacity="0.25"/>
+<text x="1092" y="409" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="600" fill="#005B96" text-anchor="middle">requireAuth · hashToken</text>
+<path d="M 1308 384 L 1308 432" fill="none" stroke="#005B96" stroke-width="2.2" marker-end="url(#head)"/>
+<rect x="1239.8" y="395" width="136.4" height="20" rx="5" fill="#FFFFFF" stroke="#005B96" stroke-opacity="0.25"/>
+<text x="1308" y="409" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="600" fill="#005B96" text-anchor="middle">encrypt / decrypt</text>
+<path d="M 1524 384 L 1524 432" fill="none" stroke="#005B96" stroke-width="2.2" marker-end="url(#head)"/>
+<rect x="1470.2" y="395" width="107.60000000000001" height="20" rx="5" fill="#FFFFFF" stroke="#005B96" stroke-opacity="0.25"/>
+<text x="1524" y="409" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="600" fill="#005B96" text-anchor="middle">table objects</text>
+<path d="M 1739 384 L 1739 432" fill="none" stroke="#005B96" stroke-width="2.2" marker-end="url(#head)"/>
+<rect x="1696" y="395" width="86" height="20" rx="5" fill="#FFFFFF" stroke="#005B96" stroke-opacity="0.25"/>
+<text x="1739" y="409" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="600" fill="#005B96" text-anchor="middle">getStorage</text>
+<path d="M 1524 536 L 1524 584" fill="none" stroke="#005B96" stroke-width="2.2" marker-end="url(#head)"/>
+<rect x="1506.2" y="547" width="35.6" height="20" rx="5" fill="#FFFFFF" stroke="#005B96" stroke-opacity="0.25"/>
+<text x="1524" y="561" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="600" fill="#005B96" text-anchor="middle">env</text>
+<path d="M 1739 536 L 1739 584" fill="none" stroke="#005B96" stroke-width="2.2" marker-end="url(#head)"/>
+<rect x="1721.2" y="547" width="35.6" height="20" rx="5" fill="#FFFFFF" stroke="#005B96" stroke-opacity="0.25"/>
+<text x="1739" y="561" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="600" fill="#005B96" text-anchor="middle">env</text>
+<rect x="60" y="846" width="1800" height="206" rx="18" fill="#F3F6FA"/>
+<text x="84" y="880" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="15" font-weight="700" fill="#005B96" text-anchor="start" letter-spacing="1.6">PACKAGES/SHARED  ·  ONE CONTRACT FOR APP AND API</text>
+<text x="1836" y="880" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="400" fill="#44474E" text-anchor="end">imported as @mfc/shared · zod</text>
+<rect x="84" y="896" width="420" height="140" rx="10" fill="#FFFFFF" stroke="#C9D3DF" stroke-width="1.5"/>
+<text x="100" y="924" font-family="Consolas, 'Courier New', monospace" font-size="17" font-weight="700" fill="#1A1C1E" text-anchor="start">schemas/</text>
+<text x="100" y="947" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="400" fill="#44474E" text-anchor="start">profile: emergencyProfileInput, allergy / condition /</text>
+<text x="100" y="967" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="400" fill="#44474E" text-anchor="start">medication / contact inputs, lockScreenFields, flags</text>
+<text x="100" y="987" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="400" fill="#44474E" text-anchor="start">records · extraction (JSON schema for the AI) · share</text>
+<rect x="528" y="896" width="420" height="140" rx="10" fill="#FFFFFF" stroke="#C9D3DF" stroke-width="1.5"/>
+<text x="544" y="924" font-family="Consolas, 'Courier New', monospace" font-size="17" font-weight="700" fill="#1A1C1E" text-anchor="start">i18n/</text>
+<text x="544" y="947" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="400" fill="#44474E" text-anchor="start">en.json · th.json — 420 keys, parity-checked</text>
+<text x="544" y="967" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="400" fill="#44474E" text-anchor="start">used by the app (react-i18next) and by the API</text>
+<text x="544" y="987" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="400" fill="#44474E" text-anchor="start">for the public rescuer and clinician pages</text>
+<rect x="972" y="896" width="420" height="140" rx="10" fill="#FFFFFF" stroke="#C9D3DF" stroke-width="1.5"/>
+<text x="988" y="924" font-family="Consolas, 'Courier New', monospace" font-size="17" font-weight="700" fill="#1A1C1E" text-anchor="start">card/</text>
+<text x="988" y="947" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="400" fill="#44474E" text-anchor="start">buildCardPayload() — the one ordered line list every</text>
+<text x="988" y="967" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="400" fill="#44474E" text-anchor="start">surface renders · FLAG_LINE_VALUES · flagKeyOfValue</text>
+<text x="988" y="987" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="400" fill="#44474E" text-anchor="start">NO_KNOWN_DRUG_ALLERGY · EMERGENCY_NUMBER · dialable</text>
+<rect x="1416" y="896" width="420" height="140" rx="10" fill="#FFFFFF" stroke="#C9D3DF" stroke-width="1.5"/>
+<text x="1432" y="924" font-family="Consolas, 'Courier New', monospace" font-size="17" font-weight="700" fill="#1A1C1E" text-anchor="start">dates/</text>
+<text x="1432" y="947" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="400" fill="#44474E" text-anchor="start">Buddhist-era formatting</text>
+<text x="1432" y="967" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="400" fill="#44474E" text-anchor="start">defaultValidUntil · daysUntil</text>
+<text x="1432" y="987" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="400" fill="#44474E" text-anchor="start">isValidIsoDate</text>
+<path d="M 300 818 L 300 896" fill="none" stroke="#005B96" stroke-width="2.2" marker-end="url(#head)"/>
+<rect x="15.800000000000011" y="823" width="568.4" height="20" rx="5" fill="#FFFFFF" stroke="#005B96" stroke-opacity="0.25"/>
+<text x="300" y="837" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="600" fill="#005B96" text-anchor="middle">screens, components, lib: input types · card sentinels · record kinds · dates</text>
+<path d="M 855 818 L 855 896" fill="none" stroke="#005B96" stroke-width="2.2" marker-end="url(#head)"/>
+<rect x="772.4" y="823" width="165.20000000000002" height="20" rx="5" fill="#FFFFFF" stroke="#005B96" stroke-opacity="0.25"/>
+<text x="855" y="837" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="600" fill="#005B96" text-anchor="middle">i18n.ts: i18nMessages</text>
+<path d="M 1300 818 L 1300 896" fill="none" stroke="#005B96" stroke-width="2.2" marker-end="url(#head)"/>
+<rect x="976.2" y="823" width="647.6" height="20" rx="5" fill="#FFFFFF" stroke="#005B96" stroke-opacity="0.25"/>
+<text x="1300" y="837" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="13" font-weight="600" fill="#005B96" text-anchor="middle">modules: zod inputs · buildCardPayload · extraction schema · i18nMessages (public pages)</text>
+</svg>
